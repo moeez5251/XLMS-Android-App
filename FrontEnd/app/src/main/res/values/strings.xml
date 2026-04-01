@@ -12,12 +12,12 @@
     
     <!-- Login Screen -->
     <string name="welcome_back">Welcome Back</string>
-    <string name="access_your_collection">Access your scholarly collection</string>
+    <string name="access_your_collection">Access your books collection</string>
     
     <!-- Labels -->
     <string name="label_email_address">Email Address</string>
     <string name="label_password">Password</string>
-    <string name="hint_email">vance@university.edu</string>
+    <string name="hint_email">user@abc.com</string>
     <string name="hint_password">••••••</string>
     <string name="toggle_password">Toggle password visibility</string>
     
@@ -33,4 +33,38 @@
     <string name="demo_credentials_title">📚 Demo Credentials</string>
     <string name="demo_admin_credentials">Admin: admin@xlms.com | Password: admin123</string>
     <string name="demo_client_credentials">Client: user@xlms.com | Password: user123</string>
+    
+    <!-- Sign Up Screen -->
+    <string name="new_members">New Member</string>
+    <string name="signup_title_line1">Begin Your</string>
+    <string name="signup_title_line2">Curated Journey</string>
+    <string name="signup_subtitle">Enter your credentials to access our prestigious digital archives and private collections.</string>
+    <string name="label_full_name">Full Name</string>
+    <string name="hint_full_name">Theodore Vance</string>
+    <string name="hint_email_signup">user@abc.com</string>
+    <string name="hint_password_create">••••••••</string>
+    <string name="terms_agreement">I acknowledge and agree to the Terms of Service and institutional guidelines.</string>
+    <string name="button_create_account">Create Account</string>
+    <string name="already_have_account">Already have an account?</string>
+    
+    <!-- Email Verification Screen -->
+    <string name="go_back">Go back</string>
+    <string name="step_2_of_3">Step 2 of 3</string>
+    <string name="verification_code_title">Verification Code</string>
+    <string name="verification_subtitle">We\'ve sent a 6-digit academic access code to your registered email address.</string>
+    <string name="expires_in">Expires in 09:59</string>
+    <string name="button_verify_access">Verify Access</string>
+    <string name="didnt_receive_email">Didn\'t receive the email?</string>
+    <string name="button_resend_code">RESEND CODE</string>
+    <string name="secure_access">SECURE ACCESS</string>
+    <string name="academic_privacy">ACADEMIC PRIVACY</string>
+    
+    <!-- Sign Up Success Screen -->
+    <string name="step_3_of_3">Step 3 of 3</string>
+    <string name="signup_success_title">Sign Up Successful</string>
+    <string name="signup_success_subtitle">Your academic journey begins now.\nYour XLMS account is ready.</string>
+    <string name="account_created">Account Created</string>
+    <string name="button_continue_to_dashboard">Continue to Dashboard</string>
+    <string name="welcome_to_library">Welcome to library management.</string>
+    <string name="xlms_system_version">XLMS SYSTEM v1.0</string>
 </resources>

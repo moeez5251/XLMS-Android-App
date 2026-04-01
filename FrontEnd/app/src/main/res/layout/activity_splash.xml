@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     android:background="@color/surface">
 
+    <!-- Soft Blue Gradient Background Overlay -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/background_gradient_overlay"
+        android:alpha="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!-- Layer 1 (Back): Background -->
 
     <!-- Layer 2 (Back): Decorative Circles -->

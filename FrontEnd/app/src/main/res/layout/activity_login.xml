@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView 
+<FrameLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="@color/surface">
+
+    <!-- Soft Blue Gradient Background Overlay -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_gradient_overlay" />
+
+    <ScrollView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -429,4 +439,6 @@
             android:background="@drawable/decorative_circle_tertiary" />
 
     </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+</FrameLayout>

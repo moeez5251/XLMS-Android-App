@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import com.xlms.libraryadmin.R;
 import com.xlms.libraryadmin.ui.admin.AdminDashboardActivity;
 import com.xlms.libraryadmin.ui.client.ClientDashboardActivity;
+import com.xlms.libraryadmin.ui.signup.SignUpActivity;
 
 /**
  * Login Activity for XLMS Library Management System
@@ -105,7 +106,9 @@ public class LoginActivity extends AppCompatActivity {
 
         // Register link
         textViewRegister.setOnClickListener(v -> {
-            Toast.makeText(this, "Registration coming soon...", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }
 

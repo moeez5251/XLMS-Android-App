@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface">
+
+    <!-- Soft Blue Gradient Background Overlay -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_gradient_overlay" />
+
+    <!-- Decorative Blur Elements -->
+    <View
+        android:layout_width="384dp"
+        android:layout_height="384dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-192dp"
+        android:layout_marginEnd="-192dp"
+        android:background="@drawable/blur_gradient_circle"
+        android:alpha="0.4" />
+
+    <View
+        android:layout_width="256dp"
+        android:layout_height="256dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="-128dp"
+        android:layout_marginStart="-128dp"
+        android:background="@drawable/blur_gradient_circle_primary"
+        android:alpha="0.3" />
+
+    <!-- Header / Branding -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/surface"
+        android:elevation="4dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_menu_book"
+            android:contentDescription="@null"
+            app:tint="@color/primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/app_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/manrope_extrabold"
+            android:letterSpacing="-0.02" />
+    </LinearLayout>
+
+    <!-- Main Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp">
+
+            <!-- Step Indicator (Pagination) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="40dp">
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/pagination_dot_inactive" />
+
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@color/surface_container_high" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/pagination_dot_inactive" />
+
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="2dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@color/surface_container_high" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/pagination_dot_active" />
+            </LinearLayout>
+
+            <!-- Success Illustration -->
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp">
+
+                <!-- Decorative Glow -->
+                <View
+                    android:layout_width="256dp"
+                    android:layout_height="256dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/success_glow_background"
+                    android:alpha="0.6" />
+
+                <!-- Main Success Card -->
+                <FrameLayout
+                    android:layout_width="192dp"
+                    android:layout_height="192dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/success_card_background"
+                    android:elevation="8dp">
+
+                    <!-- Book Icon Watermark -->
+                    <ImageView
+                        android:layout_width="152dp"
+                        android:layout_height="153dp"
+                        android:layout_gravity="center"
+                        android:alpha="0.08"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_menu_book"
+                        app:tint="@color/primary" />
+
+                    <!-- Success Icon -->
+                    <FrameLayout
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/success_icon_circle">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_check_circle_filled"
+                            android:contentDescription="@null"
+                            app:tint="@color/white" />
+                    </FrameLayout>
+                </FrameLayout>
+            </FrameLayout>
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signup_success_title"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/manrope_extrabold"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signup_success_subtitle"
+                android:textSize="16sp"
+                android:textColor="@color/secondary"
+                android:fontFamily="@font/work_sans_regular"
+                android:gravity="center"
+                android:maxWidth="320dp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Status Ribbon -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/status_ribbon_background"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:layout_marginBottom="40dp">
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/pagination_dot_active" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/account_created"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.2"
+                    android:fontFamily="@font/inter" />
+            </LinearLayout>
+
+            <!-- Continue to Dashboard Button -->
+            <Button
+                android:id="@+id/buttonContinueToDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/button_primary_gradient"
+                android:text="@string/button_continue_to_dashboard"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:fontFamily="@font/manrope_bold"
+                android:elevation="4dp" />
+
+            <!-- Welcome Note -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome_to_library"
+                android:textSize="13sp"
+                android:textColor="@color/outline_variant"
+                android:fontFamily="@font/inter"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Footer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_gravity="bottom"
+        android:paddingBottom="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/xlms_system_version"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="@color/surface_container_high"
+            android:textAllCaps="true"
+            android:letterSpacing="0.2"
+            android:fontFamily="@font/manrope_bold" />
+    </LinearLayout>
+
+</FrameLayout>

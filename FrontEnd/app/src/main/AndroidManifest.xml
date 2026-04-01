@@ -28,6 +28,13 @@
             android:name=".ui.login.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.XLMSAdmin" />
+
+        <!-- Sign Up Activity -->
+        <activity
+            android:name=".ui.signup.SignUpActivity"
+            android:exported="false"
+            android:theme="@style/Theme.XLMSAdmin"
+            android:windowSoftInputMode="adjustResize" />
         
         <!-- Admin Dashboard Activity -->
         <activity
