@@ -1,5 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- XLMS Design System Colors - The Digital Curator -->
+    
+    <!-- Primary - Scholarly Blues -->
+    <color name="primary">#002045</color>
+    <color name="primary_container">#1a365d</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_fixed">#D6E3FF</color>
+    <color name="primary_fixed_dim">#ADC7F7</color>
+    <color name="on_primary_container">#86A0CD</color>
+    <color name="on_primary_fixed">#001B3C</color>
+    <color name="on_primary_fixed_variant">#2D476F</color>
+    
+    <!-- Secondary - Slate Grays -->
+    <color name="secondary">#545F72</color>
+    <color name="secondary_container">#D5E0F7</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_fixed">#D8E3FA</color>
+    <color name="secondary_fixed_dim">#BCC7DD</color>
+    <color name="on_secondary_container">#586377</color>
+    <color name="on_secondary_fixed">#111C2C</color>
+    <color name="on_secondary_fixed_variant">#3C475A</color>
+    
+    <!-- Tertiary - Academic Gold/Brown -->
+    <color name="tertiary">#321B00</color>
+    <color name="tertiary_container">#4F2E00</color>
+    <color name="on_tertiary">#FFFFFF</color>
+    <color name="tertiary_fixed">#FFDDBA</color>
+    <color name="tertiary_fixed_dim">#F2BC82</color>
+    <color name="on_tertiary_container">#C6955E</color>
+    <color name="on_tertiary_fixed">#2B1700</color>
+    <color name="on_tertiary_fixed_variant">#633F0F</color>
+    
+    <!-- Surface Architecture -->
+    <color name="surface">#F9F9FF</color>
+    <color name="surface_dim">#D0DAF0</color>
+    <color name="surface_bright">#F9F9FF</color>
+    <color name="surface_container_lowest">#FFFFFF</color>
+    <color name="surface_container_low">#F0F3FF</color>
+    <color name="surface_container">#E7EEFF</color>
+    <color name="surface_container_high">#DEE8FF</color>
+    <color name="surface_container_highest">#D9E3F9</color>
+    <color name="on_surface">#121C2C</color>
+    <color name="on_surface_variant">#43474E</color>
+    <color name="surface_variant">#D9E3F9</color>
+    <color name="inverse_surface">#273141</color>
+    <color name="inverse_on_surface">#EBF1FF</color>
+    
+    <!-- Background -->
+    <color name="background">#F9F9FF</color>
+    <color name="on_background">#121C2C</color>
+    
+    <!-- Error States -->
+    <color name="error">#BA1A1A</color>
+    <color name="error_container">#FFDAD6</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="on_error_container">#93000A</color>
+    
+    <!-- Outlines -->
+    <color name="outline">#74777F</color>
+    <color name="outline_variant">#C4C6CF</color>
+    
+    <!-- Inverse Primary -->
+    <color name="inverse_primary">#ADC7F7</color>
+    
+    <!-- Legacy colors for compatibility -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

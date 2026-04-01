@@ -11,17 +11,45 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.XLMSAdmin">
+        
+        <!-- Splash Activity (Launcher) -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.XLMS.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <!-- Login Activity -->
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.XLMSAdmin" />
+        
+        <!-- Admin Dashboard Activity -->
+        <activity
+            android:name=".ui.admin.AdminDashboardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.XLMSAdmin" />
+        
+        <!-- Client Dashboard Activity -->
+        <activity
+            android:name=".ui.client.ClientDashboardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.XLMSAdmin" />
+        
+        <!-- Remove MainActivity (Compose) -->
+        <!--
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.XLMSAdmin">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        -->
     </application>
 
 </manifest>

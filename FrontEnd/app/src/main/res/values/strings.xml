@@ -1,3 +1,36 @@
 <resources>
-    <string name="app_name">XLMS Admin</string>
+    <!-- App Info -->
+    <string name="app_name">XLMS</string>
+    <string name="splash_subtitle">Digital Library Management</string>
+    <string name="system_initializing">System Initializing</string>
+    <string name="collection_version">Collection v1.0</string>
+    
+    <!-- Splash Screen -->
+    <string name="logo_desc">XLMS Logo</string>
+    <string name="splash_background_desc">Splash screen background</string>
+    <string name="hero_background_desc">Login hero background</string>
+    
+    <!-- Login Screen -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="access_your_collection">Access your scholarly collection</string>
+    
+    <!-- Labels -->
+    <string name="label_email_address">Email Address</string>
+    <string name="label_password">Password</string>
+    <string name="hint_email">vance@university.edu</string>
+    <string name="hint_password">••••••</string>
+    <string name="toggle_password">Toggle password visibility</string>
+    
+    <!-- Actions -->
+    <string name="remember_me">Remember Me</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="button_login">Login</string>
+    <string name="button_register">Create Account</string>
+    <string name="new_member">New Member?</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    
+    <!-- Demo Credentials -->
+    <string name="demo_credentials_title">📚 Demo Credentials</string>
+    <string name="demo_admin_credentials">Admin: admin@xlms.com | Password: admin123</string>
+    <string name="demo_client_credentials">Client: user@xlms.com | Password: user123</string>
 </resources>
