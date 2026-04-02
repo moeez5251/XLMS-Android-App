@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="time_range_options">
+        <item>Last 6 Months</item>
+        <item>Last Year</item>
+        <item>All Time</item>
+    </string-array>
+</resources>

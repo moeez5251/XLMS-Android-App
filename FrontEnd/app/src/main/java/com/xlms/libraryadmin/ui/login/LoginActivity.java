@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 
 import com.xlms.libraryadmin.R;
 import com.xlms.libraryadmin.ui.admin.AdminDashboardActivity;
+import com.xlms.libraryadmin.ui.auth.ForgotPasswordActivity;
 import com.xlms.libraryadmin.ui.client.ClientDashboardActivity;
 import com.xlms.libraryadmin.ui.signup.SignUpActivity;
 
@@ -101,14 +102,16 @@ public class LoginActivity extends AppCompatActivity {
 
         // Forgot password
         textViewForgotPassword.setOnClickListener(v -> {
-            Toast.makeText(this, "Password reset coming soon...", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         });
 
         // Register link
         textViewRegister.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         });
     }
 
@@ -177,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("USER_ROLE", "ADMIN");
         intent.putExtra("USER_EMAIL", ADMIN_EMAIL);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         finish();
     }
 
@@ -186,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra("USER_ROLE", "CLIENT");
         intent.putExtra("USER_EMAIL", CLIENT_EMAIL);
         startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         finish();
     }
 
@@ -194,5 +197,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
     }
 }

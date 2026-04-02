@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Chart Spacing -->
+    <dimen name="chart_bar_margin">4dp</dimen>
+    <dimen name="chart_label_margin_top">8dp</dimen>
+    <dimen name="chart_bar_spacing">8dp</dimen>
+    
+    <!-- Card Spacing -->
+    <dimen name="card_padding">20dp</dimen>
+    <dimen name="card_margin">6dp</dimen>
+    
+    <!-- Navigation -->
+    <dimen name="nav_drawer_width">280dp</dimen>
+    <dimen name="nav_header_padding">24dp</dimen>
+    <dimen name="bottom_nav_height">80dp</dimen>
+    
+    <!-- Spacing -->
+    <dimen name="spacing_16">16dp</dimen>
+    <dimen name="spacing_24">24dp</dimen>
+    <dimen name="spacing_32">32dp</dimen>
+</resources>

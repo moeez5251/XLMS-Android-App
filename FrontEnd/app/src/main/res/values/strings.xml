@@ -67,4 +67,50 @@
     <string name="button_continue_to_dashboard">Continue to Dashboard</string>
     <string name="welcome_to_library">Welcome to library management.</string>
     <string name="xlms_system_version">XLMS SYSTEM v1.0</string>
+    
+    <!-- Forgot Password Screen -->
+    <string name="account_recovery">Account Recovery</string>
+    <string name="xlms_library">XLMS Library</string>
+    <string name="preserving_knowledge">Preserving knowledge, facilitating discovery.</string>
+    <string name="forgot_password_title">Forgot Password?</string>
+    <string name="forgot_password_subtitle">Enter the email address associated with your account and we\'ll send you instructions to reset your password.</string>
+    <string name="hint_email_recovery">user@abc.com</string>
+    <string name="button_send_reset">Send Reset Instructions</string>
+    <string name="back_to_login">Back to Login</string>
+    <string name="curators_note">XLMS Library Management System</string>
+    
+    <!-- Admin Dashboard -->
+    <string name="menu">Menu</string>
+    <string name="notifications">Notifications</string>
+    <string name="logout">Logout</string>
+    <string name="the_curator">THE CURATOR</string>
+    <string name="system_overview">System Overview</string>
+    <string name="welcome_admin">Welcome Admin.</string>
+    <string name="add_new_book">Add New Book</string>
+    <string name="total_books">Total Books</string>
+    <string name="lended_books">Lended Books</string>
+    <string name="available_books">Available Books</string>
+    <string name="total_users">Total Users</string>
+    <string name="overdue_books">OverDue Books</string>
+    <string name="view_details">View Details</string>
+    <string name="number_of_visitors">Number of Visitors</string>
+    <string name="monthly_engagement">Monthly engagement metrics</string>
+    <string name="book_availability">Book Availability</string>
+    <string name="inventory_status">Inventory status distribution</string>
+    <string name="lended_72">Lended (72%)</string>
+    <string name="available_28">Available (28%)</string>
+    <string name="recent_activity">Recent Activity</string>
+    <string name="total_items">Total Items</string>
+    
+    <!-- Menu Items -->
+    <string name="menu_dashboard">Dashboard</string>
+    <string name="menu_resources">Resources</string>
+    <string name="menu_manage_books">Manage Books</string>
+    <string name="menu_lended_books">Lended Books</string>
+    <string name="menu_members">Members</string>
+    <string name="menu_notifications">Notifications</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_books">Books</string>
+    <string name="menu_alerts">Alerts</string>
 </resources>

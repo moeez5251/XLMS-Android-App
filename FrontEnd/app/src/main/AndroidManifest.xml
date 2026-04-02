@@ -35,6 +35,13 @@
             android:exported="false"
             android:theme="@style/Theme.XLMSAdmin"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- Forgot Password Activity -->
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.XLMSAdmin"
+            android:windowSoftInputMode="adjustResize" />
         
         <!-- Admin Dashboard Activity -->
         <activity

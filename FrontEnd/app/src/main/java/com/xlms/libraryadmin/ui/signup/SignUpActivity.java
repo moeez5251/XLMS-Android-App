@@ -59,10 +59,10 @@ public class SignUpActivity extends AppCompatActivity
         FragmentTransaction transaction = getSupportFragmentManager()
             .beginTransaction()
             .setCustomAnimations(
-                R.anim.fragment_fade_enter,
-                R.anim.fragment_fade_exit,
-                R.anim.fragment_fade_enter,
-                R.anim.fragment_fade_exit
+                R.anim.slide_right_in,
+                R.anim.slide_left_out,
+                R.anim.slide_left_in,
+                R.anim.slide_right_out
             )
             .replace(R.id.fragmentContainer, fragment, tag);
         
@@ -123,16 +123,17 @@ public class SignUpActivity extends AppCompatActivity
 
     private void navigateToLogin() {
         finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
     }
 
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             super.onBackPressed();
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         } else {
-            // On first fragment, confirm exit
             finish();
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
     }
 }

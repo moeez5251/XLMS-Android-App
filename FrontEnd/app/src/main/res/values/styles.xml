@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BottomNavTextActive" parent="android:style/TextAppearance.Material.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="BottomNavTextInactive" parent="android:style/TextAppearance.Material.Caption">
+        <item name="android:textSize">10sp</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="BottomNavIndicator">
+        <item name="android:color">@color/surface_container_high</item>
+    </style>
+</resources>

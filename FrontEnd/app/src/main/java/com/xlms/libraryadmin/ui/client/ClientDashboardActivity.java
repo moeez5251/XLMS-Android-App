@@ -40,5 +40,6 @@ public class ClientDashboardActivity extends AppCompatActivity {
     public void onBackPressed() {
         Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
     }
 }
