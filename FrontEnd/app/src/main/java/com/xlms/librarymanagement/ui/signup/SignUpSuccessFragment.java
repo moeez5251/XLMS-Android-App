@@ -1,4 +1,4 @@
-package com.xlms.libraryadmin.ui.signup;
+package com.xlms.librarymanagement.ui.signup;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.xlms.libraryadmin.R;
+import com.xlms.librarymanagement.R;
 
 /**
  * Sign Up Success Fragment - Step 3 of 3 in the registration flow

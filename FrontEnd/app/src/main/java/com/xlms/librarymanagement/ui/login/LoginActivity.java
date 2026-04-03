@@ -1,4 +1,4 @@
-package com.xlms.libraryadmin.ui.login;
+package com.xlms.librarymanagement.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,11 +15,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.xlms.libraryadmin.R;
-import com.xlms.libraryadmin.ui.admin.AdminDashboardActivity;
-import com.xlms.libraryadmin.ui.auth.ForgotPasswordActivity;
-import com.xlms.libraryadmin.ui.client.ClientDashboardActivity;
-import com.xlms.libraryadmin.ui.signup.SignUpActivity;
+import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.ui.admin.AdminDashboardActivity;
+import com.xlms.librarymanagement.ui.auth.ForgotPasswordActivity;
+import com.xlms.librarymanagement.ui.client.ClientDashboardActivity;
+import com.xlms.librarymanagement.ui.signup.SignUpActivity;
 
 /**
  * Login Activity for XLMS Library Management System
@@ -118,10 +118,14 @@ public class LoginActivity extends AppCompatActivity {
     private void togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
         if (isPasswordVisible) {
+            // Password is now visible - show eye with slash to hide
             editTextPassword.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            buttonTogglePassword.setImageResource(R.drawable.visibility_off_24);
             buttonTogglePassword.setColorFilter(ContextCompat.getColor(this, R.color.primary));
         } else {
+            // Password is now hidden - show eye open to show
             editTextPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            buttonTogglePassword.setImageResource(R.drawable.visibility_24);
             buttonTogglePassword.setColorFilter(ContextCompat.getColor(this, R.color.on_surface_variant));
         }
         // Move cursor to end

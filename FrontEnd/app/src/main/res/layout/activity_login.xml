@@ -247,7 +247,7 @@
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/ic_lock"
+                            android:src="@drawable/visibility_24"
                             android:contentDescription="@string/toggle_password"
                             app:tint="@color/on_surface_variant"
                             android:padding="8dp" />

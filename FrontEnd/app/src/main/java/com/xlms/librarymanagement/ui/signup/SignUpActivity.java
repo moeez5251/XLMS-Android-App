@@ -1,4 +1,4 @@
-package com.xlms.libraryadmin.ui.signup;
+package com.xlms.librarymanagement.ui.signup;
 
 import android.os.Bundle;
 
@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.xlms.libraryadmin.R;
-import com.xlms.libraryadmin.ui.login.LoginActivity;
+import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.ui.login.LoginActivity;
 
 /**
  * Sign Up Activity - Hosts the 3-step registration flow

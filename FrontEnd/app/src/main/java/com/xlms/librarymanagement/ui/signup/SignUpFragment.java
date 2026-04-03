@@ -1,4 +1,4 @@
-package com.xlms.libraryadmin.ui.signup;
+package com.xlms.librarymanagement.ui.signup;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.xlms.libraryadmin.R;
+import com.xlms.librarymanagement.R;
 
 /**
  * Sign Up Fragment - Step 1 of 3 in the registration flow
@@ -151,10 +151,14 @@ public class SignUpFragment extends Fragment {
     private void togglePasswordVisibility() {
         isPasswordVisible = !isPasswordVisible;
         if (isPasswordVisible) {
+            // Password is now visible - show eye with slash to hide
             editTextPassword.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            buttonTogglePassword.setImageResource(R.drawable.visibility_off_24);
             buttonTogglePassword.setColorFilter(ContextCompat.getColor(requireContext(), R.color.primary));
         } else {
+            // Password is now hidden - show eye open to show
             editTextPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            buttonTogglePassword.setImageResource(R.drawable.visibility_24);
             buttonTogglePassword.setColorFilter(ContextCompat.getColor(requireContext(), R.color.outline_variant));
         }
         editTextPassword.setSelection(editTextPassword.getText().length());

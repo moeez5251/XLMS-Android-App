@@ -1,4 +1,4 @@
-package com.xlms.libraryadmin.ui.auth;
+package com.xlms.librarymanagement.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.xlms.libraryadmin.R;
-import com.xlms.libraryadmin.ui.login.LoginActivity;
+import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.ui.login.LoginActivity;
 
 /**
  * Forgot Password Activity - Account Recovery

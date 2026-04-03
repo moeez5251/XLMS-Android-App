@@ -1,4 +1,4 @@
-package com.xlms.libraryadmin;
+package com.xlms.librarymanagement;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.xlms.libraryadmin.ui.login.LoginActivity;
+import com.xlms.librarymanagement.ui.login.LoginActivity;
 
 /**
  * Splash Activity - Entry point for XLMS Library Management System

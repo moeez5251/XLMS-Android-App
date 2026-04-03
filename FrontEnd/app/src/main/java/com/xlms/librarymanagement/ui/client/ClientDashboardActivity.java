@@ -1,4 +1,4 @@
-package com.xlms.libraryadmin.ui.client;
+package com.xlms.librarymanagement.ui.client;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.xlms.libraryadmin.R;
+import com.xlms.librarymanagement.R;
 
 /**
  * Client Dashboard - Main screen for library users/clients

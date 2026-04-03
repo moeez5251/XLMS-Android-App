@@ -11,7 +11,7 @@
             android:title="@string/menu_resources" />
         <item
             android:id="@+id/nav_manage_books"
-            android:icon="@drawable/ic_library_books"
+            android:icon="@drawable/ic_book_edit"
             android:title="@string/menu_manage_books" />
         <item
             android:id="@+id/nav_lended_books"
@@ -27,7 +27,15 @@
             android:title="@string/menu_notifications" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_account_circle"
+            android:icon="@drawable/ic_user_circle"
             android:title="@string/menu_profile" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/menu_settings" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_help"
+            android:title="@string/menu_help" />
     </group>
 </menu>

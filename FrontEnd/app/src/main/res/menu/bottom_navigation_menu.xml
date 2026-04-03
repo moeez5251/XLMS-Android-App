@@ -18,6 +18,6 @@
         android:title="@string/menu_alerts" />
     <item
         android:id="@+id/bottom_profile"
-        android:icon="@drawable/ic_person"
+        android:icon="@drawable/ic_user_circle"
         android:title="@string/menu_profile" />
 </menu>
