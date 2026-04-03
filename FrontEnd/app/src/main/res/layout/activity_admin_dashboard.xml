@@ -7,10 +7,11 @@
     android:layout_height="match_parent"
     android:background="@color/surface">
 
-    <!-- Main Content -->
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <!-- Main Content Wrapper -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <!-- Top App Bar -->
         <LinearLayout
@@ -22,7 +23,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:background="@color/surface"
-            android:elevation="2dp">
+            android:elevation="4dp">
 
             <ImageButton
                 android:id="@+id/buttonMenu"
@@ -72,29 +73,28 @@
                 app:tint="@color/on_surface_variant" />
         </LinearLayout>
 
-        <!-- ViewPager2 -->
+        <!-- ViewPager2 (Fills remaining space with layout_weight="1") -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="64dp"
-            android:layout_marginBottom="80dp" />
+            android:layout_height="759dp"
+            android:layout_weight="1"
+            android:background="@color/surface" />
 
         <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@drawable/bottom_nav_background"
+            android:background="@color/surface"
             android:elevation="8dp"
-            app:menu="@menu/bottom_navigation_menu"
+            app:itemIconSize="24dp"
             app:labelVisibilityMode="labeled"
-            app:itemIconSize="24dp" />
+            app:menu="@menu/bottom_navigation_menu" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
 
-    <!-- Navigation Drawer (Sidebar) -->
+    <!-- Sidebar Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="280dp"
