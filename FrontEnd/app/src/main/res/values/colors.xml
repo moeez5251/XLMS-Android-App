@@ -64,6 +64,14 @@
     <!-- Inverse Primary -->
     <color name="inverse_primary">#ADC7F7</color>
     
+    <!-- Status Colors -->
+    <color name="status_available_bg">#10B981</color>
+    <color name="available_text">#065F46</color>
+    <color name="status_limited_bg">#F59E0B</color>
+    <color name="limited_text">#92400E</color>
+    <color name="status_out_of_stock_bg">#F43F5E</color>
+    <color name="out_of_stock_text">#9F1239</color>
+
     <!-- Legacy colors for compatibility -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

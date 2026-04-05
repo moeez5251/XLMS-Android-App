@@ -14,17 +14,19 @@ public class DashboardViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        // Tab 0: The "Old Dashboard"
-        if (position == 0) {
-            return new DashboardContentFragment();
-        }
-        // Tabs 1-4: Placeholders
         switch (position) {
-            case 1: return PlaceholderFragment.newInstance("Books");
-            case 2: return PlaceholderFragment.newInstance("Members");
-            case 3: return PlaceholderFragment.newInstance("Alerts");
-            case 4: return PlaceholderFragment.newInstance("Profile");
-            default: return new Fragment();
+            case 0:
+                return new DashboardContentFragment();
+            case 1:
+                return new ManageBooksFragment();
+            case 2:
+                return PlaceholderFragment.newInstance("Members");
+            case 3:
+                return PlaceholderFragment.newInstance("Alerts");
+            case 4:
+                return PlaceholderFragment.newInstance("Profile");
+            default:
+                return new Fragment();
         }
     }
 
