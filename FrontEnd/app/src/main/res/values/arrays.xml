@@ -4,4 +4,32 @@
         <item>Last Year</item>
         <item>All Time</item>
     </string-array>
+
+    <string-array name="book_categories">
+        <item>Business</item>
+        <item>Classic</item>
+        <item>Science</item>
+        <item>History</item>
+        <item>Fiction</item>
+        <item>Self-Help</item>
+        <item>Arts &amp; Atelier</item>
+        <item>Philosophy</item>
+        <item>Poetry</item>
+    </string-array>
+
+    <string-array name="book_languages">
+        <item>English</item>
+        <item>Urdu</item>
+        <item>Persian</item>
+        <item>Arabic</item>
+        <item>French</item>
+        <item>Hebrew</item>
+        <item>Portuguese</item>
+    </string-array>
+
+    <string-array name="book_statuses">
+        <item>Available</item>
+        <item>Reserved</item>
+        <item>Out of Stock</item>
+    </string-array>
 </resources>

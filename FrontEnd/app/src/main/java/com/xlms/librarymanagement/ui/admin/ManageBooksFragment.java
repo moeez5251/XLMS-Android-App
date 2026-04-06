@@ -12,8 +12,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
 
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.BookAdapter;
@@ -21,17 +23,19 @@ import com.xlms.librarymanagement.model.Book;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-/**
- * Manage Books Fragment - Admin screen to view and manage library books
- */
 public class ManageBooksFragment extends Fragment {
 
     private RecyclerView recyclerViewBooks;
     private BookAdapter bookAdapter;
-    private List<Book> bookList;
+    private List<Book> masterBookList;
     private TextView textViewTotalBooks;
     private EditText editTextSearch;
+
+    private String currentCategory = "All";
+    private String currentStatus = "All";
+    private String currentSearch = "";
 
     @Nullable
     @Override
@@ -47,7 +51,10 @@ public class ManageBooksFragment extends Fragment {
         initViews(view);
         setupRecyclerView();
         loadDummyData();
+        setupSearch();
         setupClickListeners();
+        
+        applyFilters();
     }
 
     private void initViews(View view) {
@@ -57,38 +64,225 @@ public class ManageBooksFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        bookList = new ArrayList<>();
-        bookAdapter = new BookAdapter(bookList);
+        masterBookList = new ArrayList<>();
+        bookAdapter = new BookAdapter(new BookAdapter.OnBookClickListener() {
+            @Override
+            public void onBookClick(Book book) {
+                openBookInfoFragment(book);
+            }
+
+            @Override
+            public void onBookLongClick(Book book) {
+                openBookInfoFragment(book);
+            }
+        });
         recyclerViewBooks.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewBooks.setAdapter(bookAdapter);
     }
 
     private void loadDummyData() {
-        bookList.clear();
-        
-        bookList.add(new Book("14-88219-X", "Rework", "Jason Fried", "Business", "English", 15.00, 8, 8, "Available"));
-        bookList.add(new Book("07-43203-1", "The Great Gatsby", "F. Scott Fitzgerald", "Classic", "English", 12.50, 12, 4, "Limited"));
-        bookList.add(new Book("99-10293-A", "Thinking, Fast and Slow", "Daniel Kahneman", "Science", "English", 22.00, 5, 0, "Out of Stock"));
-        bookList.add(new Book("42-11882-X", "Sapiens", "Yuval Noah Harari", "History", "Hebrew", 18.99, 15, 11, "Available"));
-        bookList.add(new Book("21-33490-C", "The Alchemist", "Paulo Coelho", "Fiction", "Portuguese", 10.00, 20, 20, "Available"));
-        
-        bookAdapter.notifyDataSetChanged();
-        textViewTotalBooks.setText(String.valueOf(bookList.size()));
+        masterBookList.clear();
+        masterBookList.add(new Book("14-88219-X", "Rework", "Jason Fried", "Business", "English", 15.00, 8, 8, "Available"));
+        masterBookList.add(new Book("07-43203-1", "The Great Gatsby", "F. Scott Fitzgerald", "Classic", "English", 12.50, 12, 4, "Limited"));
+        masterBookList.add(new Book("99-10293-A", "Thinking, Fast and Slow", "Daniel Kahneman", "Science", "English", 22.00, 5, 0, "Out of Stock"));
+        masterBookList.add(new Book("42-11882-X", "Sapiens", "Yuval Noah Harari", "History", "Hebrew", 18.99, 15, 11, "Available"));
+        masterBookList.add(new Book("21-33490-C", "The Alchemist", "Paulo Coelho", "Fiction", "Portuguese", 10.00, 20, 20, "Available"));
+        masterBookList.add(new Book("55-11223-B", "Atomic Habits", "James Clear", "Self-Help", "English", 16.00, 10, 2, "Limited"));
+        masterBookList.add(new Book("88-99001-Z", "1984", "George Orwell", "Classic", "English", 9.99, 15, 15, "Available"));
+    }
+
+    private void setupSearch() {
+        editTextSearch.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(android.text.Editable s) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currentSearch = s.toString().trim().toLowerCase(Locale.ROOT);
+                applyFilters();
+            }
+        });
     }
 
     private void setupClickListeners() {
         Button buttonAddBook = requireView().findViewById(R.id.buttonAddBook);
         if (buttonAddBook != null) {
-            buttonAddBook.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "Add Book dialog coming soon...", Toast.LENGTH_SHORT).show();
-            });
+            buttonAddBook.setOnClickListener(v -> openAddBookFragment());
         }
 
         Button buttonFilters = requireView().findViewById(R.id.buttonFilters);
         if (buttonFilters != null) {
-            buttonFilters.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "Filters coming soon...", Toast.LENGTH_SHORT).show();
-            });
+            buttonFilters.setOnClickListener(v -> showFilterDialog());
         }
+    }
+
+    // Navigation Methods with Slide Animations
+    private void openAddBookFragment() {
+        AddBookFragment fragment = new AddBookFragment();
+        fragment.setOnBookActionListener(new AddBookFragment.OnBookActionListener() {
+            @Override
+            public void onBookAdded(Book book) {
+                masterBookList.add(0, book); // Add to top of list
+                applyFilters();
+                closeDetailFragment();
+                Toast.makeText(requireContext(), "Book added: " + book.getTitle(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancel() {
+                closeDetailFragment();
+            }
+        });
+
+        openDetailFragment(fragment);
+    }
+
+    private void openBookInfoFragment(Book book) {
+        BookInfoFragment fragment = BookInfoFragment.newInstance(book);
+        fragment.setOnBookInfoActionListener(new BookInfoFragment.OnBookInfoActionListener() {
+            @Override
+            public void onBookUpdated(Book updatedBook) {
+                // Find and update the book in the list
+                int index = masterBookList.indexOf(book);
+                if (index >= 0) {
+                    masterBookList.set(index, updatedBook);
+                    applyFilters();
+                }
+                closeDetailFragment();
+                Toast.makeText(requireContext(), "Book updated successfully", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onBookDeleted(Book book) {
+                masterBookList.remove(book);
+                applyFilters();
+                closeDetailFragment();
+                Toast.makeText(requireContext(), "Book deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onBack() {
+                closeDetailFragment();
+            }
+        });
+
+        openDetailFragment(fragment);
+    }
+
+    private void openDetailFragment(Fragment fragment) {
+        // Hide ViewPager2 and show fragment container
+        View viewPager = requireActivity().findViewById(R.id.viewPager);
+        View fragmentContainer = requireActivity().findViewById(R.id.fragmentContainer);
+        
+        if (viewPager != null) viewPager.setVisibility(View.GONE);
+        if (fragmentContainer != null) {
+            fragmentContainer.setVisibility(View.VISIBLE);
+            requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(null)
+                .commit();
+        }
+    }
+
+    private void closeDetailFragment() {
+        View viewPager = requireActivity().findViewById(R.id.viewPager);
+        View fragmentContainer = requireActivity().findViewById(R.id.fragmentContainer);
+        
+        if (fragmentContainer != null) {
+            requireActivity().getSupportFragmentManager().popBackStack();
+            fragmentContainer.setVisibility(View.GONE);
+        }
+        if (viewPager != null) viewPager.setVisibility(View.VISIBLE);
+    }
+
+    private void applyFilters() {
+        List<Book> filteredList = new ArrayList<>();
+
+        for (Book book : masterBookList) {
+            boolean matchSearch = true;
+            boolean matchCategory = true;
+            boolean matchStatus = true;
+
+            if (!currentSearch.isEmpty()) {
+                String title = book.getTitle().toLowerCase(Locale.ROOT);
+                String author = book.getAuthor().toLowerCase(Locale.ROOT);
+                String id = book.getBookId().toLowerCase(Locale.ROOT);
+                String cat = book.getCategory().toLowerCase(Locale.ROOT);
+                String lang = book.getLanguage().toLowerCase(Locale.ROOT);
+                String stat = book.getStatus().toLowerCase(Locale.ROOT);
+
+                matchSearch = title.contains(currentSearch) || author.contains(currentSearch) ||
+                              id.contains(currentSearch) || cat.contains(currentSearch) ||
+                              lang.contains(currentSearch) || stat.contains(currentSearch) ||
+                              String.valueOf(book.getPrice()).contains(currentSearch) ||
+                              String.valueOf(book.getTotal()).contains(currentSearch) ||
+                              String.valueOf(book.getAvailable()).contains(currentSearch);
+            }
+
+            if (!currentCategory.equals("All")) {
+                matchCategory = book.getCategory().equalsIgnoreCase(currentCategory);
+            }
+
+            if (!currentStatus.equals("All")) {
+                matchStatus = book.getStatus().equalsIgnoreCase(currentStatus);
+            }
+
+            if (matchSearch && matchCategory && matchStatus) {
+                filteredList.add(book);
+            }
+        }
+
+        bookAdapter.submitList(filteredList);
+        textViewTotalBooks.setText(String.valueOf(filteredList.size()));
+    }
+
+    private void showFilterDialog() {
+        String[] options = {"Filter by Category", "Filter by Status", "Reset All Filters"};
+        new android.app.AlertDialog.Builder(requireContext())
+            .setTitle("Manage Filters")
+            .setItems(options, (dialog, which) -> {
+                if (which == 0) showCategoryDialog();
+                else if (which == 1) showStatusDialog();
+                else resetAllFilters();
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
+    }
+
+    private void showCategoryDialog() {
+        String[] categories = {"All", "Business", "Classic", "Science", "History", "Fiction", "Self-Help"};
+        new android.app.AlertDialog.Builder(requireContext())
+            .setTitle("Select Category")
+            .setItems(categories, (dialog, which) -> {
+                currentCategory = categories[which];
+                currentStatus = "All";
+                editTextSearch.setText("");
+                applyFilters();
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
+    }
+
+    private void showStatusDialog() {
+        String[] statuses = {"All", "Available", "Limited", "Out of Stock"};
+        new android.app.AlertDialog.Builder(requireContext())
+            .setTitle("Select Status")
+            .setItems(statuses, (dialog, which) -> {
+                currentStatus = statuses[which];
+                currentCategory = "All";
+                editTextSearch.setText("");
+                applyFilters();
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
+    }
+
+    private void resetAllFilters() {
+        currentCategory = "All";
+        currentStatus = "All";
+        currentSearch = "";
+        editTextSearch.setText("");
+        applyFilters();
     }
 }

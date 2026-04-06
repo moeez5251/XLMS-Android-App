@@ -73,13 +73,28 @@
                 app:tint="@color/on_surface_variant" />
         </LinearLayout>
 
-        <!-- ViewPager2 (Fills remaining space with layout_weight="1") -->
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
+        <!-- Main Content Wrapper -->
+        <FrameLayout
+            android:id="@+id/mainContentContainer"
             android:layout_width="match_parent"
-            android:layout_height="759dp"
-            android:layout_weight="1"
-            android:background="@color/surface" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- ViewPager2 (For Tabs) -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/surface" />
+
+            <!-- Fragment Container (For Add/Info screens - overlays ViewPager2) -->
+            <FrameLayout
+                android:id="@+id/fragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="@color/surface" />
+        </FrameLayout>
 
         <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView

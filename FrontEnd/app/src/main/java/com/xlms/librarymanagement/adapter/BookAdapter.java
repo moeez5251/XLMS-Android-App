@@ -13,14 +13,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.model.Book;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
-    private List<Book> bookList;
+    private List<Book> displayList;
+    private OnBookClickListener listener;
 
-    public BookAdapter(List<Book> bookList) {
-        this.bookList = bookList;
+    public interface OnBookClickListener {
+        void onBookClick(Book book);
+        void onBookLongClick(Book book);
+    }
+
+    public BookAdapter(OnBookClickListener listener) {
+        this.listener = listener;
+        this.displayList = new ArrayList<>();
+    }
+
+    /**
+     * Updates the list of books to display and refreshes the view.
+     */
+    public void submitList(List<Book> newList) {
+        this.displayList = newList != null ? newList : new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -33,7 +49,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
-        Book book = bookList.get(position);
+        Book book = displayList.get(position);
 
         holder.textViewBookId.setText(book.getBookId());
         holder.textViewBookTitle.setText(book.getTitle());
@@ -45,12 +61,18 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         holder.textViewAvailable.setText(String.valueOf(book.getAvailable()));
         holder.textViewStatus.setText(book.getStatus());
 
-        // Update status badge appearance based on status
         updateStatusBadge(holder.layoutStatus, holder.textViewStatus, book.getStatus());
+
+        // Click listeners
+        holder.itemView.setOnClickListener(v -> listener.onBookClick(book));
+        holder.itemView.setOnLongClickListener(v -> {
+            listener.onBookLongClick(book);
+            return true;
+        });
     }
 
     private void updateStatusBadge(LinearLayout layoutStatus, TextView textViewStatus, String status) {
-        int bgColor, dotColor, textColor;
+        int bgColor, textColor;
 
         switch (status) {
             case "Available":
@@ -77,7 +99,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     @Override
     public int getItemCount() {
-        return bookList.size();
+        return displayList.size();
     }
 
     static class BookViewHolder extends RecyclerView.ViewHolder {

@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add New Book"
+                android:textSize="26sp"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/manrope_extrabold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Atelier Acquisitions Registry"
+                android:textSize="11sp"
+                android:textColor="@color/on_surface_variant"
+                android:letterSpacing="0.2"
+                android:textAllCaps="true"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- Book Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Book Title"
+                android:textSize="11sp"
+                android:textColor="@color/on_surface_variant"
+                android:fontFamily="@font/inter"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:textAllCaps="true"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/input_field_background"
+                android:hint="Enter full literary title"
+                android:inputType="textCapSentences"
+                android:padding="12dp"
+                android:textColor="@color/on_surface"
+                android:textColorHint="@color/on_surface_variant"
+                android:textSize="14sp"
+                android:fontFamily="@font/inter" />
+        </LinearLayout>
+
+        <!-- Author(s) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Author(s)"
+                android:textSize="11sp"
+                android:textColor="@color/on_surface_variant"
+                android:fontFamily="@font/inter"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:textAllCaps="true"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/editTextAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/input_field_background"
+                android:hint="e.g. Gabriel García Márquez"
+                android:inputType="textCapSentences"
+                android:padding="12dp"
+                android:textColor="@color/on_surface"
+                android:textColorHint="@color/on_surface_variant"
+                android:textSize="14sp"
+                android:fontFamily="@font/inter" />
+        </LinearLayout>
+
+        <!-- Genre/Category & Language -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Genre/Category"
+                    android:textSize="11sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:textAllCaps="true"
+                    android:layout_marginBottom="6dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/input_field_background"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Language"
+                    android:textSize="11sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:textAllCaps="true"
+                    android:layout_marginBottom="6dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerLanguage"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/input_field_background"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Total Copies & Price -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Copies"
+                    android:textSize="11sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:textAllCaps="true"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/editTextTotalCopies"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/input_field_background"
+                    android:hint="0"
+                    android:inputType="number"
+                    android:padding="12dp"
+                    android:textColor="@color/on_surface"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Price"
+                    android:textSize="11sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:textAllCaps="true"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/editTextPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/input_field_background"
+                    android:hint="0.00"
+                    android:inputType="numberDecimal"
+                    android:padding="12dp"
+                    android:textColor="@color/on_surface"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Pages & Stock Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pages"
+                    android:textSize="11sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:textAllCaps="true"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/editTextPages"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/input_field_background"
+                    android:hint="0"
+                    android:inputType="number"
+                    android:padding="12dp"
+                    android:textColor="@color/on_surface"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    android:textSize="11sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"
+                    android:textAllCaps="true"
+                    android:layout_marginBottom="6dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/input_field_background"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackground"
+                android:text="Cancel"
+                android:textColor="@color/primary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="12dp" />
+
+            <Button
+                android:id="@+id/buttonSave"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/button_primary_gradient"
+                android:text="Add Book"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp" />
+        </LinearLayout>
+
+        <!-- Accent Line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/accent_gradient" />
+    </LinearLayout>
+</ScrollView>
