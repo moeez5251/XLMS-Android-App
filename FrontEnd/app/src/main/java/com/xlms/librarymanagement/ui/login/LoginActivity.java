@@ -20,6 +20,7 @@ import com.xlms.librarymanagement.ui.admin.AdminDashboardActivity;
 import com.xlms.librarymanagement.ui.auth.ForgotPasswordActivity;
 import com.xlms.librarymanagement.ui.client.ClientDashboardActivity;
 import com.xlms.librarymanagement.ui.signup.SignUpActivity;
+import com.xlms.librarymanagement.utils.SessionManager;
 
 /**
  * Login Activity for XLMS Library Management System
@@ -180,6 +181,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToAdminDashboard() {
+        // Save session
+        SessionManager sessionManager = new SessionManager(this);
+        sessionManager.saveSession(ADMIN_EMAIL, "ADMIN");
+
         Intent intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
         intent.putExtra("USER_ROLE", "ADMIN");
         intent.putExtra("USER_EMAIL", ADMIN_EMAIL);
@@ -189,6 +194,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToClientDashboard() {
+        // Save session
+        SessionManager sessionManager = new SessionManager(this);
+        sessionManager.saveSession(CLIENT_EMAIL, "CLIENT");
+
         Intent intent = new Intent(LoginActivity.this, ClientDashboardActivity.class);
         intent.putExtra("USER_ROLE", "CLIENT");
         intent.putExtra("USER_EMAIL", CLIENT_EMAIL);

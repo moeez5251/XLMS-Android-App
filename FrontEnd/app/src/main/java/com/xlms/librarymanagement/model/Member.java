@@ -1,0 +1,42 @@
+package com.xlms.librarymanagement.model;
+
+import java.io.Serializable;
+
+public class Member implements Serializable {
+    private String userId;
+    private String name;
+    private String email;
+    private String role;
+    private String membershipType;
+    private double cost;
+    private String status; // "Active" or "Deactivated"
+    private boolean isSelected;
+
+    public Member(String userId, String name, String email, String role, 
+                  String membershipType, double cost, String status) {
+        this.userId = userId;
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.membershipType = membershipType;
+        this.cost = cost;
+        this.status = status;
+        this.isSelected = false;
+    }
+
+    public String getUserId() { return userId; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+    public String getMembershipType() { return membershipType; }
+    public void setMembershipType(String membershipType) { this.membershipType = membershipType; }
+    public double getCost() { return cost; }
+    public void setCost(double cost) { this.cost = cost; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public boolean isSelected() { return isSelected; }
+    public void setSelected(boolean selected) { isSelected = selected; }
+}

@@ -105,9 +105,9 @@
     <!-- Table Footer Control -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="42dp"
         android:background="@color/surface_container_low"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="horizontal"
         android:padding="8dp">
 
@@ -128,26 +128,7 @@
             android:textSize="12sp"
             android:textStyle="bold" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rows per page"
-            android:textColor="@color/on_surface_variant"
-            android:textSize="12sp" />
-
-        <Spinner
-            android:id="@+id/spinnerRowsPerPage"
-            android:layout_width="wrap_content"
-            android:layout_height="54dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/spinner_background"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp" />
     </LinearLayout>
+
 
 </LinearLayout>

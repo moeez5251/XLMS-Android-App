@@ -1,25 +1,31 @@
 package com.xlms.librarymanagement.ui.admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.ui.login.LoginActivity;
+import com.xlms.librarymanagement.utils.SessionManager;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigation;
+    private FrameLayout mainContentFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +42,48 @@ public class AdminDashboardActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         viewPager = findViewById(R.id.viewPager);
         bottomNavigation = findViewById(R.id.bottomNavigation);
-        
+        mainContentFrame = findViewById(R.id.mainContentFrame);
+    }
+
+    private void setupViewPager() {
+        DashboardViewPagerAdapter adapter = new DashboardViewPagerAdapter(this);
+        viewPager.setAdapter(adapter);
+
+        // Sync ViewPager -> BottomNav
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                bottomNavigation.getMenu().getItem(position).setChecked(true);
+            }
+        });
+    }
+
+    private void setupBottomNavigation() {
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            // If detail screen is open, close it first
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                getSupportFragmentManager().popBackStackImmediate();
+            }
+
+            int position = 0;
+            int id = item.getItemId();
+            
+            if (id == R.id.bottom_dashboard) position = 0;
+            else if (id == R.id.bottom_books) position = 1;
+            else if (id == R.id.bottom_members) position = 2;
+            else if (id == R.id.bottom_alerts) position = 3;
+            else if (id == R.id.bottom_profile) position = 4;
+
+            viewPager.setCurrentItem(position, true);
+            return true;
+        });
+    }
+
+    private void setupClickListeners() {
         ImageButton buttonMenu = findViewById(R.id.buttonMenu);
         ImageButton buttonLogout = findViewById(R.id.buttonLogout);
+        NavigationView navigationView = findViewById(R.id.navigationView);
 
         if (buttonMenu != null) {
             buttonMenu.setOnClickListener(v -> {
@@ -52,57 +97,26 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         if (buttonLogout != null) {
             buttonLogout.setOnClickListener(v -> {
+                // Clear session
+                SessionManager sessionManager = new SessionManager(this);
+                sessionManager.clearSession();
+
+                // Redirect to login
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
-                overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
             });
         }
-    }
 
-    private void setupViewPager() {
-        DashboardViewPagerAdapter adapter = new DashboardViewPagerAdapter(this);
-        viewPager.setAdapter(adapter);
-
-        // 1. Enable smooth swiping (WhatsApp style)
-        // We remove the custom transformer to allow native side-by-side sliding.
-        // viewPager.setPageTransformer(null); // Default is null, which is the standard slide.
-        
-        // 2. Pre-load neighbors for instant swipe response
-        viewPager.setOffscreenPageLimit(2); 
-        
-        // 3. Ensure user can swipe
-        viewPager.setUserInputEnabled(true);
-
-        // 4. Sync ViewPager -> BottomNav
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                bottomNavigation.getMenu().getItem(position).setChecked(true);
-            }
-        });
-    }
-
-    private void setupBottomNavigation() {
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            int position = 0;
-            int id = item.getItemId();
-            
-            if (id == R.id.bottom_dashboard) position = 0;
-            else if (id == R.id.bottom_books) position = 1;
-            else if (id == R.id.bottom_members) position = 2;
-            else if (id == R.id.bottom_alerts) position = 3;
-            else if (id == R.id.bottom_profile) position = 4;
-
-            // True enables the smooth scroll animation
-            viewPager.setCurrentItem(position, true); 
-            return true;
-        });
-    }
-
-    private void setupClickListeners() {
-        NavigationView navigationView = findViewById(R.id.navigationView);
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(item -> {
+                // Close any detail screens first
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+
                 int position = 0;
                 int id = item.getItemId();
 
@@ -119,13 +133,46 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Opens a detail screen (Add Book / Info Book) on TOP of the current screen.
+     * Uses 'add' transaction so the ViewPager remains visible in the background.
+     */
+    public void openDetailScreen(Fragment fragment) {
+        getSupportFragmentManager()
+            .beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_right_in,  // Enter: Slide in from right
+                0,                      // Exit: Current screen stays put (it's behind)
+                0,                      // PopEnter: Current screen stays put (it's revealed)
+                R.anim.slide_right_out  // PopExit: Top screen slides out to right
+            )
+            .add(R.id.mainContentFrame, fragment) // Use .add instead of .replace
+            .addToBackStack("detail")
+            .commit();
+    }
+
+    /**
+     * Closes the top detail screen.
+     */
+    public void closeDetailScreen() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStackImmediate();
+        }
+    }
+
     @Override
     public void onBackPressed() {
+        // If detail screen is open, close it
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            closeDetailScreen();
+            return;
+        }
+
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
     }
 }

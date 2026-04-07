@@ -1,5 +1,6 @@
 package com.xlms.librarymanagement.ui.admin;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.BookAdapter;
@@ -115,13 +114,13 @@ public class ManageBooksFragment extends Fragment {
         }
     }
 
-    // Navigation Methods with Slide Animations
+    // Navigation Methods
     private void openAddBookFragment() {
         AddBookFragment fragment = new AddBookFragment();
         fragment.setOnBookActionListener(new AddBookFragment.OnBookActionListener() {
             @Override
             public void onBookAdded(Book book) {
-                masterBookList.add(0, book); // Add to top of list
+                masterBookList.add(0, book);
                 applyFilters();
                 closeDetailFragment();
                 Toast.makeText(requireContext(), "Book added: " + book.getTitle(), Toast.LENGTH_SHORT).show();
@@ -141,7 +140,6 @@ public class ManageBooksFragment extends Fragment {
         fragment.setOnBookInfoActionListener(new BookInfoFragment.OnBookInfoActionListener() {
             @Override
             public void onBookUpdated(Book updatedBook) {
-                // Find and update the book in the list
                 int index = masterBookList.indexOf(book);
                 if (index >= 0) {
                     masterBookList.set(index, updatedBook);
@@ -169,31 +167,15 @@ public class ManageBooksFragment extends Fragment {
     }
 
     private void openDetailFragment(Fragment fragment) {
-        // Hide ViewPager2 and show fragment container
-        View viewPager = requireActivity().findViewById(R.id.viewPager);
-        View fragmentContainer = requireActivity().findViewById(R.id.fragmentContainer);
-        
-        if (viewPager != null) viewPager.setVisibility(View.GONE);
-        if (fragmentContainer != null) {
-            fragmentContainer.setVisibility(View.VISIBLE);
-            requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
-                .replace(R.id.fragmentContainer, fragment)
-                .addToBackStack(null)
-                .commit();
+        if (getActivity() instanceof AdminDashboardActivity) {
+            ((AdminDashboardActivity) getActivity()).openDetailScreen(fragment);
         }
     }
 
     private void closeDetailFragment() {
-        View viewPager = requireActivity().findViewById(R.id.viewPager);
-        View fragmentContainer = requireActivity().findViewById(R.id.fragmentContainer);
-        
-        if (fragmentContainer != null) {
-            requireActivity().getSupportFragmentManager().popBackStack();
-            fragmentContainer.setVisibility(View.GONE);
+        if (getActivity() instanceof AdminDashboardActivity) {
+            ((AdminDashboardActivity) getActivity()).closeDetailScreen();
         }
-        if (viewPager != null) viewPager.setVisibility(View.VISIBLE);
     }
 
     private void applyFilters() {
@@ -239,7 +221,7 @@ public class ManageBooksFragment extends Fragment {
 
     private void showFilterDialog() {
         String[] options = {"Filter by Category", "Filter by Status", "Reset All Filters"};
-        new android.app.AlertDialog.Builder(requireContext())
+        new AlertDialog.Builder(requireContext())
             .setTitle("Manage Filters")
             .setItems(options, (dialog, which) -> {
                 if (which == 0) showCategoryDialog();
@@ -252,7 +234,7 @@ public class ManageBooksFragment extends Fragment {
 
     private void showCategoryDialog() {
         String[] categories = {"All", "Business", "Classic", "Science", "History", "Fiction", "Self-Help"};
-        new android.app.AlertDialog.Builder(requireContext())
+        new AlertDialog.Builder(requireContext())
             .setTitle("Select Category")
             .setItems(categories, (dialog, which) -> {
                 currentCategory = categories[which];
@@ -266,7 +248,7 @@ public class ManageBooksFragment extends Fragment {
 
     private void showStatusDialog() {
         String[] statuses = {"All", "Available", "Limited", "Out of Stock"};
-        new android.app.AlertDialog.Builder(requireContext())
+        new AlertDialog.Builder(requireContext())
             .setTitle("Select Status")
             .setItems(statuses, (dialog, which) -> {
                 currentStatus = statuses[which];
@@ -284,5 +266,6 @@ public class ManageBooksFragment extends Fragment {
         currentSearch = "";
         editTextSearch.setText("");
         applyFilters();
+        Toast.makeText(requireContext(), "Filters reset", Toast.LENGTH_SHORT).show();
     }
 }

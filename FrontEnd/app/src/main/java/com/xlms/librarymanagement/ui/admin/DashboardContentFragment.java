@@ -1,11 +1,10 @@
 package com.xlms.librarymanagement.ui.admin;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,20 +13,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import android.widget.ScrollView;
 import androidx.fragment.app.Fragment;
 
 import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.model.Book;
 
-/**
- * Dashboard Content Fragment - Contains stats, charts, and activity
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class DashboardContentFragment extends Fragment {
 
-    private static final String TAG = "DashboardFragment";
-    
     private LinearLayout statsContainer, barChartContainer, activityListContainer;
-    private ScrollView scrollView;
+    private Button buttonAddBook;
 
     private static final int TOTAL_BOOKS = 29;
     private static final int LENDED_BOOKS = 74;
@@ -39,61 +36,65 @@ public class DashboardContentFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                             @Nullable Bundle savedInstanceState) {
-        try {
-            Log.d(TAG, "Inflating layout");
-            View view = inflater.inflate(R.layout.fragment_dashboard_content, container, false);
-            
-            scrollView = view.findViewById(R.id.scrollView);
-            statsContainer = view.findViewById(R.id.statsContainer);
-            barChartContainer = view.findViewById(R.id.barChartContainer);
-            activityListContainer = view.findViewById(R.id.activityListContainer);
-            
-            Log.d(TAG, "scrollView found: " + (scrollView != null));
-            Log.d(TAG, "statsContainer found: " + (statsContainer != null));
-            Log.d(TAG, "barChartContainer found: " + (barChartContainer != null));
-            Log.d(TAG, "activityListContainer found: " + (activityListContainer != null));
-            
-            return view;
-        } catch (Exception e) {
-            Log.e(TAG, "Error inflating layout: " + e.getMessage(), e);
-            if (getContext() != null) {
-                Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-            return new TextView(requireContext());
-        }
+        return inflater.inflate(R.layout.fragment_dashboard_content, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         
-        try {
-            Log.d(TAG, "Setting up dashboard content");
-            Log.d(TAG, "statsContainer is null: " + (statsContainer == null));
-            
-            loadStatsData();
-            Log.d(TAG, "Stats data loaded");
-            
-            setupBarChart();
-            Log.d(TAG, "Bar chart setup complete");
-            
-            setupActivityList();
-            Log.d(TAG, "Activity list setup complete");
-            
-            Log.d(TAG, "Dashboard content setup complete");
-        } catch (Exception e) {
-            Log.e(TAG, "Error in onViewCreated: " + e.getMessage(), e);
-            if (getContext() != null) {
-                Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        statsContainer = view.findViewById(R.id.statsContainer);
+        barChartContainer = view.findViewById(R.id.barChartContainer);
+        activityListContainer = view.findViewById(R.id.activityListContainer);
+        buttonAddBook = view.findViewById(R.id.buttonAddBook);
+        
+        loadStatsData();
+        setupBarChart();
+        setupActivityList();
+        setupAddBookButton();
+    }
+
+    private void setupAddBookButton() {
+        if (buttonAddBook != null) {
+            buttonAddBook.setOnClickListener(v -> {
+                // Navigate to Manage Books tab then open Add Book
+                openAddBookFragment();
+            });
+        }
+    }
+
+    private void openAddBookFragment() {
+        AddBookFragment fragment = new AddBookFragment();
+        fragment.setOnBookActionListener(new AddBookFragment.OnBookActionListener() {
+            @Override
+            public void onBookAdded(Book book) {
+                Toast.makeText(requireContext(), "Book added: " + book.getTitle(), Toast.LENGTH_SHORT).show();
+                closeDetailFragment();
             }
+
+            @Override
+            public void onCancel() {
+                closeDetailFragment();
+            }
+        });
+
+        openDetailFragment(fragment);
+    }
+
+    private void openDetailFragment(Fragment fragment) {
+        if (getActivity() instanceof AdminDashboardActivity) {
+            ((AdminDashboardActivity) getActivity()).openDetailScreen(fragment);
+        }
+    }
+
+    private void closeDetailFragment() {
+        if (getActivity() instanceof AdminDashboardActivity) {
+            ((AdminDashboardActivity) getActivity()).closeDetailScreen();
         }
     }
 
     private void loadStatsData() {
-        if (statsContainer == null) {
-            Log.e(TAG, "statsContainer is null");
-            return;
-        }
+        if (statsContainer == null) return;
         
         addStatCard(TOTAL_BOOKS, getString(R.string.total_books), R.drawable.ic_book_bookmark, R.drawable.icon_background_secondary, false);
         addStatCard(LENDED_BOOKS, getString(R.string.lended_books), R.drawable.ic_book_edit, R.drawable.icon_background_primary, false);
@@ -103,29 +104,25 @@ public class DashboardContentFragment extends Fragment {
     }
 
     private void addStatCard(int value, String label, int iconRes, int bgRes, boolean isOverdue) {
-        try {
-            View card = LayoutInflater.from(requireContext()).inflate(R.layout.stat_card_simple, statsContainer, false);
-            
-            ImageView icon = card.findViewById(R.id.statIcon);
-            View iconBg = card.findViewById(R.id.iconBackground);
-            TextView valueText = card.findViewById(R.id.statValue);
-            TextView labelText = card.findViewById(R.id.statLabel);
-            
-            icon.setImageResource(iconRes);
-            iconBg.setBackgroundResource(bgRes);
-            
-            if (isOverdue) {
-                icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.error));
-                valueText.setTextColor(ContextCompat.getColor(requireContext(), R.color.error));
-            }
-            
-            valueText.setText(String.valueOf(value));
-            labelText.setText(label);
-            
-            statsContainer.addView(card);
-        } catch (Exception e) {
-            Log.e(TAG, "Error adding stat card: " + e.getMessage(), e);
+        View card = LayoutInflater.from(requireContext()).inflate(R.layout.stat_card_simple, statsContainer, false);
+        
+        ImageView icon = card.findViewById(R.id.statIcon);
+        View iconBg = card.findViewById(R.id.iconBackground);
+        TextView valueText = card.findViewById(R.id.statValue);
+        TextView labelText = card.findViewById(R.id.statLabel);
+        
+        icon.setImageResource(iconRes);
+        iconBg.setBackgroundResource(bgRes);
+        
+        if (isOverdue) {
+            icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.error));
+            valueText.setTextColor(ContextCompat.getColor(requireContext(), R.color.error));
         }
+        
+        valueText.setText(String.valueOf(value));
+        labelText.setText(label);
+        
+        statsContainer.addView(card);
     }
 
     private void setupBarChart() {
@@ -141,7 +138,7 @@ public class DashboardContentFragment extends Fragment {
             barContainer.setLayoutParams(new LinearLayout.LayoutParams(
                 0, LinearLayout.LayoutParams.MATCH_PARENT, 1));
             barContainer.setOrientation(LinearLayout.VERTICAL);
-            barContainer.setGravity(Gravity.BOTTOM);
+            barContainer.setGravity(android.view.Gravity.BOTTOM);
             
             ((LinearLayout.LayoutParams) barContainer.getLayoutParams()).setMargins(
                 spacing / 2, 0, spacing / 2, 0);

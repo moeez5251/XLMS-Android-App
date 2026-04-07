@@ -32,4 +32,17 @@
         <item>Reserved</item>
         <item>Out of Stock</item>
     </string-array>
+
+    <string-array name="membership_types">
+        <item>Standard Academic</item>
+        <item>Research Fellow</item>
+        <item>Visiting Scholar</item>
+        <item>Emeritus</item>
+    </string-array>
+
+    <string-array name="membership_tiers">
+        <item>Annual Subscription</item>
+        <item>Institutional Grant</item>
+        <item>Lifetime Access</item>
+    </string-array>
 </resources>
