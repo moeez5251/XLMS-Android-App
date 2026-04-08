@@ -34,7 +34,7 @@ public class UserInfoFragment extends Fragment {
     private Spinner spinnerMembershipType, spinnerMembershipTier;
     private RadioGroup radioGroupRole;
     private RadioButton radioUser, radioAdmin;
-    private Button buttonEdit, buttonSave, buttonCancelEdit, buttonDelete, buttonDeactivate;
+    private Button buttonEdit, buttonSave, buttonCancelEdit, buttonDelete, buttonToggleStatus;
     private LinearLayout layoutViewActions, layoutEditActions;
 
     private Member currentMember;
@@ -105,7 +105,7 @@ public class UserInfoFragment extends Fragment {
         buttonSave = view.findViewById(R.id.buttonSave);
         buttonCancelEdit = view.findViewById(R.id.buttonCancelEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
-        buttonDeactivate = view.findViewById(R.id.buttonDeactivate);
+        buttonToggleStatus = view.findViewById(R.id.buttonDeactivate); // Reusing the button ID
         layoutViewActions = view.findViewById(R.id.layoutViewActions);
         layoutEditActions = view.findViewById(R.id.layoutEditActions);
     }
@@ -129,7 +129,7 @@ public class UserInfoFragment extends Fragment {
         editTextPassword.setText("••••••••••");
 
         setSpinnerSelection(spinnerMembershipType, currentMember.getMembershipType());
-        setSpinnerSelection(spinnerMembershipTier, currentMember.getRole()); // Using role as tier for now
+        setSpinnerSelection(spinnerMembershipTier, currentMember.getRole());
 
         if ("Admin".equals(currentMember.getRole())) {
             radioAdmin.setChecked(true);
@@ -138,6 +138,7 @@ public class UserInfoFragment extends Fragment {
         }
 
         updateStatusBadge();
+        updateToggleStatusButton();
     }
 
     private void setSpinnerSelection(Spinner spinner, String value) {
@@ -155,12 +156,25 @@ public class UserInfoFragment extends Fragment {
             layoutStatus.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.status_active_bg));
             textViewStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_active_text));
             textViewStatus.setText("Active");
-            buttonDeactivate.setText("Deactivate");
         } else {
             layoutStatus.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.status_deactivated_bg));
             textViewStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_deactivated_text));
             textViewStatus.setText("Deactivated");
-            buttonDeactivate.setText("Activate");
+        }
+    }
+
+    /**
+     * Updates the button text and color based on current status.
+     * - Active -> Show "Deactivate" (Red/Error color)
+     * - Deactivated -> Show "Activate" (Green/Success color)
+     */
+    private void updateToggleStatusButton() {
+        if ("Active".equals(currentMember.getStatus())) {
+            buttonToggleStatus.setText("Deactivate");
+            buttonToggleStatus.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.error));
+        } else {
+            buttonToggleStatus.setText("Activate");
+            buttonToggleStatus.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.status_active_bg));
         }
     }
 
@@ -185,7 +199,7 @@ public class UserInfoFragment extends Fragment {
 
         buttonDelete.setOnClickListener(v -> showDeleteConfirmationDialog());
 
-        buttonDeactivate.setOnClickListener(v -> toggleUserStatus());
+        buttonToggleStatus.setOnClickListener(v -> toggleUserStatus());
     }
 
     private void updateUIForMode() {
@@ -211,6 +225,7 @@ public class UserInfoFragment extends Fragment {
             buttonDelete.setVisibility(View.VISIBLE);
             textViewTitle.setText("User Information");
             updateStatusBadge();
+            updateToggleStatusButton();
         }
     }
 
@@ -273,6 +288,7 @@ public class UserInfoFragment extends Fragment {
             .setPositiveButton(action.substring(0, 1).toUpperCase() + action.substring(1), (dialog, which) -> {
                 currentMember.setStatus(newStatus);
                 updateStatusBadge();
+                updateToggleStatusButton(); // Update button appearance immediately
                 if (listener != null) {
                     listener.onUserStatusChanged(currentMember);
                 }

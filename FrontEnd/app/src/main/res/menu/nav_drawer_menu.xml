@@ -29,13 +29,5 @@
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_user_circle"
             android:title="@string/menu_profile" />
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings"
-            android:title="@string/menu_settings" />
-        <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/ic_help"
-            android:title="@string/menu_help" />
     </group>
 </menu>
