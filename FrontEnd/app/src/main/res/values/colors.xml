@@ -75,6 +75,10 @@
     <color name="status_active_text">#065F46</color>
     <color name="status_deactivated_bg">#E5E7EB</color>
     <color name="status_deactivated_text">#64748B</color>
+    <color name="status_returned_bg">#10B981</color>
+    <color name="status_returned_text">#065F46</color>
+    <color name="status_not_returned_bg">#BA1A1A</color>
+    <color name="status_not_returned_text">#FFFFFF</color>
 
     <!-- Legacy colors for compatibility -->
     <color name="purple_200">#FFBB86FC</color>

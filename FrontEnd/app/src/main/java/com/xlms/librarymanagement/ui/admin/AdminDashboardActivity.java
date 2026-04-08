@@ -1,24 +1,37 @@
 package com.xlms.librarymanagement.ui.admin;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.adapter.NotificationAdapter;
+import com.xlms.librarymanagement.model.Notification;
 import com.xlms.librarymanagement.ui.login.LoginActivity;
 import com.xlms.librarymanagement.utils.SessionManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -26,6 +39,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigation;
     private FrameLayout mainContentFrame;
+    private ImageButton buttonNotifications;
+    
+    private PopupWindow notificationPopup;
+    private List<Notification> notificationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +53,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setupViewPager();
         setupBottomNavigation();
         setupClickListeners();
+        loadDummyNotifications();
     }
 
     private void initViews() {
@@ -43,6 +61,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         mainContentFrame = findViewById(R.id.mainContentFrame);
+        buttonNotifications = findViewById(R.id.buttonNotifications);
     }
 
     private void setupViewPager() {
@@ -110,6 +129,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
             });
         }
 
+        // Notification Popup
+        if (buttonNotifications != null) {
+            buttonNotifications.setOnClickListener(v -> showNotificationPopup(v));
+        }
+
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(item -> {
                 // Close any detail screens first
@@ -121,9 +145,15 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_dashboard) position = 0;
+                else if (id == R.id.nav_manage_books || id == R.id.nav_resources) position = 1;
                 else if (id == R.id.nav_members) position = 2;
                 else if (id == R.id.nav_notifications) position = 3;
                 else if (id == R.id.nav_profile) position = 4;
+                else if (id == R.id.nav_lended_books) {
+                    openLendedBooksScreen();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    return true;
+                }
 
                 viewPager.setCurrentItem(position, true);
                 bottomNavigation.getMenu().getItem(position).setChecked(true);
@@ -133,27 +163,118 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Opens a detail screen (Add Book / Info Book) on TOP of the current screen.
-     * Uses 'add' transaction so the ViewPager remains visible in the background.
-     */
+    private void loadDummyNotifications() {
+        notificationList = new ArrayList<>();
+        notificationList.add(new Notification(
+            Notification.TYPE_WARNING,
+            "Book Overdue",
+            "\"The Republic of Plato\" is now 3 days overdue.",
+            "2h ago"
+        ));
+        notificationList.add(new Notification(
+            Notification.TYPE_INFO,
+            "Reservation Ready",
+            "Your reserved copy of \"Modern Architecture\" is ready.",
+            "5h ago"
+        ));
+        notificationList.add(new Notification(
+            Notification.TYPE_SUCCESS,
+            "Renewal Successful",
+            "You have successfully extended the loan period.",
+            "Yesterday"
+        ));
+    }
+
+    private void showNotificationPopup(View anchorView) {
+        if (notificationPopup != null && notificationPopup.isShowing()) {
+            notificationPopup.dismiss();
+            return;
+        }
+
+        // Inflate popup layout
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_notifications, null);
+
+        // Setup RecyclerView
+        RecyclerView recyclerView = popupView.findViewById(R.id.recyclerViewPopupNotifications);
+        LinearLayout layoutEmpty = popupView.findViewById(R.id.layoutPopupEmpty);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        NotificationAdapter adapter = new NotificationAdapter();
+        adapter.submitList(notificationList);
+        recyclerView.setAdapter(adapter);
+
+        // Show/hide empty state
+        if (notificationList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            layoutEmpty.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            layoutEmpty.setVisibility(View.GONE);
+        }
+
+        // View All button
+        popupView.findViewById(R.id.buttonViewAll).setOnClickListener(v -> {
+            notificationPopup.dismiss();
+            // Navigate to Notifications tab
+            viewPager.setCurrentItem(3, true);
+            bottomNavigation.getMenu().getItem(3).setChecked(true);
+        });
+
+        // Create popup window
+        notificationPopup = new PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        );
+        notificationPopup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        notificationPopup.setOutsideTouchable(true);
+        notificationPopup.setElevation(8);
+
+        // Show popup below the anchor view
+        int[] location = new int[2];
+        anchorView.getLocationOnScreen(location);
+        
+        int xPos = location[0] - (popupView.getMeasuredWidth() - anchorView.getWidth());
+        int yPos = location[1] + anchorView.getHeight() + 16;
+
+        // Measure popup first
+        popupView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+
+        notificationPopup.showAtLocation(anchorView, Gravity.NO_GRAVITY, xPos, yPos);
+    }
+
+    // Public methods for fragments to navigate to detail screens
     public void openDetailScreen(Fragment fragment) {
         getSupportFragmentManager()
             .beginTransaction()
             .setCustomAnimations(
-                R.anim.slide_right_in,  // Enter: Slide in from right
-                0,                      // Exit: Current screen stays put (it's behind)
-                0,                      // PopEnter: Current screen stays put (it's revealed)
-                R.anim.slide_right_out  // PopExit: Top screen slides out to right
+                R.anim.slide_right_in,
+                0,
+                0,
+                R.anim.slide_right_out
             )
-            .add(R.id.mainContentFrame, fragment) // Use .add instead of .replace
+            .add(R.id.mainContentFrame, fragment)
             .addToBackStack("detail")
             .commit();
     }
 
-    /**
-     * Closes the top detail screen.
-     */
+    public void openLendedBooksScreen() {
+        LendedBooksFragment fragment = new LendedBooksFragment();
+        getSupportFragmentManager()
+            .beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_right_in,
+                R.anim.slide_left_out,
+                R.anim.slide_left_in,
+                R.anim.slide_right_out
+            )
+            .add(R.id.mainContentFrame, fragment)
+            .addToBackStack("lended_books")
+            .commit();
+    }
+
     public void closeDetailScreen() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStackImmediate();
@@ -162,6 +283,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // Dismiss popup if showing
+        if (notificationPopup != null && notificationPopup.isShowing()) {
+            notificationPopup.dismiss();
+            return;
+        }
+
         // If detail screen is open, close it
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             closeDetailScreen();
@@ -173,6 +300,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (notificationPopup != null) {
+            notificationPopup.dismiss();
         }
     }
 }
