@@ -65,6 +65,7 @@
     <color name="inverse_primary">#ADC7F7</color>
     
     <!-- Status Colors -->
+    <color name="status_available">#10B981</color>
     <color name="status_available_bg">#10B981</color>
     <color name="available_text">#065F46</color>
     <color name="status_limited_bg">#F59E0B</color>

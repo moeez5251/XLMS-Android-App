@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.BookAdapter;
 import com.xlms.librarymanagement.model.Book;
+import com.xlms.librarymanagement.model.BookInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,25 +137,25 @@ public class ManageBooksFragment extends Fragment {
     }
 
     private void openBookInfoFragment(Book book) {
-        BookInfoFragment fragment = BookInfoFragment.newInstance(book);
+        // Convert Book to BookInfo
+        BookInfo bookInfo = new BookInfo(
+            book.getBookId(),
+            book.getTitle(),
+            book.getAuthor(),
+            book.getCategory(),
+            book.getLanguage(),
+            book.getPrice(),
+            book.getTotal(),
+            book.getAvailable(),
+            book.getStatus()
+        );
+
+        BookInfoFragment fragment = BookInfoFragment.newInstance(bookInfo);
         fragment.setOnBookInfoActionListener(new BookInfoFragment.OnBookInfoActionListener() {
             @Override
-            public void onBookUpdated(Book updatedBook) {
-                int index = masterBookList.indexOf(book);
-                if (index >= 0) {
-                    masterBookList.set(index, updatedBook);
-                    applyFilters();
-                }
-                closeDetailFragment();
-                Toast.makeText(requireContext(), "Book updated successfully", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onBookDeleted(Book book) {
-                masterBookList.remove(book);
-                applyFilters();
-                closeDetailFragment();
-                Toast.makeText(requireContext(), "Book deleted", Toast.LENGTH_SHORT).show();
+            public void onLendBookClick(BookInfo book) {
+                // Handle lend book click if needed
+                Toast.makeText(requireContext(), "Lend book: " + book.getTitle(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -162,7 +163,6 @@ public class ManageBooksFragment extends Fragment {
                 closeDetailFragment();
             }
         });
-
         openDetailFragment(fragment);
     }
 

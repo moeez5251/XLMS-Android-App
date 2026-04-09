@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.LendedBookAdapter;
+import com.xlms.librarymanagement.model.BookInfo;
+import com.xlms.librarymanagement.model.BookLending;
 import com.xlms.librarymanagement.model.LendedBook;
 
 import java.util.ArrayList;
@@ -68,7 +70,9 @@ public class LendedBooksFragment extends Fragment {
         lendedBookAdapter = new LendedBookAdapter(new LendedBookAdapter.OnLendedBookClickListener() {
             @Override
             public void onBookClick(LendedBook book) {
-                Toast.makeText(requireContext(), "Clicked: " + book.getBookTitle(), Toast.LENGTH_SHORT).show();
+                // Open Book Info with dummy book data
+                BookInfo bookInfo = createBookInfoFromLended(book);
+                openBookInfoFragment(bookInfo);
             }
 
             @Override
@@ -78,6 +82,25 @@ public class LendedBooksFragment extends Fragment {
         });
         recyclerViewLendedBooks.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewLendedBooks.setAdapter(lendedBookAdapter);
+    }
+
+    private BookInfo createBookInfoFromLended(LendedBook lended) {
+        double price = 25.00;
+        int total = 10;
+        int available = "Returned".equals(lended.getStatus()) ? 7 : 3;
+        String status = available > 0 ? "Available" : "Out of Stock";
+        
+        return new BookInfo(
+            "BK_" + lended.getBookId(),
+            lended.getBookTitle(),
+            lended.getAuthor(),
+            lended.getCategory(),
+            "English",
+            price,
+            total,
+            available,
+            status
+        );
     }
 
     private void loadDummyData() {
@@ -121,9 +144,7 @@ public class LendedBooksFragment extends Fragment {
         buttonNotReturned.setOnClickListener(filterListener);
 
         if (buttonLendBook != null) {
-            buttonLendBook.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "Lend a Book coming soon...", Toast.LENGTH_SHORT).show();
-            });
+            buttonLendBook.setOnClickListener(v -> openLendBookFragment(null));
         }
     }
 
@@ -182,5 +203,83 @@ public class LendedBooksFragment extends Fragment {
 
         lendedBookAdapter.submitList(filteredList);
         textViewTotalUsers.setText(String.valueOf(filteredList.size()));
+    }
+
+    // Navigation Methods
+    private void openBookInfoFragment(BookInfo bookInfo) {
+        BookInfoFragment fragment = BookInfoFragment.newInstance(bookInfo);
+        fragment.setOnBookInfoActionListener(new BookInfoFragment.OnBookInfoActionListener() {
+            @Override
+            public void onLendBookClick(BookInfo book) {
+                openLendBookFragment(book);
+            }
+
+            @Override
+            public void onBack() {
+                closeDetailFragment();
+            }
+        });
+        openDetailFragment(fragment);
+    }
+
+    private void openLendBookFragment(BookInfo bookInfo) {
+        BookInfo book = bookInfo != null ? bookInfo : createDummyBookInfo();
+        LendBookFragment fragment = LendBookFragment.newInstance(book);
+        fragment.setOnLendBookActionListener(new LendBookFragment.OnLendBookActionListener() {
+            @Override
+            public void onBookLended(BookLending lending) {
+                // Add to lended books list
+                String userId = "U" + System.currentTimeMillis() % 10000;
+                String initial = lending.getLenderName().substring(0, 1).toUpperCase();
+                masterLendedBookList.add(0, new LendedBook(
+                    masterLendedBookList.size() + 1,
+                    userId,
+                    lending.getLenderName(),
+                    initial,
+                    lending.getBookTitle(),
+                    lending.getBookAuthor(),
+                    lending.getBookCategory(),
+                    lending.getCopiesLent(),
+                    lending.getIssuedDate(),
+                    lending.getDueDate(),
+                    "Not Returned"
+                ));
+                applyFilters();
+                closeDetailFragment();
+                Toast.makeText(requireContext(), "Book lended to " + lending.getLenderName(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onBack() {
+                closeDetailFragment();
+            }
+        });
+        openDetailFragment(fragment);
+    }
+
+    private BookInfo createDummyBookInfo() {
+        return new BookInfo(
+            "BK_001",
+            "The Republic of Plato",
+            "Plato",
+            "Philosophy",
+            "English",
+            25.00,
+            10,
+            7,
+            "Available"
+        );
+    }
+
+    private void openDetailFragment(Fragment fragment) {
+        if (getActivity() instanceof AdminDashboardActivity) {
+            ((AdminDashboardActivity) getActivity()).openDetailScreen(fragment);
+        }
+    }
+
+    private void closeDetailFragment() {
+        if (getActivity() instanceof AdminDashboardActivity) {
+            ((AdminDashboardActivity) getActivity()).closeDetailScreen();
+        }
     }
 }

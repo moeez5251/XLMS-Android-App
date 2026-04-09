@@ -54,6 +54,38 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setupBottomNavigation();
         setupClickListeners();
         loadDummyNotifications();
+        setupBackStackListener();
+    }
+
+    private void setupBackStackListener() {
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            // When returning from a detail screen, update the sidebar selection
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                // Sync with current ViewPager position
+                int currentPos = viewPager.getCurrentItem();
+                syncSidebarWithViewPager(currentPos);
+            }
+        });
+    }
+
+    private void syncSidebarWithViewPager(int position) {
+        bottomNavigation.getMenu().getItem(position).setChecked(true);
+
+        // Also sync the navigation view (sidebar)
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        if (navigationView != null) {
+            int navItemId = -1;
+            if (position == 0) navItemId = R.id.nav_dashboard;
+            else if (position == 1) navItemId = R.id.nav_manage_books;
+            else if (position == 2) navItemId = R.id.nav_members;
+            else if (position == 3) navItemId = R.id.nav_notifications;
+            else if (position == 4) navItemId = R.id.nav_profile;
+
+            if (navItemId != -1) {
+                navigationView.getMenu().setGroupCheckable(0, true, true);
+                navigationView.getMenu().findItem(navItemId).setChecked(true);
+            }
+        }
     }
 
     private void initViews() {
@@ -145,7 +177,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_dashboard) position = 0;
-                else if (id == R.id.nav_manage_books || id == R.id.nav_resources) position = 1;
+                else if (id == R.id.nav_manage_books) position = 1;
+                else if (id == R.id.nav_resources) {
+                    openResourcesScreen();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    return true;
+                }
                 else if (id == R.id.nav_members) position = 2;
                 else if (id == R.id.nav_notifications) position = 3;
                 else if (id == R.id.nav_profile) position = 4;
@@ -275,6 +312,21 @@ public class AdminDashboardActivity extends AppCompatActivity {
             .commit();
     }
 
+    public void openResourcesScreen() {
+        ResourcesFragment fragment = new ResourcesFragment();
+        getSupportFragmentManager()
+            .beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_right_in,
+                R.anim.slide_left_out,
+                R.anim.slide_left_in,
+                R.anim.slide_right_out
+            )
+            .add(R.id.mainContentFrame, fragment)
+            .addToBackStack("resources")
+            .commit();
+    }
+
     public void closeDetailScreen() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStackImmediate();
@@ -295,12 +347,23 @@ public class AdminDashboardActivity extends AppCompatActivity {
             return;
         }
 
+        // If sidebar is open, close it
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            return;
         }
+
+        // If not on tab 0 (Dashboard), navigate to tab 0
+        if (viewPager.getCurrentItem() != 0) {
+            viewPager.setCurrentItem(0, true);
+            bottomNavigation.getMenu().getItem(0).setChecked(true);
+            syncSidebarWithViewPager(0);
+            return;
+        }
+
+        // If on tab 0, close the app
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
