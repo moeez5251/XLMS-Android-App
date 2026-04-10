@@ -24,7 +24,7 @@ public class DashboardViewPagerAdapter extends FragmentStateAdapter {
             case 3:
                 return new NotificationsFragment();
             case 4:
-                return PlaceholderFragment.newInstance("Profile");
+                return new ProfileFragment();
             default:
                 return new Fragment();
         }

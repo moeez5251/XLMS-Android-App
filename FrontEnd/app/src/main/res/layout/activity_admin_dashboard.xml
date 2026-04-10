@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawerLayout"
@@ -24,16 +24,6 @@
             android:background="@color/surface"
             android:elevation="2dp">
 
-            <ImageButton
-                android:id="@+id/buttonMenu"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="12dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_menu_hamburger"
-                android:contentDescription="@string/menu"
-                app:tint="@color/primary" />
-
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -56,20 +46,20 @@
                 android:id="@+id/buttonNotifications"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_notifications"
                 android:contentDescription="@string/notifications"
                 app:tint="@color/on_surface_variant" />
 
+            <!-- Profile Button (Blue Gradient with X/Profile Icon) -->
             <ImageButton
-                android:id="@+id/buttonLogout"
+                android:id="@+id/buttonOpenDrawer"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_logout"
-                android:contentDescription="@string/logout"
-                app:tint="@color/on_surface_variant" />
+                android:background="@drawable/profile_button_background"
+                android:src="@drawable/ic_profile_white"
+                android:contentDescription="Profile menu" />
         </LinearLayout>
 
         <!-- FrameLayout Container for ViewPager and Detail Screens -->
@@ -100,17 +90,359 @@
 
     </LinearLayout>
 
-    <!-- Sidebar Drawer -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="280dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/surface_container_low"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_drawer_header"
-        app:menu="@menu/nav_drawer_menu"
-        app:itemIconTint="@color/nav_item_color"
-        app:itemTextColor="@color/nav_item_color" />
+    <!-- Bottom Sheet Drawer -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</androidx.drawerlayout.widget.DrawerLayout>
+        <!-- Backdrop Overlay -->
+        <View
+            android:id="@+id/backdropOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:alpha="0"
+            android:visibility="gone" />
+
+        <!-- Bottom Sheet Content -->
+        <LinearLayout
+            android:id="@+id/bottomSheetContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:background="@drawable/bottom_sheet_background"
+            android:paddingTop="16dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <!-- Grabber Handle -->
+            <View
+                android:layout_width="48dp"
+                android:layout_height="6dp"
+                android:background="@color/surface_container_high"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp" />
+
+            <!-- ScrollView for Bottom Sheet Content -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+            <!-- Header Section: Profile Info -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:layout_marginBottom="24dp">
+
+                <!-- Profile Image -->
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_profile_placeholder"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/profile_image_background"
+                    android:contentDescription="Profile"
+                    android:layout_marginEnd="16dp" />
+
+                <!-- Name & Status -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="The Scholarly Atelier"
+                        android:textSize="18sp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/manrope_extrabold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Institutional Access"
+                        android:textSize="11sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:letterSpacing="0.15"
+                        android:textAllCaps="true"
+                        android:fontFamily="@font/inter_semibold" />
+
+                    <TextView
+                        android:id="@+id/textViewUserRole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Premium Member"
+                        android:textSize="10sp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/inter_bold"
+                        android:background="@drawable/role_badge_background"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/outline_variant"
+                android:alpha="0.3"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Navigation Links -->
+            <LinearLayout
+                android:id="@+id/navigationLinks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <!-- Dashboard -->
+                <LinearLayout
+                    android:id="@+id/navDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/nav_item_selected_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_dashboard"
+                        app:tint="@color/primary"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dashboard"
+                        android:textSize="16sp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/inter_bold" />
+                </LinearLayout>
+
+                <!-- Resources -->
+                <LinearLayout
+                    android:id="@+id/navResources"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_auto_stories"
+                        app:tint="@color/on_surface_variant"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Resources"
+                        android:textSize="16sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:fontFamily="@font/inter_medium" />
+                </LinearLayout>
+
+                <!-- Manage Books -->
+                <LinearLayout
+                    android:id="@+id/navManageBooks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_menu_book"
+                        app:tint="@color/on_surface_variant"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Manage Books"
+                        android:textSize="16sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:fontFamily="@font/inter_medium" />
+                </LinearLayout>
+
+                <!-- Lended Books -->
+                <LinearLayout
+                    android:id="@+id/navLendedBooks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_import_contacts"
+                        app:tint="@color/on_surface_variant"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lended Books"
+                        android:textSize="16sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:fontFamily="@font/inter_medium" />
+                </LinearLayout>
+
+                <!-- Members -->
+                <LinearLayout
+                    android:id="@+id/navMembers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_group"
+                        app:tint="@color/on_surface_variant"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Members"
+                        android:textSize="16sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:fontFamily="@font/inter_medium" />
+                </LinearLayout>
+
+                <!-- Notifications -->
+                <LinearLayout
+                    android:id="@+id/navNotifications"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_notifications"
+                        app:tint="@color/on_surface_variant"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notifications"
+                        android:textSize="16sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:fontFamily="@font/inter_medium" />
+                </LinearLayout>
+
+                <!-- Profile -->
+                <LinearLayout
+                    android:id="@+id/navProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:layout_marginBottom="4dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_account_circle"
+                        app:tint="@color/on_surface_variant"
+                        android:layout_marginEnd="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Profile"
+                        android:textSize="16sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:fontFamily="@font/inter_medium" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Spacer -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="16dp" />
+
+            <!-- Logout Button (Red) -->
+            <Button
+                android:id="@+id/buttonLogout"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/logout_button_background"
+                android:text="Logout"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/manrope_bold"
+                android:drawableStart="@drawable/ic_logout"
+                android:drawablePadding="12dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

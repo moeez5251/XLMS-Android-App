@@ -8,22 +8,25 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.NotificationAdapter;
 import com.xlms.librarymanagement.model.Notification;
@@ -35,14 +38,17 @@ import java.util.List;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigation;
     private FrameLayout mainContentFrame;
-    private ImageButton buttonNotifications;
+    private ImageButton buttonNotifications, buttonOpenDrawer;
+    private View backdropOverlay;
+    private BottomSheetBehavior<LinearLayout> bottomSheetBehavior;
+    private LinearLayout bottomSheetContent;
     
     private PopupWindow notificationPopup;
     private List<Notification> notificationList;
+    private boolean isDrawerOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_dashboard);
 
         initViews();
+        setupBottomSheet();
         setupViewPager();
         setupBottomNavigation();
         setupClickListeners();
@@ -57,55 +64,53 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setupBackStackListener();
     }
 
-    private void setupBackStackListener() {
-        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            // When returning from a detail screen, update the sidebar selection
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                // Sync with current ViewPager position
-                int currentPos = viewPager.getCurrentItem();
-                syncSidebarWithViewPager(currentPos);
-            }
-        });
-    }
-
-    private void syncSidebarWithViewPager(int position) {
-        bottomNavigation.getMenu().getItem(position).setChecked(true);
-
-        // Also sync the navigation view (sidebar)
-        NavigationView navigationView = findViewById(R.id.navigationView);
-        if (navigationView != null) {
-            int navItemId = -1;
-            if (position == 0) navItemId = R.id.nav_dashboard;
-            else if (position == 1) navItemId = R.id.nav_manage_books;
-            else if (position == 2) navItemId = R.id.nav_members;
-            else if (position == 3) navItemId = R.id.nav_notifications;
-            else if (position == 4) navItemId = R.id.nav_profile;
-
-            if (navItemId != -1) {
-                navigationView.getMenu().setGroupCheckable(0, true, true);
-                navigationView.getMenu().findItem(navItemId).setChecked(true);
-            }
-        }
-    }
-
     private void initViews() {
-        drawerLayout = findViewById(R.id.drawerLayout);
         viewPager = findViewById(R.id.viewPager);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         mainContentFrame = findViewById(R.id.mainContentFrame);
         buttonNotifications = findViewById(R.id.buttonNotifications);
+        buttonOpenDrawer = findViewById(R.id.buttonOpenDrawer);
+        backdropOverlay = findViewById(R.id.backdropOverlay);
+        bottomSheetContent = findViewById(R.id.bottomSheetContent);
+    }
+
+    private void setupBottomSheet() {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContent);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setPeekHeight(0);
+        
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    isDrawerOpen = false;
+                    backdropOverlay.setVisibility(View.GONE);
+                    updateNavigationHighlight();
+                } else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    isDrawerOpen = true;
+                    backdropOverlay.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                backdropOverlay.setAlpha(0.2f * slideOffset);
+            }
+        });
     }
 
     private void setupViewPager() {
         DashboardViewPagerAdapter adapter = new DashboardViewPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
-        // Sync ViewPager -> BottomNav
+        // Sync ViewPager -> BottomNav & Sidebar
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 bottomNavigation.getMenu().getItem(position).setChecked(true);
+                syncSidebarWithViewPager(position);
             }
         });
     }
@@ -117,9 +122,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 getSupportFragmentManager().popBackStackImmediate();
             }
 
+            // Close bottom sheet if open
+            if (isDrawerOpen) {
+                closeBottomSheet();
+            }
+
             int position = 0;
             int id = item.getItemId();
-            
+
             if (id == R.id.bottom_dashboard) position = 0;
             else if (id == R.id.bottom_books) position = 1;
             else if (id == R.id.bottom_members) position = 2;
@@ -132,27 +142,24 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        ImageButton buttonMenu = findViewById(R.id.buttonMenu);
-        ImageButton buttonLogout = findViewById(R.id.buttonLogout);
-        NavigationView navigationView = findViewById(R.id.navigationView);
+        Button buttonLogout = findViewById(R.id.buttonLogout);
 
-        if (buttonMenu != null) {
-            buttonMenu.setOnClickListener(v -> {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-            });
+        // Open bottom sheet button (X icon in top bar)
+        if (buttonOpenDrawer != null) {
+            buttonOpenDrawer.setOnClickListener(v -> openBottomSheet());
         }
 
+        // Notification Popup
+        if (buttonNotifications != null) {
+            buttonNotifications.setOnClickListener(v -> showNotificationPopup(v));
+        }
+
+        // Logout button
         if (buttonLogout != null) {
             buttonLogout.setOnClickListener(v -> {
-                // Clear session
                 SessionManager sessionManager = new SessionManager(this);
                 sessionManager.clearSession();
 
-                // Redirect to login
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -161,42 +168,94 @@ public class AdminDashboardActivity extends AppCompatActivity {
             });
         }
 
-        // Notification Popup
-        if (buttonNotifications != null) {
-            buttonNotifications.setOnClickListener(v -> showNotificationPopup(v));
+        // Navigation Links in Bottom Sheet
+        setupNavigationLink(R.id.navDashboard, 0);
+        setupNavigationLink(R.id.navResources, -1); // Opens Resources fragment
+        setupNavigationLink(R.id.navManageBooks, 1);
+        setupNavigationLink(R.id.navLendedBooks, -2); // Opens Lended Books fragment
+        setupNavigationLink(R.id.navMembers, 2);
+        setupNavigationLink(R.id.navNotifications, 3);
+        setupNavigationLink(R.id.navProfile, 4);
+
+        // Backdrop click closes bottom sheet
+        if (backdropOverlay != null) {
+            backdropOverlay.setOnClickListener(v -> closeBottomSheet());
         }
+    }
 
-        if (navigationView != null) {
-            navigationView.setNavigationItemSelectedListener(item -> {
-                // Close any detail screens first
-                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
+    private void setupNavigationLink(int viewId, int viewPagerPosition) {
+        View view = findViewById(viewId);
+        if (view == null) return;
 
-                int position = 0;
-                int id = item.getItemId();
+        view.setOnClickListener(v -> {
+            // Close any detail screens first
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                getSupportFragmentManager().popBackStackImmediate();
+            }
 
-                if (id == R.id.nav_dashboard) position = 0;
-                else if (id == R.id.nav_manage_books) position = 1;
-                else if (id == R.id.nav_resources) {
-                    openResourcesScreen();
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                    return true;
-                }
-                else if (id == R.id.nav_members) position = 2;
-                else if (id == R.id.nav_notifications) position = 3;
-                else if (id == R.id.nav_profile) position = 4;
-                else if (id == R.id.nav_lended_books) {
-                    openLendedBooksScreen();
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                    return true;
-                }
+            // Handle special cases
+            if (viewPagerPosition == -1) {
+                openResourcesScreen();
+                closeBottomSheet();
+                return;
+            } else if (viewPagerPosition == -2) {
+                openLendedBooksScreen();
+                closeBottomSheet();
+                return;
+            }
 
-                viewPager.setCurrentItem(position, true);
-                bottomNavigation.getMenu().getItem(position).setChecked(true);
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
-            });
+            viewPager.setCurrentItem(viewPagerPosition, true);
+            closeBottomSheet();
+        });
+    }
+
+    public void openBottomSheet() {
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        updateNavigationHighlight();
+    }
+
+    private void closeBottomSheet() {
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
+    private void updateNavigationHighlight() {
+        // Reset all navigation items
+        int[] navIds = {R.id.navDashboard, R.id.navResources, R.id.navManageBooks,
+                       R.id.navLendedBooks, R.id.navMembers, R.id.navNotifications, R.id.navProfile};
+        
+        int currentNavId = getCurrentNavItemId();
+        
+        for (int navId : navIds) {
+            View navItem = findViewById(navId);
+            if (navItem == null) continue;
+
+            LinearLayout layout = (LinearLayout) navItem;
+            ImageView icon = (ImageView) layout.getChildAt(0);
+            TextView text = (TextView) layout.getChildAt(1);
+
+            if (navId == currentNavId) {
+                layout.setBackgroundResource(R.drawable.nav_item_selected_background);
+                icon.setColorFilter(getResources().getColor(R.color.primary));
+                text.setTextColor(getResources().getColor(R.color.primary));
+                text.setTypeface(null, android.graphics.Typeface.BOLD);
+            } else {
+                layout.setBackground(null);
+                icon.setColorFilter(getResources().getColor(R.color.on_surface_variant));
+                text.setTextColor(getResources().getColor(R.color.on_surface_variant));
+                text.setTypeface(null, android.graphics.Typeface.NORMAL);
+            }
+        }
+    }
+
+    private int getCurrentNavItemId() {
+        int position = viewPager.getCurrentItem();
+        switch (position) {
+            case 0: return R.id.navDashboard;
+            case 1: return R.id.navManageBooks;
+            case 2: return R.id.navMembers;
+            case 3: return R.id.navNotifications;
+            case 4: return R.id.navProfile;
+            default: return R.id.navDashboard;
         }
     }
 
@@ -282,6 +341,24 @@ public class AdminDashboardActivity extends AppCompatActivity {
         notificationPopup.showAtLocation(anchorView, Gravity.NO_GRAVITY, xPos, yPos);
     }
 
+    private void setupBackStackListener() {
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            // When returning from a detail screen, update the sidebar selection
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                // Sync with current ViewPager position
+                int currentPos = viewPager.getCurrentItem();
+                syncSidebarWithViewPager(currentPos);
+            }
+        });
+    }
+
+    private void syncSidebarWithViewPager(int position) {
+        bottomNavigation.getMenu().getItem(position).setChecked(true);
+        if (isDrawerOpen) {
+            updateNavigationHighlight();
+        }
+    }
+
     // Public methods for fragments to navigate to detail screens
     public void openDetailScreen(Fragment fragment) {
         getSupportFragmentManager()
@@ -341,15 +418,15 @@ public class AdminDashboardActivity extends AppCompatActivity {
             return;
         }
 
-        // If detail screen is open, close it
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            closeDetailScreen();
+        // Close bottom sheet if open
+        if (isDrawerOpen) {
+            closeBottomSheet();
             return;
         }
 
-        // If sidebar is open, close it
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+        // If detail screen is open, close it
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            closeDetailScreen();
             return;
         }
 
