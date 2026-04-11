@@ -1,7 +1,23 @@
-### README for XLMS Mobile App
----
+# Dummy Readme
+## Project Title
 
-## Admin
+A brief description of what this project does.
 
+## Getting Started
 
-## Client
+Instructions on how to install and run the project.
+
+```bash
+npm install
+npm start
+```
+
+## Features
+
+- Feature 1
+- Feature 2
+- Feature 3
+
+## License
+
+MIT License
