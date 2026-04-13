@@ -8,6 +8,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -15,18 +17,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.NotificationAdapter;
 import com.xlms.librarymanagement.model.Notification;
@@ -43,7 +42,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private FrameLayout mainContentFrame;
     private ImageButton buttonNotifications, buttonOpenDrawer;
     private View backdropOverlay;
-    private BottomSheetBehavior<LinearLayout> bottomSheetBehavior;
     private LinearLayout bottomSheetContent;
     
     private PopupWindow notificationPopup;
@@ -75,36 +73,45 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void setupBottomSheet() {
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContent);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        bottomSheetBehavior.setHideable(true);
-        bottomSheetBehavior.setPeekHeight(0);
-        
-        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    isDrawerOpen = false;
-                    backdropOverlay.setVisibility(View.GONE);
-                    updateNavigationHighlight();
-                } else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    isDrawerOpen = true;
-                    backdropOverlay.setVisibility(View.VISIBLE);
-                }
-            }
+        // Hide bottom sheet initially using translationY
+        bottomSheetContent.post(() -> 
+            bottomSheetContent.setTranslationY(bottomSheetContent.getHeight())
+        );
+    }
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                backdropOverlay.setAlpha(0.2f * slideOffset);
-            }
-        });
+    public void openBottomSheet() {
+        if (isDrawerOpen) return;
+        isDrawerOpen = true;
+        backdropOverlay.setVisibility(View.VISIBLE);
+        backdropOverlay.animate().alpha(0.2f).setDuration(300).start();
+        // Slide up to 75% of screen (leave 25% visible at top)
+        int targetTranslation = (int) (bottomSheetContent.getHeight() * 0.25f);
+        bottomSheetContent.animate()
+            .translationY(targetTranslation)
+            .setDuration(300)
+            .setInterpolator(new DecelerateInterpolator())
+            .start();
+        updateNavigationHighlight();
+    }
+
+    private void closeBottomSheet() {
+        if (!isDrawerOpen) return;
+        isDrawerOpen = false;
+        bottomSheetContent.animate()
+            .translationY(bottomSheetContent.getHeight())
+            .setDuration(300)
+            .setInterpolator(new AccelerateInterpolator())
+            .withEndAction(() -> {
+                backdropOverlay.setVisibility(View.GONE);
+                backdropOverlay.setAlpha(0);
+            })
+            .start();
     }
 
     private void setupViewPager() {
         DashboardViewPagerAdapter adapter = new DashboardViewPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
-        // Sync ViewPager -> BottomNav & Sidebar
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -117,19 +124,13 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void setupBottomNavigation() {
         bottomNavigation.setOnItemSelectedListener(item -> {
-            // If detail screen is open, close it first
             if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                 getSupportFragmentManager().popBackStackImmediate();
             }
-
-            // Close bottom sheet if open
-            if (isDrawerOpen) {
-                closeBottomSheet();
-            }
+            if (isDrawerOpen) closeBottomSheet();
 
             int position = 0;
             int id = item.getItemId();
-
             if (id == R.id.bottom_dashboard) position = 0;
             else if (id == R.id.bottom_books) position = 1;
             else if (id == R.id.bottom_members) position = 2;
@@ -144,17 +145,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private void setupClickListeners() {
         Button buttonLogout = findViewById(R.id.buttonLogout);
 
-        // Open bottom sheet button (X icon in top bar)
         if (buttonOpenDrawer != null) {
             buttonOpenDrawer.setOnClickListener(v -> openBottomSheet());
         }
 
-        // Notification Popup
         if (buttonNotifications != null) {
             buttonNotifications.setOnClickListener(v -> showNotificationPopup(v));
         }
 
-        // Logout button
         if (buttonLogout != null) {
             buttonLogout.setOnClickListener(v -> {
                 SessionManager sessionManager = new SessionManager(this);
@@ -168,16 +166,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
             });
         }
 
-        // Navigation Links in Bottom Sheet
         setupNavigationLink(R.id.navDashboard, 0);
-        setupNavigationLink(R.id.navResources, -1); // Opens Resources fragment
+        setupNavigationLink(R.id.navResources, -1);
         setupNavigationLink(R.id.navManageBooks, 1);
-        setupNavigationLink(R.id.navLendedBooks, -2); // Opens Lended Books fragment
+        setupNavigationLink(R.id.navLendedBooks, -2);
         setupNavigationLink(R.id.navMembers, 2);
         setupNavigationLink(R.id.navNotifications, 3);
         setupNavigationLink(R.id.navProfile, 4);
 
-        // Backdrop click closes bottom sheet
         if (backdropOverlay != null) {
             backdropOverlay.setOnClickListener(v -> closeBottomSheet());
         }
@@ -188,12 +184,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
         if (view == null) return;
 
         view.setOnClickListener(v -> {
-            // Close any detail screens first
             if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                 getSupportFragmentManager().popBackStackImmediate();
             }
 
-            // Handle special cases
             if (viewPagerPosition == -1) {
                 openResourcesScreen();
                 closeBottomSheet();
@@ -209,17 +203,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
     }
 
-    public void openBottomSheet() {
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        updateNavigationHighlight();
-    }
-
-    private void closeBottomSheet() {
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-    }
-
     private void updateNavigationHighlight() {
-        // Reset all navigation items
         int[] navIds = {R.id.navDashboard, R.id.navResources, R.id.navManageBooks,
                        R.id.navLendedBooks, R.id.navMembers, R.id.navNotifications, R.id.navProfile};
         
@@ -287,11 +271,9 @@ public class AdminDashboardActivity extends AppCompatActivity {
             return;
         }
 
-        // Inflate popup layout
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup_notifications, null);
 
-        // Setup RecyclerView
         RecyclerView recyclerView = popupView.findViewById(R.id.recyclerViewPopupNotifications);
         LinearLayout layoutEmpty = popupView.findViewById(R.id.layoutPopupEmpty);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -299,7 +281,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
         adapter.submitList(notificationList);
         recyclerView.setAdapter(adapter);
 
-        // Show/hide empty state
         if (notificationList.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
             layoutEmpty.setVisibility(View.VISIBLE);
@@ -308,15 +289,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
             layoutEmpty.setVisibility(View.GONE);
         }
 
-        // View All button
         popupView.findViewById(R.id.buttonViewAll).setOnClickListener(v -> {
             notificationPopup.dismiss();
-            // Navigate to Notifications tab
             viewPager.setCurrentItem(3, true);
             bottomNavigation.getMenu().getItem(3).setChecked(true);
         });
 
-        // Create popup window
         notificationPopup = new PopupWindow(
             popupView,
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -327,14 +305,12 @@ public class AdminDashboardActivity extends AppCompatActivity {
         notificationPopup.setOutsideTouchable(true);
         notificationPopup.setElevation(8);
 
-        // Show popup below the anchor view
         int[] location = new int[2];
         anchorView.getLocationOnScreen(location);
         
         int xPos = location[0] - (popupView.getMeasuredWidth() - anchorView.getWidth());
         int yPos = location[1] + anchorView.getHeight() + 16;
 
-        // Measure popup first
         popupView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                          View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
 
@@ -343,9 +319,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void setupBackStackListener() {
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            // When returning from a detail screen, update the sidebar selection
             if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                // Sync with current ViewPager position
                 int currentPos = viewPager.getCurrentItem();
                 syncSidebarWithViewPager(currentPos);
             }
@@ -359,7 +333,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
     }
 
-    // Public methods for fragments to navigate to detail screens
     public void openDetailScreen(Fragment fragment) {
         getSupportFragmentManager()
             .beginTransaction()
@@ -412,25 +385,21 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Dismiss popup if showing
         if (notificationPopup != null && notificationPopup.isShowing()) {
             notificationPopup.dismiss();
             return;
         }
 
-        // Close bottom sheet if open
         if (isDrawerOpen) {
             closeBottomSheet();
             return;
         }
 
-        // If detail screen is open, close it
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             closeDetailScreen();
             return;
         }
 
-        // If not on tab 0 (Dashboard), navigate to tab 0
         if (viewPager.getCurrentItem() != 0) {
             viewPager.setCurrentItem(0, true);
             bottomNavigation.getMenu().getItem(0).setChecked(true);
@@ -438,7 +407,6 @@ public class AdminDashboardActivity extends AppCompatActivity {
             return;
         }
 
-        // If on tab 0, close the app
         super.onBackPressed();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }

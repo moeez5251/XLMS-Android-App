@@ -52,13 +52,13 @@
                 android:contentDescription="@string/notifications"
                 app:tint="@color/on_surface_variant" />
 
-            <!-- Profile Button (Blue Gradient with X/Profile Icon) -->
+            <!-- Profile Button with X Logo (Light Blue Background) -->
             <ImageButton
                 android:id="@+id/buttonOpenDrawer"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/profile_button_background"
-                android:src="@drawable/ic_profile_white"
+                android:background="@drawable/profile_x_background"
+                android:src="@drawable/ic_x_logo"
                 android:contentDescription="Profile menu" />
         </LinearLayout>
 
@@ -108,33 +108,22 @@
         <LinearLayout
             android:id="@+id/bottomSheetContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:orientation="vertical"
             android:background="@drawable/bottom_sheet_background"
-            android:paddingTop="16dp"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            android:translationY="2000dp">
 
             <!-- Grabber Handle -->
             <View
                 android:layout_width="48dp"
                 android:layout_height="6dp"
-                android:background="@color/surface_container_high"
+                android:background="@color/outline_variant"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="16dp" />
 
-            <!-- ScrollView for Bottom Sheet Content -->
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fillViewport="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-            <!-- Header Section: Profile Info -->
+            <!-- Profile Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -142,19 +131,18 @@
                 android:gravity="center_vertical"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="16dp">
 
-                <!-- Profile Image -->
                 <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@drawable/ic_profile_placeholder"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/profile_image_background"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_x_logo_filled"
+                    android:scaleType="centerInside"
+                    android:background="@drawable/profile_image_circle"
+                    android:padding="8dp"
                     android:contentDescription="Profile"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_marginEnd="14dp" />
 
-                <!-- Name & Status -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -165,18 +153,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="The Scholarly Atelier"
-                        android:textSize="18sp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
                         android:textColor="@color/primary"
-                        android:fontFamily="@font/manrope_extrabold"
-                        android:layout_marginBottom="4dp" />
+                        android:fontFamily="@font/manrope_extrabold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Institutional Access"
-                        android:textSize="11sp"
+                        android:textSize="10sp"
                         android:textColor="@color/on_surface_variant"
-                        android:letterSpacing="0.15"
+                        android:letterSpacing="0.1"
                         android:textAllCaps="true"
                         android:fontFamily="@font/inter_semibold" />
 
@@ -186,14 +174,14 @@
                         android:layout_height="wrap_content"
                         android:text="Premium Member"
                         android:textSize="10sp"
+                        android:textStyle="bold"
                         android:textColor="@color/primary"
-                        android:fontFamily="@font/inter_bold"
                         android:background="@drawable/role_badge_background"
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:layout_marginTop="8dp" />
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:layout_marginTop="6dp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -202,244 +190,235 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/outline_variant"
-                android:alpha="0.3"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="12dp" />
 
-            <!-- Navigation Links -->
-            <LinearLayout
-                android:id="@+id/navigationLinks"
+            <!-- ScrollView for Navigation + Logout -->
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:clipToPadding="false">
 
-                <!-- Dashboard -->
                 <LinearLayout
-                    android:id="@+id/navDashboard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/nav_item_selected_background"
-                    android:padding="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="40dp">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_dashboard"
-                        app:tint="@color/primary"
-                        android:layout_marginEnd="16dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Dashboard -->
+                    <LinearLayout
+                        android:id="@+id/navDashboard"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Dashboard"
-                        android:textSize="16sp"
-                        android:textColor="@color/primary"
-                        android:fontFamily="@font/inter_bold" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/nav_item_selected_background"
+                        android:padding="14dp"
+                        android:layout_marginBottom="4dp"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                <!-- Resources -->
-                <LinearLayout
-                    android:id="@+id/navResources"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_dashboard"
+                            app:tint="@color/primary"
+                            android:layout_marginEnd="16dp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_auto_stories"
-                        app:tint="@color/on_surface_variant"
-                        android:layout_marginEnd="16dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Dashboard"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Resources -->
+                    <LinearLayout
+                        android:id="@+id/navResources"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Resources"
-                        android:textSize="16sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:fontFamily="@font/inter_medium" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="14dp"
+                        android:layout_marginBottom="4dp"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                <!-- Manage Books -->
-                <LinearLayout
-                    android:id="@+id/navManageBooks"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_auto_stories"
+                            app:tint="@color/on_surface_variant"
+                            android:layout_marginEnd="16dp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_menu_book"
-                        app:tint="@color/on_surface_variant"
-                        android:layout_marginEnd="16dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Resources"
+                            android:textSize="15sp"
+                            android:textColor="@color/on_surface_variant" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Manage Books -->
+                    <LinearLayout
+                        android:id="@+id/navManageBooks"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Manage Books"
-                        android:textSize="16sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:fontFamily="@font/inter_medium" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="14dp"
+                        android:layout_marginBottom="4dp"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                <!-- Lended Books -->
-                <LinearLayout
-                    android:id="@+id/navLendedBooks"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_menu_book"
+                            app:tint="@color/on_surface_variant"
+                            android:layout_marginEnd="16dp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_import_contacts"
-                        app:tint="@color/on_surface_variant"
-                        android:layout_marginEnd="16dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manage Books"
+                            android:textSize="15sp"
+                            android:textColor="@color/on_surface_variant" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Lended Books -->
+                    <LinearLayout
+                        android:id="@+id/navLendedBooks"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Lended Books"
-                        android:textSize="16sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:fontFamily="@font/inter_medium" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="14dp"
+                        android:layout_marginBottom="4dp"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                <!-- Members -->
-                <LinearLayout
-                    android:id="@+id/navMembers"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_import_contacts"
+                            app:tint="@color/on_surface_variant"
+                            android:layout_marginEnd="16dp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_group"
-                        app:tint="@color/on_surface_variant"
-                        android:layout_marginEnd="16dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lended Books"
+                            android:textSize="15sp"
+                            android:textColor="@color/on_surface_variant" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Members -->
+                    <LinearLayout
+                        android:id="@+id/navMembers"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Members"
-                        android:textSize="16sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:fontFamily="@font/inter_medium" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="14dp"
+                        android:layout_marginBottom="4dp"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                <!-- Notifications -->
-                <LinearLayout
-                    android:id="@+id/navNotifications"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_group"
+                            app:tint="@color/on_surface_variant"
+                            android:layout_marginEnd="16dp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_notifications"
-                        app:tint="@color/on_surface_variant"
-                        android:layout_marginEnd="16dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Members"
+                            android:textSize="15sp"
+                            android:textColor="@color/on_surface_variant" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Notifications -->
+                    <LinearLayout
+                        android:id="@+id/navNotifications"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Notifications"
-                        android:textSize="16sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:fontFamily="@font/inter_medium" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="14dp"
+                        android:layout_marginBottom="4dp"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                <!-- Profile -->
-                <LinearLayout
-                    android:id="@+id/navProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:layout_marginBottom="4dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_notifications"
+                            app:tint="@color/on_surface_variant"
+                            android:layout_marginEnd="16dp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_account_circle"
-                        app:tint="@color/on_surface_variant"
-                        android:layout_marginEnd="16dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Notifications"
+                            android:textSize="15sp"
+                            android:textColor="@color/on_surface_variant" />
+                    </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <!-- Profile -->
+                    <LinearLayout
+                        android:id="@+id/navProfile"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Profile"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="14dp"
+                        android:layout_marginBottom="4dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_account_circle"
+                            app:tint="@color/on_surface_variant"
+                            android:layout_marginEnd="16dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Profile"
+                            android:textSize="15sp"
+                            android:textColor="@color/on_surface_variant" />
+                    </LinearLayout>
+
+                    <!-- Logout Button (Red) -->
+                    <Button
+                        android:id="@+id/buttonLogout"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/logout_button_background"
+                        android:text="Logout"
+                        android:textColor="@color/white"
                         android:textSize="16sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:fontFamily="@font/inter_medium" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Spacer -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:minHeight="16dp" />
-
-            <!-- Logout Button (Red) -->
-            <Button
-                android:id="@+id/buttonLogout"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/logout_button_background"
-                android:text="Logout"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/manrope_bold"
-                android:drawableStart="@drawable/ic_logout"
-                android:drawablePadding="12dp"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp" />
+                        android:textStyle="bold"
+                        android:fontFamily="@font/manrope_bold"
+                        android:drawableStart="@drawable/ic_logout"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp" />
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
