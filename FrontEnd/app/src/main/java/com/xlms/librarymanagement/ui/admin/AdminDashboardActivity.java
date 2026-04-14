@@ -73,10 +73,17 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void setupBottomSheet() {
-        // Hide bottom sheet initially using translationY
-        bottomSheetContent.post(() -> 
-            bottomSheetContent.setTranslationY(bottomSheetContent.getHeight())
-        );
+        bottomSheetContent.post(() -> {
+            // Set sheet height to 65% of screen so it doesn't cover everything
+            int screenHeight = bottomSheetContent.getResources().getDisplayMetrics().heightPixels;
+            ViewGroup.LayoutParams params = bottomSheetContent.getLayoutParams();
+            params.height = (int) (screenHeight * 0.65);
+            bottomSheetContent.setLayoutParams(params);
+            bottomSheetContent.requestLayout();
+
+            // Hide bottom sheet initially using translationY
+            bottomSheetContent.setTranslationY(bottomSheetContent.getHeight());
+        });
     }
 
     public void openBottomSheet() {
@@ -84,10 +91,9 @@ public class AdminDashboardActivity extends AppCompatActivity {
         isDrawerOpen = true;
         backdropOverlay.setVisibility(View.VISIBLE);
         backdropOverlay.animate().alpha(0.2f).setDuration(300).start();
-        // Slide up to 75% of screen (leave 25% visible at top)
-        int targetTranslation = (int) (bottomSheetContent.getHeight() * 0.25f);
+        // Slide up fully so entire sheet is visible
         bottomSheetContent.animate()
-            .translationY(targetTranslation)
+            .translationY(0)
             .setDuration(300)
             .setInterpolator(new DecelerateInterpolator())
             .start();

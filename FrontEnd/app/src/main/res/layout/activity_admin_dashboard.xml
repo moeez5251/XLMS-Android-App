@@ -194,12 +194,14 @@
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="12dp" />
 
-            <!-- ScrollView for Navigation + Logout -->
+            <!-- ScrollView for Navigation Items -->
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fillViewport="true"
-                android:clipToPadding="false">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fillViewport="false"
+                android:clipToPadding="false"
+                android:scrollbars="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -207,7 +209,7 @@
                     android:orientation="vertical"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:paddingBottom="40dp">
+                    android:paddingTop="8dp">
 
                     <!-- Dashboard -->
                     <LinearLayout
@@ -399,28 +401,28 @@
                             android:textSize="15sp"
                             android:textColor="@color/on_surface_variant" />
                     </LinearLayout>
-
-                    <!-- Logout Button (Red) -->
-                    <Button
-                        android:id="@+id/buttonLogout"
-                        android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="24dp"
-                        android:background="@drawable/logout_button_background"
-                        android:text="Logout"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/manrope_bold"
-                        android:drawableStart="@drawable/ic_logout"
-                        android:drawablePadding="12dp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp" />
                 </LinearLayout>
             </ScrollView>
+
+            <!-- Logout Button (Red) - Pinned at Bottom -->
+            <Button
+                android:id="@+id/buttonLogout"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/logout_button_background"
+                android:text="Logout"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/manrope_bold"
+                android:drawableStart="@drawable/ic_logout"
+                android:drawablePadding="12dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp" />
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
