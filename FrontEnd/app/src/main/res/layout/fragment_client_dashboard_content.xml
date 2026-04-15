@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/surface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <!-- ===== WELCOME SECTION ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/textViewGreeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/client_greeting"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/manrope_extrabold"
+                android:letterSpacing="-0.02"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Library Hours Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/hours_card_background"
+                android:padding="14dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_schedule"
+                    app:tint="@color/primary"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@null" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/library_hours_label"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_surface_variant"
+                        android:fontFamily="@font/inter_semibold"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.08" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/library_hours_value"
+                        android:textSize="12sp"
+                        android:textColor="@color/on_surface"
+                        android:fontFamily="@font/inter_medium"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ===== METRIC CARDS GRID (Horizontal) ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:layout_marginBottom="20dp">
+
+            <!-- Lended Books -->
+            <LinearLayout
+                android:id="@+id/cardLendedBooks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="@drawable/metric_card_background"
+                android:padding="14dp"
+                android:layout_marginEnd="6dp">
+
+                <ImageView
+                    android:id="@+id/metricIcon"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:padding="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/metricValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/manrope_bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/metricLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter_medium"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Overdue Books -->
+            <LinearLayout
+                android:id="@+id/cardOverdueBooks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="@drawable/metric_card_background"
+                android:padding="14dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp">
+
+                <ImageView
+                    android:id="@+id/metricIconOverdue"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:padding="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/metricValueOverdue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/manrope_bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/metricLabelOverdue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter_medium"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Reserved Books -->
+            <LinearLayout
+                android:id="@+id/cardReservedBooks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:background="@drawable/metric_card_background"
+                android:padding="14dp"
+                android:layout_marginStart="6dp">
+
+                <ImageView
+                    android:id="@+id/metricIconReserved"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:padding="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/metricValueReserved"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/manrope_bold"
+                    android:gravity="center"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/metricLabelReserved"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter_medium"
+                    android:gravity="center" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ===== BORROWED BOOKS CIRCLE CHART ===== -->
+        <LinearLayout
+            android:id="@+id/panelBorrowedBooks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/chart_panel_background"
+            android:padding="18dp"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/borrowed_books_chart_title"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:fontFamily="@font/manrope_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/library_pulse"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.12"
+                    android:fontFamily="@font/inter_semibold"
+                    android:background="@drawable/library_pulse_badge_background"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/performance_overview"
+                android:textSize="11sp"
+                android:textColor="@color/on_surface_variant"
+                android:fontFamily="@font/inter_medium"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Progress Circle -->
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progressCircleBorrowed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:progress="100"
+                    android:max="100"
+                    app:indicatorSize="144dp"
+                    app:trackThickness="10dp"
+                    app:trackColor="@color/surface_container_highest"
+                    app:indicatorColor="@color/primary"
+                    app:indicatorDirectionCircular="clockwise" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/textCirclePercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100%"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/manrope_extrabold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/good_standing"
+                        android:textSize="9sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.15"
+                        android:fontFamily="@font/inter_semibold"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/outline_variant"
+                android:alpha="0.25"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Stats Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/overdue_books_label"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_surface_variant"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.06"
+                        android:fontFamily="@font/inter_semibold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/textOverdueCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 (0%)"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/error"
+                        android:fontFamily="@font/manrope_bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="end">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/returned_books_label"
+                        android:textSize="9sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/on_surface_variant"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.06"
+                        android:fontFamily="@font/inter_semibold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/textReturnedCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="9 (100%)"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/manrope_bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ===== LENDING ACTIVITY BAR CHART ===== -->
+        <LinearLayout
+            android:id="@+id/panelLendingActivity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/chart_panel_background"
+            android:padding="18dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lending_activity_title"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/manrope_bold"
+                android:layout_marginBottom="2dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lending_activity_subtitle"
+                android:textSize="11sp"
+                android:textColor="@color/on_surface_variant"
+                android:fontFamily="@font/inter_medium"
+                android:layout_marginBottom="18dp" />
+
+            <!-- Bar Chart -->
+            <LinearLayout
+                android:id="@+id/barChartContainer"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:orientation="horizontal"
+                android:gravity="bottom|center_horizontal"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

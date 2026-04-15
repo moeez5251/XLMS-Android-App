@@ -145,8 +145,16 @@
 2. **EmailVerificationFragment**: 6-digit OTP, auto-focus, 10-min countdown timer, resend
 3. **SignUpSuccessFragment**: Success confirmation → goes to login
 
-### Client Dashboard
-- Minimal placeholder — welcome message only, no functionality
+### Client Dashboard (UI Built — Dummy Data)
+- DrawerLayout + NavigationView (slide-out sidebar from left)
+- AppBarLayout with hamburger menu, "XLMS LIBRARY" title, notification bell (red dot), circular profile avatar
+- BottomNavigationView with 6 tabs: Dashboard, Catalog, Account, Search (FAB style), Help, Exit
+- Welcome section: "Hello User" greeting + Library Hours card
+- 3 metric cards (horizontal): Lended (blue), Overdue (red), Reserved (gold)
+- Borrowed Books panel: circular progress indicator + Good Standing % + Overdue/Returned stats row
+- Lending Activity panel: 12-month bar chart (Jan-Dec) with dynamic heights, peak month highlighted
+- Sidebar drawer: profile header (avatar + name + "Lead Researcher"), 5 nav items, logout button
+- All data hardcoded; ready for backend integration
 
 ---
 
@@ -157,4 +165,6 @@
 - ❌ Real-time notifications
 - ❌ Actual password reset flow
 - ❌ Email verification integration
-- ❌ Client dashboard functionality
+- ❌ Client dashboard API integration (Catalog, Account, Search, Borrow History screens)
+- ❌ Client bottom nav tabs beyond Dashboard (Catalog, Account, Search, Help all show "coming soon" toast)
+- ❌ Client drawer nav items (Catalog, Account, Help, Notifications all show "coming soon" toast)

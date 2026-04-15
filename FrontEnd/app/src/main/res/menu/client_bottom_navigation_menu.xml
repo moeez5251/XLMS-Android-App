@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_client_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="@string/client_menu_dashboard" />
+
+    <item
+        android:id="@+id/bottom_client_catalog"
+        android:icon="@drawable/ic_menu_book"
+        android:title="@string/client_menu_catalog" />
+
+    <item
+        android:id="@+id/bottom_client_account"
+        android:icon="@drawable/ic_user_circle"
+        android:title="@string/client_menu_account" />
+
+    <item
+        android:id="@+id/bottom_client_help"
+        android:icon="@drawable/ic_help"
+        android:title="@string/client_menu_help" />
+
+    <item
+        android:id="@+id/bottom_client_exit"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/client_menu_exit" />
+
+</menu>

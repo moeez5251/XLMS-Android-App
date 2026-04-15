@@ -37,10 +37,10 @@ Admin/
 │   │   │   └── ui/        # Activities + Fragments
 │   │   │       ├── admin/     # 16 admin fragments
 │   │   │       ├── auth/      # ForgotPasswordActivity
-│   │   │       ├── client/    # ClientDashboardActivity (stub)
+│   │   │       ├── client/    # ClientDashboardActivity + ClientDashboardContentFragment
 │   │   │       ├── login/     # LoginActivity
 │   │   │       └── signup/    # 3-step signup flow
-│   │   └── res/           # layouts, drawables, animations, fonts
+│   │   └── res/           # layouts, drawables, menus, colors, animations, fonts
 │   └── build.gradle.kts
 ├── README.md
 └── DESIGN.md              # Full design system spec

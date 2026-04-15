@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navClientDashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:title="@string/client_menu_dashboard" />
+
+        <item
+            android:id="@+id/navClientCatalog"
+            android:icon="@drawable/ic_menu_book"
+            android:title="@string/client_menu_catalog" />
+
+        <item
+            android:id="@+id/navClientAccount"
+            android:icon="@drawable/ic_account_circle"
+            android:title="@string/client_menu_account" />
+
+        <item
+            android:id="@+id/navClientHelp"
+            android:icon="@drawable/ic_help"
+            android:title="@string/client_menu_help" />
+
+        <item
+            android:id="@+id/navClientNotifications"
+            android:icon="@drawable/ic_notifications"
+            android:title="@string/client_menu_notifications" />
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/navClientLogout"
+                android:icon="@drawable/ic_logout"
+                android:title="@string/client_menu_logout" />
+        </menu>
+    </item>
+
+</menu>

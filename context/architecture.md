@@ -124,6 +124,28 @@ AdminDashboardActivity
     └── ResourcesFragment
 ```
 
+### Client Dashboard Structure
+```
+ClientDashboardActivity
+├── DrawerLayout (root)
+│   ├── Main Content
+│   │   ├── AppBarLayout
+│   │   │   ├── hamburger menu (open drawer)
+│   │   │   ├── "XLMS LIBRARY" title
+│   │   │   ├── notification bell (red dot indicator)
+│   │   │   └── profile avatar (circle background)
+│   │   ├── FrameLayout (mainContentFrame)
+│   │   │   └── ClientDashboardContentFragment
+│   │   │       ├── Welcome section (greeting + library hours card)
+│   │   │       ├── 3 metric cards horizontal (Lended, Overdue, Reserved)
+│   │   │       ├── Borrowed Books panel (CircularProgressIndicator + stats row)
+│   │   │       └── Lending Activity panel (12-month bar chart, programmatic)
+│   │   └── BottomNavigationView (6 items: Dashboard, Catalog, Account, Search, Help, Exit)
+│   └── NavigationView (drawer, start gravity)
+│       ├── nav_header_client (profile avatar + name + role)
+│       └── client_drawer_menu (5 nav items + logout separator)
+```
+
 ### Session Management
 - **`SessionManager.java`**: SharedPreferences wrapper
 - Stores: `isLoggedIn` (boolean), `email` (string), `role` (ADMIN/CLIENT)
@@ -142,6 +164,40 @@ AdminDashboardActivity
 - `LendedBookAdapter` — lent book records
 - `MemberAdapter` — member list with status chips
 - `NotificationAdapter` — notification cards with type icons
+
+### Client-Specific Resources
+
+**Layouts:**
+- `activity_client_dashboard.xml` — DrawerLayout root, AppBarLayout, FrameLayout, BottomNavigationView, NavigationView
+- `fragment_client_dashboard_content.xml` — ScrollView with welcome, metric cards, charts
+- `nav_header_client.xml` — Drawer header (avatar + name + role)
+- `metric_card_item.xml` — (unused; cards are inline in fragment layout)
+
+**Menus:**
+- `client_drawer_menu.xml` — 5 nav items + logout
+- `client_bottom_navigation_menu.xml` — 6 bottom tabs
+
+**Drawables:**
+- `metric_card_background.xml` — rounded rect with subtle stroke
+- `metric_icon_background.xml` — rounded rect for icon badges
+- `chart_panel_background.xml` — rounded card for chart panels
+- `bar_chart_item_background.xml` — top-rounded rect for bars
+- `hours_card_background.xml` — rounded card for library hours
+- `library_pulse_badge_background.xml` — pill badge
+- `circle_image_background.xml` — oval shape for profile avatars
+- `notification_dot_background.xml` — red circle for notification badge
+- `ic_schedule.xml`, `ic_event_busy.xml`, `ic_bookmark_add.xml` — new Material icons
+
+**Colors (added):**
+- `surface_tint` — `#455F88`
+
+**Color Selectors:**
+- `client_bottom_nav_color.xml` — active=primary, inactive=on_surface_variant
+- `client_nav_icon_color.xml`, `client_nav_text_color.xml`, `client_nav_item_ripple.xml`
+
+**Styles (themes.xml):**
+- `ClientNavItemText` — 14sp, inter_medium
+- `ClientNavItemShape` — 10dp corner radius
 
 ## Database Schema (inferred from queries)
 

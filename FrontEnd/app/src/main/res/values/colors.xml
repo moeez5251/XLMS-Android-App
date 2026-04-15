@@ -31,6 +31,9 @@
     <color name="on_tertiary_container">#C6955E</color>
     <color name="on_tertiary_fixed">#2B1700</color>
     <color name="on_tertiary_fixed_variant">#633F0F</color>
+
+    <!-- Surface Tint -->
+    <color name="surface_tint">#455F88</color>
     
     <!-- Surface Architecture -->
     <color name="surface">#F9F9FF</color>

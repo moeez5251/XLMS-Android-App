@@ -115,4 +115,27 @@
     <string name="menu_alerts">Alerts</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_help">Help &amp; Support</string>
+
+    <!-- Client Dashboard -->
+    <string name="client_greeting">Hello User</string>
+    <string name="library_hours_label">Library Operating Hours</string>
+    <string name="library_hours_value">Monday to Saturday: 9:00 AM to 7:00 PM, Sunday: Closed</string>
+    <string name="borrowed_books_chart_title">Borrowed Books</string>
+    <string name="performance_overview">Performance Overview</string>
+    <string name="good_standing">Good Standing</string>
+    <string name="overdue_books_label">Overdue Books</string>
+    <string name="returned_books_label">Returned Books</string>
+    <string name="lending_activity_title">Lending Activity</string>
+    <string name="lending_activity_subtitle">January - December 2026</string>
+    <string name="library_pulse">Library Pulse</string>
+
+    <!-- Client Menu -->
+    <string name="client_menu_dashboard">Dashboard</string>
+    <string name="client_menu_catalog">Catalog</string>
+    <string name="client_menu_account">Account</string>
+    <string name="client_menu_help">Help and Support</string>
+    <string name="client_menu_notifications">Notifications</string>
+    <string name="client_menu_logout">Logout</string>
+    <string name="client_menu_search">Search</string>
+    <string name="client_menu_exit">LogOut</string>
 </resources>

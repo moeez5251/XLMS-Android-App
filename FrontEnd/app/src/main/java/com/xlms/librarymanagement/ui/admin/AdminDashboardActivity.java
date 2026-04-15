@@ -77,7 +77,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
             // Set sheet height to 65% of screen so it doesn't cover everything
             int screenHeight = bottomSheetContent.getResources().getDisplayMetrics().heightPixels;
             ViewGroup.LayoutParams params = bottomSheetContent.getLayoutParams();
-            params.height = (int) (screenHeight * 0.65);
+            params.height = (int) (screenHeight * 0.75);
             bottomSheetContent.setLayoutParams(params);
             bottomSheetContent.requestLayout();
 

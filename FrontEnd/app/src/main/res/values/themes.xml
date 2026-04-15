@@ -18,4 +18,15 @@
         <item name="android:statusBarColor">@color/surface</item>
     </style>
 
+    <!-- Client Navigation View Item Text Style -->
+    <style name="ClientNavItemText" parent="android:Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/inter_medium</item>
+    </style>
+
+    <!-- Client Navigation Item Shape (rounded) -->
+    <style name="ClientNavItemShape">
+        <item name="cornerSize">10dp</item>
+    </style>
+
 </resources>
