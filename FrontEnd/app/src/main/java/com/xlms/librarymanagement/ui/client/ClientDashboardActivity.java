@@ -104,7 +104,7 @@ public class ClientDashboardActivity extends AppCompatActivity {
                 loadFragment(new ClientDashboardContentFragment(), false);
                 return true;
             } else if (id == R.id.bottom_client_catalog) {
-                Toast.makeText(this, "Catalog coming soon", Toast.LENGTH_SHORT).show();
+                loadFragment(new ClientCatalogFragment(), false);
                 return true;
             } else if (id == R.id.bottom_client_account) {
                 Toast.makeText(this, "Account coming soon", Toast.LENGTH_SHORT).show();

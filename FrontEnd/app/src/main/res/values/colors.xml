@@ -84,6 +84,11 @@
     <color name="status_not_returned_bg">#BA1A1A</color>
     <color name="status_not_returned_text">#FFFFFF</color>
 
+    <!-- Availability Backgrounds -->
+    <color name="status_bg_available">#10B981</color>
+    <color name="status_bg_limited">#F59E0B</color>
+    <color name="status_bg_out_of_stock">#F43F5E</color>
+
     <!-- Legacy colors for compatibility -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

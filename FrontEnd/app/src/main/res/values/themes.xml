@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base Application Theme -->
-    <style name="Theme.XLMSAdmin" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.XLMSAdmin" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_container</item>
         <item name="colorAccent">@color/primary</item>
