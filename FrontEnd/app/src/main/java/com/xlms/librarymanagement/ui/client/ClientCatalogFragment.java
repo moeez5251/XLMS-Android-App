@@ -35,6 +35,12 @@ public class ClientCatalogFragment extends Fragment {
     private String currentAuthor = "All";
     private String currentAvailability = "All";
 
+    private int currentPage = 1;
+    private final int PAGE_SIZE = 6; // 3 rows of 2 columns
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
+    private List<Book> filteredBookList = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -60,22 +66,69 @@ public class ClientCatalogFragment extends Fragment {
 
     private void setupRecyclerView() {
         masterBookList = new ArrayList<>();
-        bookAdapter = new BookCatalogAdapter(requireContext());
+        bookAdapter = new BookCatalogAdapter(requireContext(), book -> {
+            ClientBookInfoFragment infoFragment = ClientBookInfoFragment.newInstance(book);
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
+                    .replace(R.id.fragment_container, infoFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         // Set up GridLayoutManager with responsive columns
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int spanCount;
-        if (screenWidth >= 1200) { // Large screens (desktop)
+        if (screenWidth >= 1200) {
             spanCount = 4;
-        } else if (screenWidth >= 800) { // Medium screens (tablet)
+        } else if (screenWidth >= 800) {
             spanCount = 3;
-        } else { // Small screens (mobile)
+        } else {
             spanCount = 2;
         }
 
         GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), spanCount);
         recyclerViewBooks.setLayoutManager(layoutManager);
         recyclerViewBooks.setAdapter(bookAdapter);
+
+        // Add scroll listener for pagination
+        recyclerViewBooks.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) { // check for scroll down
+                    int visibleItemCount = layoutManager.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+                    int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (!isLoading && !isLastPage) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            loadNextPage();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void loadNextPage() {
+        isLoading = true;
+        // Simulate a small delay for loading effect
+        recyclerViewBooks.postDelayed(() -> {
+            int start = (currentPage - 1) * PAGE_SIZE;
+            int end = Math.min(start + PAGE_SIZE, filteredBookList.size());
+
+            if (start < filteredBookList.size()) {
+                List<Book> nextItems = filteredBookList.subList(0, end);
+                bookAdapter.submitList(new ArrayList<>(nextItems));
+                currentPage++;
+                if (end >= filteredBookList.size()) {
+                    isLastPage = true;
+                }
+            } else {
+                isLastPage = true;
+            }
+            isLoading = false;
+        }, 500);
     }
 
     private void loadDummyData() {
@@ -248,7 +301,7 @@ public class ClientCatalogFragment extends Fragment {
     }
 
     private void applyFilters() {
-        List<Book> filteredList = new ArrayList<>();
+        filteredBookList.clear();
 
         for (Book book : masterBookList) {
             boolean matchSearch = true;
@@ -268,10 +321,7 @@ public class ClientCatalogFragment extends Fragment {
 
                 matchSearch = title.contains(searchTerm) || author.contains(searchTerm) ||
                               id.contains(searchTerm) || category.contains(searchTerm) ||
-                              language.contains(searchTerm) || status.contains(searchTerm) ||
-                              String.valueOf(book.getPrice()).contains(searchTerm) ||
-                              String.valueOf(book.getTotal()).contains(searchTerm) ||
-                              String.valueOf(book.getAvailable()).contains(searchTerm);
+                              language.contains(searchTerm) || status.contains(searchTerm);
             }
 
             // Language filter
@@ -290,10 +340,13 @@ public class ClientCatalogFragment extends Fragment {
             }
 
             if (matchSearch && matchLanguage && matchAuthor && matchAvailability) {
-                filteredList.add(book);
+                filteredBookList.add(book);
             }
         }
 
-        bookAdapter.submitList(filteredList);
+        // Reset pagination for new filter results
+        currentPage = 1;
+        isLastPage = false;
+        loadNextPage();
     }
 }

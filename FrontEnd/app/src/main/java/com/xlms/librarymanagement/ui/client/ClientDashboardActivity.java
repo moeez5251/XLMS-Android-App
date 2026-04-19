@@ -14,6 +14,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.xlms.librarymanagement.R;
@@ -49,9 +51,8 @@ public class ClientDashboardActivity extends AppCompatActivity {
 
         initViews();
         setupDrawer();
-        setupBottomNavigation();
+        loadMainFragment();
         setupClickListeners();
-        loadDefaultFragment();
     }
 
     private void initViews() {
@@ -78,14 +79,23 @@ public class ClientDashboardActivity extends AppCompatActivity {
     private void setupDrawer() {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
+            Fragment mainFrag = getSupportFragmentManager().findFragmentByTag("MAIN_FRAGMENT");
             if (id == R.id.navClientDashboard) {
-                loadFragment(new ClientDashboardContentFragment(), false);
+                if (mainFrag instanceof ClientDashboardMainFragment) {
+                    ((ClientDashboardMainFragment) mainFrag).setCurrentItem(0);
+                }
             } else if (id == R.id.navClientCatalog) {
-                Toast.makeText(this, "Catalog coming soon", Toast.LENGTH_SHORT).show();
+                if (mainFrag instanceof ClientDashboardMainFragment) {
+                    ((ClientDashboardMainFragment) mainFrag).setCurrentItem(1);
+                }
             } else if (id == R.id.navClientAccount) {
-                Toast.makeText(this, "Account coming soon", Toast.LENGTH_SHORT).show();
+                if (mainFrag instanceof ClientDashboardMainFragment) {
+                    ((ClientDashboardMainFragment) mainFrag).setCurrentItem(2);
+                }
             } else if (id == R.id.navClientHelp) {
-                Toast.makeText(this, "Help coming soon", Toast.LENGTH_SHORT).show();
+                if (mainFrag instanceof ClientDashboardMainFragment) {
+                    ((ClientDashboardMainFragment) mainFrag).setCurrentItem(3);
+                }
             } else if (id == R.id.navClientNotifications) {
                 Toast.makeText(this, "Notifications coming soon", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.navClientLogout) {
@@ -97,27 +107,10 @@ public class ClientDashboardActivity extends AppCompatActivity {
         });
     }
 
-    private void setupBottomNavigation() {
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.bottom_client_dashboard) {
-                loadFragment(new ClientDashboardContentFragment(), false);
-                return true;
-            } else if (id == R.id.bottom_client_catalog) {
-                loadFragment(new ClientCatalogFragment(), false);
-                return true;
-            } else if (id == R.id.bottom_client_account) {
-                Toast.makeText(this, "Account coming soon", Toast.LENGTH_SHORT).show();
-                return true;
-            } else if (id == R.id.bottom_client_help) {
-                Toast.makeText(this, "Help coming soon", Toast.LENGTH_SHORT).show();
-                return true;
-            } else if (id == R.id.bottom_client_exit) {
-                handleLogout();
-                return true;
-            }
-            return false;
-        });
+    private void loadMainFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.mainContentFrame, new ClientDashboardMainFragment(), "MAIN_FRAGMENT")
+                .commit();
     }
 
     private void setupClickListeners() {
@@ -165,15 +158,11 @@ public class ClientDashboardActivity extends AppCompatActivity {
             return;
         }
 
-        // Check if current fragment is dashboard
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.mainContentFrame);
-        if (!(currentFragment instanceof ClientDashboardContentFragment)) {
-            loadFragment(new ClientDashboardContentFragment(), false);
-            bottomNavigation.getMenu().getItem(0).setChecked(true);
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
             return;
         }
 
-        Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
     }

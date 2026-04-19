@@ -22,9 +22,15 @@ public class BookCatalogAdapter extends RecyclerView.Adapter<BookCatalogAdapter.
 
     private List<Book> bookList;
     private Context context;
+    private OnBookClickListener listener;
 
-    public BookCatalogAdapter(Context context) {
+    public interface OnBookClickListener {
+        void onBookClick(Book book);
+    }
+
+    public BookCatalogAdapter(Context context, OnBookClickListener listener) {
         this.context = context;
+        this.listener = listener;
         this.bookList = new ArrayList<>();
     }
 
@@ -65,6 +71,12 @@ public class BookCatalogAdapter extends RecyclerView.Adapter<BookCatalogAdapter.
         // Set a random-looking gradient or color based on category for the cover
         int[] gradients = {R.drawable.bg_book_cover_gradient}; // Could add more for variety
         holder.coverArea.setBackgroundResource(gradients[0]);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onBookClick(book);
+            }
+        });
     }
 
     @Override
