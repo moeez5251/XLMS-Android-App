@@ -7,6 +7,7 @@ public class SessionManager {
     private static final String PREF_NAME = "XLMS_Session";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_USER_EMAIL = "email";
+    private static final String KEY_USER_NAME = "name";
     private static final String KEY_USER_ROLE = "role"; // "ADMIN" or "CLIENT"
 
     private SharedPreferences sharedPreferences;
@@ -18,9 +19,16 @@ public class SessionManager {
     }
 
     public void saveSession(String email, String role) {
+        saveSession(email, role, null);
+    }
+
+    public void saveSession(String email, String role, String name) {
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.putString(KEY_USER_EMAIL, email);
         editor.putString(KEY_USER_ROLE, role);
+        if (name != null) {
+            editor.putString(KEY_USER_NAME, name);
+        }
         editor.apply();
     }
 
@@ -30,6 +38,10 @@ public class SessionManager {
 
     public String getUserEmail() {
         return sharedPreferences.getString(KEY_USER_EMAIL, null);
+    }
+
+    public String getUserName() {
+        return sharedPreferences.getString(KEY_USER_NAME, "User");
     }
 
     public String getUserRole() {

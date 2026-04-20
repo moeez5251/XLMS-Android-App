@@ -14,6 +14,9 @@ import androidx.fragment.app.Fragment;
 
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.model.Book;
+import com.xlms.librarymanagement.model.LendedBook;
+import com.xlms.librarymanagement.utils.LendingRepository;
+import com.xlms.librarymanagement.utils.SessionManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,12 +59,45 @@ public class CheckoutFragment extends Fragment {
         setupDatePickers(view);
 
         view.findViewById(R.id.buttonBack).setOnClickListener(v -> getParentFragmentManager().popBackStack());
-        view.findViewById(R.id.buttonCheckOut).setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Processing Transaction...", Toast.LENGTH_SHORT).show();
-            // Implement actual checkout logic here
-        });
+        view.findViewById(R.id.buttonCheckOut).setOnClickListener(v -> handleCheckout());
 
         return view;
+    }
+
+    private void handleCheckout() {
+        if (selectedBook == null) return;
+
+        SessionManager sessionManager = new SessionManager(requireContext());
+        String email = sessionManager.getUserEmail();
+        String name = sessionManager.getUserName();
+        String initials = "";
+        if (name != null && !name.isEmpty()) {
+            String[] parts = name.split(" ");
+            if (parts.length > 0) initials += parts[0].charAt(0);
+            if (parts.length > 1) initials += parts[1].charAt(0);
+        }
+
+        LendedBook lendedBook = new LendedBook(
+                (int) System.currentTimeMillis(), // Fake numeric ID
+                email,
+                name,
+                initials,
+                selectedBook.getTitle(),
+                selectedBook.getAuthor(),
+                selectedBook.getCategory(),
+                1,
+                dateFormat.format(lendDate.getTime()),
+                dateFormat.format(dueDate.getTime()),
+                "Not Returned"
+        );
+
+        LendingRepository repository = new LendingRepository(requireContext());
+        repository.addLending(lendedBook);
+
+        Toast.makeText(getContext(), "Book Checked Out Successfully!", Toast.LENGTH_LONG).show();
+        
+        // Go back to dashboard or show success
+        getParentFragmentManager().popBackStack();
     }
 
     private void initViews(View view) {

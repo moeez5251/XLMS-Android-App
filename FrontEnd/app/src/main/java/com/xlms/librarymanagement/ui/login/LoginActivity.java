@@ -183,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
     private void navigateToAdminDashboard() {
         // Save session
         SessionManager sessionManager = new SessionManager(this);
-        sessionManager.saveSession(ADMIN_EMAIL, "ADMIN");
+        sessionManager.saveSession(ADMIN_EMAIL, "ADMIN", "Administrator");
 
         Intent intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
         intent.putExtra("USER_ROLE", "ADMIN");
@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
     private void navigateToClientDashboard() {
         // Save session
         SessionManager sessionManager = new SessionManager(this);
-        sessionManager.saveSession(CLIENT_EMAIL, "CLIENT");
+        sessionManager.saveSession(CLIENT_EMAIL, "CLIENT", "Theodore Vance");
 
         Intent intent = new Intent(LoginActivity.this, ClientDashboardActivity.class);
         intent.putExtra("USER_ROLE", "CLIENT");

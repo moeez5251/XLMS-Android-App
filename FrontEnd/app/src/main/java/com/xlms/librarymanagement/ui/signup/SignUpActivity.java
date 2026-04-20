@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.ui.login.LoginActivity;
+import com.xlms.librarymanagement.utils.SessionManager;
 
 /**
  * Sign Up Activity - Hosts the 3-step registration flow
@@ -116,9 +117,16 @@ public class SignUpActivity extends AppCompatActivity
     
     @Override
     public void onContinueToDashboard() {
-        // Navigate to dashboard (for new users)
-        // For now, navigate to login
-        navigateToLogin();
+        // Save session for new user
+        SessionManager sessionManager = new SessionManager(this);
+        sessionManager.saveSession(email, "CLIENT", fullName);
+
+        // Navigate to dashboard
+        android.content.Intent intent = new android.content.Intent(SignUpActivity.this, com.xlms.librarymanagement.ui.client.ClientDashboardActivity.class);
+        intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+        finish();
     }
 
     private void navigateToLogin() {

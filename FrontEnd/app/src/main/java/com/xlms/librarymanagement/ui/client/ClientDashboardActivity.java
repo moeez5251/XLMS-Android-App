@@ -42,9 +42,11 @@ public class ClientDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_dashboard);
 
-        // Get user info from intent
-        userEmail = getIntent().getStringExtra("USER_EMAIL");
-        userName = getIntent().getStringExtra("USER_NAME");
+        // Get user info from session
+        SessionManager sessionManager = new SessionManager(this);
+        userName = sessionManager.getUserName();
+        userEmail = sessionManager.getUserEmail();
+
         if (userName == null || userName.isEmpty()) {
             userName = "User";
         }

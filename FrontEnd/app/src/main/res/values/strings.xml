@@ -138,4 +138,32 @@
     <string name="client_menu_logout">Logout</string>
     <string name="client_menu_search">Search</string>
     <string name="client_menu_exit">LogOut</string>
+    <!-- Account Tab -->
+    <string name="account_title">My Account</string>
+    <string name="account_subtitle">Manage your academic profile and library activities.</string>
+    <string name="my_lendings">My Lendings</string>
+    <string name="filter_all">ALL</string>
+    <string name="filter_not_returned">NOT RETURNED</string>
+    <string name="filter_returned">RETURNED</string>
+    <string name="my_reservations">My Reservations</string>
+    <string name="no_reservations">No Active Reservation Found</string>
+    <string name="account_info">Account Information</string>
+    <string name="label_name_caps">NAME</string>
+    <string name="label_email_caps">EMAIL</string>
+    <string name="label_membership">MEMBERSHIP TYPE</string>
+    <string name="privacy_security">Privacy and Security</string>
+    <string name="label_old_password">OLD PASSWORD</string>
+    <string name="label_new_password">NEW PASSWORD</string>
+    <string name="button_update_credentials">UPDATE CREDENTIALS</string>
+    <string name="danger_zone">Danger Zone</string>
+    <string name="danger_zone_msg">Once you delete your account, there is no going back. Please be certain.</string>
+    <string name="button_delete_account">DELETE ACCOUNT</string>
+
+    <!-- Help Tab -->
+    <string name="help_title">Help Center</string>
+    <string name="help_subtitle">Find answers and get support for your library needs.</string>
+    <string name="faq_title">Frequently Asked Questions</string>
+    <string name="contact_support">Contact Support</string>
+    <string name="button_email_librarian">EMAIL LIBRARIAN</string>
+    <string name="button_chat_us">CHAT WITH US</string>
 </resources>

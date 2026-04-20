@@ -72,9 +72,20 @@ public class ClientDashboardMainFragment extends Fragment {
             } else if (id == R.id.bottom_client_help) {
                 viewPager.setCurrentItem(3);
                 return true;
+            } else if (id == R.id.bottom_client_exit) {
+                logout();
+                return true;
             }
             return false;
         });
+    }
+
+    private void logout() {
+        new com.xlms.librarymanagement.utils.SessionManager(requireContext()).clearSession();
+        android.content.Intent intent = new android.content.Intent(requireActivity(), com.xlms.librarymanagement.ui.login.LoginActivity.class);
+        intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
     public void setCurrentItem(int item) {

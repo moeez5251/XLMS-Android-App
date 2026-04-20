@@ -20,11 +20,9 @@ public class ClientDashboardPagerAdapter extends FragmentStateAdapter {
             case 1:
                 return new ClientCatalogFragment();
             case 2:
-                // TODO: Replace with Account Fragment when ready
-                return new ClientDashboardContentFragment();
+                return new ClientAccountFragment();
             case 3:
-                // TODO: Replace with Help Fragment when ready
-                return new ClientDashboardContentFragment();
+                return new ClientHelpFragment();
             default:
                 return new ClientDashboardContentFragment();
         }
