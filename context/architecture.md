@@ -32,12 +32,11 @@
 - Decodes `{id, email}` into `req.user`
 - Returns 401 if no token, 403 if invalid/expired
 
-### MVC Pattern
-```
-Request → Route (routes/*.js) → Controller (controller/*.js) → DB (models/db.js)
-```
-
-### Controller Summary
+### Key Architectural Pattern
+- **Backend**: Classic MVC — routes → controllers → models (SQL pool)
+- **Frontend**: Activity → ViewPager2 (Admin) / DrawerLayout (Client) → Fragments
+- **Global auth middleware**: All routes protected by default, except login/logout/token routes
+- **API key gate**: Inconsistent enforcement. Some endpoints (login, book/user/lender list, book insert, user register) require `XLMS_API` key in request body, while many other write/read operations do not.
 
 | Controller | Purpose | Key Operations |
 |------------|---------|---------------|

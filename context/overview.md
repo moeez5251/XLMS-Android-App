@@ -1,9 +1,9 @@
 # XLMS Admin - Project Overview
 
 ## Project Summary
-**XLMS** is a Library Management System with an Admin dashboard. It consists of:
+**XLMS** is a Library Management System with both Admin and Client dashboards. It consists of:
 - **Backend**: Node.js/Express REST API with SQL Server database
-- **Frontend**: Android app (Java, XML layouts) with tabbed admin dashboard
+- **Frontend**: Android app (Java, XML layouts) with dual-role dashboards (Admin tabbed, Client drawer-based)
 
 ## Tech Stack
 
@@ -48,9 +48,9 @@ Admin/
 
 ## Key Architectural Pattern
 - **Backend**: Classic MVC — routes → controllers → models (SQL pool)
-- **Frontend**: Activity → ViewPager2 → Fragments → RecyclerView adapters
+- **Frontend**: Activity → ViewPager2 (Admin) / DrawerLayout (Client) → Fragments
 - **Global auth middleware**: All routes protected by default, except login/logout/token routes
-- **API key gate**: Most endpoints require `XLMS_API` key in request body
+- **API key gate**: Selectively required on key endpoints (List, Create)
 
 ## Critical Gap
 **The Android app has ZERO integration with the backend.** All data is hardcoded/dummy. Login uses hardcoded credentials. No HTTP client library is included. The backend is fully functional but completely unused by the frontend.

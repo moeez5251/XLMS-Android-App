@@ -17,7 +17,7 @@
 - Update user details (name, email, role, membership type)
 - Batch deactivate / single activate
 - Batch delete accounts
-- API key validation on write operations
+- API key validation on specific operations (Create, List)
 
 ### Book Management
 - Full CRUD for books
@@ -26,9 +26,10 @@
 - Batch delete by array of IDs
 - Dynamic column selection query
 - Status auto-set to "Out of stock" when Available = 0
+- API key required for Insert and Get All (list)
 
 ### Lending / Borrowing System
-- Get all lenders / get lender by ID (joins email from Users table)
+- Get all lenders (API key required) / get lender by ID (no API key required)
 - **Core lending operation** (`lendersControllers.addbook`):
   1. Checks if user exists by email; creates account if not
   2. Validates book availability
@@ -38,6 +39,7 @@
   6. Generates password reset token for new users
   7. Sends detailed email notification (text + HTML) with login link
   8. New users get password change link for security
+  9. **No API key required** for this operation
 
 ### Password Reset Flow
 - **OTP-based** (via `/api/mail/*`):

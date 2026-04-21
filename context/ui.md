@@ -46,28 +46,38 @@ AdminDashboardActivity (main admin screen)
     ├── ForgotPasswordFragment
     └── ResourcesFragment
 
-ClientDashboardActivity
-└── Placeholder welcome message only
+ClientDashboardActivity (main client screen)
+├── DrawerLayout (root)
+│   ├── AppBarLayout (hamburger, title, bell, avatar)
+│   ├── FrameLayout (mainContentFrame)
+│   │   └── ClientDashboardContentFragment (Welcome + metrics + charts)
+│   ├── BottomNavigationView (6 tabs: Dashboard, Catalog, Account, Search, Help, Exit)
+│   └── NavigationView (sidebar drawer with 5 items + logout)
+└── Detail fragments (stubbed)
+    ├── ClientCatalogFragment (coming soon)
+    ├── ClientAccountFragment (coming soon)
+    └── ClientSearchFragment (coming soon)
 ```
 
-## Layout Files (~33 total)
+## Layout Files (~38 total)
 
 ### Activity Layouts
 | Layout | Description |
 |--------|-------------|
 | `activity_splash.xml` | Splash screen with logo, branding content, animated progress bar |
 | `activity_login.xml` | Login form with email, password, remember me, sign up link |
-| `activity_admin_dashboard.xml` | Main container with ViewPager2, bottom nav, bottom sheet overlay, notification bell |
-| `activity_client_dashboard.xml` | Simple welcome screen |
+| `activity_admin_dashboard.xml` | Main admin container with ViewPager2, bottom nav, bottom sheet overlay |
+| `activity_client_dashboard.xml` | Main client container with DrawerLayout, AppBar, BottomNav, NavigationView |
 | `activity_forgot_password.xml` | Password recovery email input |
 | `activity_sign_up.xml` | Container for signup fragments |
 
 ### Fragment Layouts
 | Layout | Description |
 |--------|-------------|
-| `fragment_dashboard_content.xml` | Stats cards, bar chart container, activity feed |
-| `fragment_manage_books.xml` | Search bar, filter chips, RecyclerView for books |
-| `fragment_members.xml` | Search bar, filter chips, RecyclerView for members |
+| `fragment_dashboard_content.xml` | Admin: Stats cards, bar chart container, activity feed |
+| `fragment_client_dashboard_content.xml` | Client: Welcome, metric cards, 12-month bar chart |
+| `fragment_manage_books.xml` | Admin: Search bar, filter chips, RecyclerView for books |
+| `fragment_members.xml` | Admin: Search bar, filter chips, RecyclerView for members |
 | `fragment_notifications.xml` | RecyclerView for notifications, clear/refresh buttons |
 | `fragment_profile.xml` | Profile header, password change form |
 | `fragment_book_info.xml` | Full book details display |
@@ -87,11 +97,13 @@ ClientDashboardActivity
 | Layout | Description |
 |--------|-------------|
 | `popup_notifications.xml` | Notification preview list for PopupWindow |
-| `bottom_sheet_nav.xml` | Sidebar navigation with 7 links |
+| `bottom_sheet_nav.xml` | Admin sidebar navigation with 7 links |
+| `nav_header_client.xml` | Client drawer header (avatar + name + role) |
 | `card_book.xml` | Book card item for RecyclerView |
 | `card_member.xml` | Member card item |
 | `card_notification.xml` | Notification card with type icon |
 | `card_lended_book.xml` | Lent book record card |
+| `metric_card_item.xml` | (Placeholder) reusable metric card for client |
 
 ## Design System (from DESIGN.md)
 
