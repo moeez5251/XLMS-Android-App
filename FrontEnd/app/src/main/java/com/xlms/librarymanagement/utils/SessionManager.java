@@ -9,6 +9,8 @@ public class SessionManager {
     private static final String KEY_USER_EMAIL = "email";
     private static final String KEY_USER_NAME = "name";
     private static final String KEY_USER_ROLE = "role"; // "ADMIN" or "CLIENT"
+    private static final String KEY_USER_ID = "userId";
+    private static final String KEY_AUTH_TOKEN = "authToken";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -18,18 +20,20 @@ public class SessionManager {
         editor = sharedPreferences.edit();
     }
 
-    public void saveSession(String email, String role) {
-        saveSession(email, role, null);
-    }
-
-    public void saveSession(String email, String role, String name) {
+    public void saveSession(String email, String role, String name, String userId, String token) {
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.putString(KEY_USER_EMAIL, email);
         editor.putString(KEY_USER_ROLE, role);
+        editor.putString(KEY_USER_ID, userId);
+        editor.putString(KEY_AUTH_TOKEN, token);
         if (name != null) {
             editor.putString(KEY_USER_NAME, name);
         }
         editor.apply();
+    }
+
+    public void saveSession(String email, String role, String name) {
+        saveSession(email, role, name, null, null);
     }
 
     public boolean isLoggedIn() {
@@ -46,6 +50,14 @@ public class SessionManager {
 
     public String getUserRole() {
         return sharedPreferences.getString(KEY_USER_ROLE, null);
+    }
+
+    public String getUserId() {
+        return sharedPreferences.getString(KEY_USER_ID, null);
+    }
+
+    public String getAuthToken() {
+        return sharedPreferences.getString(KEY_AUTH_TOKEN, null);
     }
 
     public void clearSession() {

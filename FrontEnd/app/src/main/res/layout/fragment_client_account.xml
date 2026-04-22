@@ -151,36 +151,61 @@
             app:strokeWidth="1dp">
 
             <LinearLayout
+                android:id="@+id/layoutReservations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingVertical="48dp">
+                android:padding="20dp">
 
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_book_bookmark"
-                    app:tint="@color/outline_variant" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_book_bookmark"
+                        app:tint="@color/primary" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/manrope_bold"
+                        android:text="@string/my_reservations"
+                        android:textColor="@color/primary"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewReservations"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:fontFamily="@font/manrope_bold"
-                    android:text="@string/my_reservations"
-                    android:textColor="@color/on_surface_variant"
-                    android:textSize="16sp" />
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_reservation" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/layoutNoReservations"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="@string/no_reservations"
-                    android:textColor="@color/outline"
-                    android:textSize="12sp"
-                    android:textStyle="italic" />
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingVertical="24dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="@string/no_reservations"
+                        android:textColor="@color/outline"
+                        android:textSize="12sp"
+                        android:textStyle="italic" />
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

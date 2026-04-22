@@ -63,7 +63,7 @@ public class SplashActivity extends AppCompatActivity {
             Intent intent;
             if (sessionManager.isLoggedIn()) {
                 String role = sessionManager.getUserRole();
-                if ("ADMIN".equals(role)) {
+                if ("ADMIN".equalsIgnoreCase(role)) {
                     intent = new Intent(SplashActivity.this, AdminDashboardActivity.class);
                 } else {
                     intent = new Intent(SplashActivity.this, ClientDashboardActivity.class);

@@ -22,8 +22,8 @@
         android:title="@string/client_menu_help" />
 
     <item
-        android:id="@+id/bottom_client_exit"
-        android:icon="@drawable/ic_logout"
-        android:title="@string/client_menu_exit" />
+        android:id="@+id/bottom_client_notifications"
+        android:icon="@drawable/ic_notifications"
+        android:title="Alerts" />
 
 </menu>

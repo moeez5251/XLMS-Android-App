@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const { poolPromise } = require('../models/db');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+
 function generateToken(user) {
   return jwt.sign(
     { id: user.User_id, email: user.Email },
@@ -11,12 +12,9 @@ function generateToken(user) {
 }
 
 exports.login = async (req, res) => {
+  console.log(req.body)
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();
-  const API = req.body.API?.trim()
-  if (API !== process.env.XLMS_API || !API) {
-    return res.status(400).json({ message: 'Invalid API' });
-  }
 
   try {
     const pool = await poolPromise;
@@ -38,9 +36,7 @@ exports.login = async (req, res) => {
     if (user.Status === "Deactivated") {
       return res.status(401).json({ message: 'Your account is Deactivated' });
     }
-    if (user.Role !== "Admin") {
-      return res.status(403).json({ message: 'Access denied: Admins only' });
-    }
+
     const token = generateToken(user);
     res.cookie("token", token, {
       httpOnly: true,
@@ -48,7 +44,12 @@ exports.login = async (req, res) => {
       secure: true
     });
 
-    res.json({ message: 'Login successful', token, userid: user.User_id });
+    res.json({ 
+      message: 'Login successful', 
+      token, 
+      userid: user.User_id,
+      role: user.Role 
+    });
 
   } catch (error) {
     console.error('Login error:', error.message, error.stack);

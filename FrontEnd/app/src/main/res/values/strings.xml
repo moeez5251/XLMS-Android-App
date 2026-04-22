@@ -147,6 +147,8 @@
     <string name="filter_returned">RETURNED</string>
     <string name="my_reservations">My Reservations</string>
     <string name="no_reservations">No Active Reservation Found</string>
+    <string name="label_reserved_at">Reserved: %s</string>
+    <string name="label_expires_at">Expires: %s</string>
     <string name="account_info">Account Information</string>
     <string name="label_name_caps">NAME</string>
     <string name="label_email_caps">EMAIL</string>

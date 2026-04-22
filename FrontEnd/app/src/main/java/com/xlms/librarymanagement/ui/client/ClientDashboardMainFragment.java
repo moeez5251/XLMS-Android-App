@@ -54,6 +54,9 @@ public class ClientDashboardMainFragment extends Fragment {
                     case 3:
                         bottomNavigation.setSelectedItemId(R.id.bottom_client_help);
                         break;
+                    case 4:
+                        bottomNavigation.setSelectedItemId(R.id.bottom_client_notifications);
+                        break;
                 }
             }
         });
@@ -72,8 +75,8 @@ public class ClientDashboardMainFragment extends Fragment {
             } else if (id == R.id.bottom_client_help) {
                 viewPager.setCurrentItem(3);
                 return true;
-            } else if (id == R.id.bottom_client_exit) {
-                logout();
+            } else if (id == R.id.bottom_client_notifications) {
+                viewPager.setCurrentItem(4);
                 return true;
             }
             return false;
@@ -92,5 +95,12 @@ public class ClientDashboardMainFragment extends Fragment {
         if (viewPager != null) {
             viewPager.setCurrentItem(item);
         }
+    }
+
+    public int getCurrentItem() {
+        if (viewPager != null) {
+            return viewPager.getCurrentItem();
+        }
+        return 0;
     }
 }

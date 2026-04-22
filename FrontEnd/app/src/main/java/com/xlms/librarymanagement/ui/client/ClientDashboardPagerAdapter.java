@@ -23,6 +23,8 @@ public class ClientDashboardPagerAdapter extends FragmentStateAdapter {
                 return new ClientAccountFragment();
             case 3:
                 return new ClientHelpFragment();
+            case 4:
+                return new ClientNotificationsFragment();
             default:
                 return new ClientDashboardContentFragment();
         }
@@ -30,6 +32,6 @@ public class ClientDashboardPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4; // Dashboard, Catalog, Account, Help
+        return 5; // Dashboard, Catalog, Account, Help, Notifications
     }
 }

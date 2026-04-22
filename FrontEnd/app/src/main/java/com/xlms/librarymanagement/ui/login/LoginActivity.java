@@ -16,6 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.LoginRequest;
+import com.xlms.librarymanagement.api.LoginResponse;
 import com.xlms.librarymanagement.ui.admin.AdminDashboardActivity;
 import com.xlms.librarymanagement.ui.auth.ForgotPasswordActivity;
 import com.xlms.librarymanagement.ui.client.ClientDashboardActivity;
@@ -41,15 +44,17 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false;
     private boolean isRememberMeChecked = false;
 
-    // Dummy credentials for testing
-    private static final String ADMIN_EMAIL = "admin@xlms.com";
-    private static final String ADMIN_PASSWORD = "admin123";
-    private static final String CLIENT_EMAIL = "user@xlms.com";
-    private static final String CLIENT_PASSWORD = "user123";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check if already logged in
+        SessionManager sessionManager = new SessionManager(this);
+        if (sessionManager.isLoggedIn()) {
+            navigateBasedOnRole(sessionManager.getUserRole(), sessionManager.getUserEmail());
+            return;
+        }
+
         setContentView(R.layout.activity_login);
 
         initViews();
@@ -168,42 +173,75 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Check credentials and navigate based on role
-        if (email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD)) {
-            // Admin login
-            navigateToAdminDashboard();
-        } else if (email.equals(CLIENT_EMAIL) && password.equals(CLIENT_PASSWORD)) {
-            // Client login
-            navigateToClientDashboard();
+        // Show loading state
+        buttonLogin.setEnabled(false);
+        buttonLogin.setText("Logging in...");
+
+        LoginRequest loginRequest = new LoginRequest(email, password);
+        ApiClient.getApiService().login(loginRequest).enqueue(new retrofit2.Callback<LoginResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<LoginResponse> call, retrofit2.Response<LoginResponse> response) {
+                buttonLogin.setEnabled(true);
+                buttonLogin.setText("Login");
+
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponse loginResponse = response.body();
+                    saveSessionAndNavigate(email, loginResponse);
+                } else {
+                    String errorMessage = "Login failed";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            // Try to parse message from backend error response
+                            com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                            if (errorObj.has("message")) {
+                                errorMessage = errorObj.get("message").getAsString();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<LoginResponse> call, Throwable t) {
+                buttonLogin.setEnabled(true);
+                buttonLogin.setText("Login");
+                Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void saveSessionAndNavigate(String email, LoginResponse response) {
+        SessionManager sessionManager = new SessionManager(this);
+        String role = response.getRole() != null ? response.getRole().toUpperCase() : "CLIENT";
+        
+        sessionManager.saveSession(email, role, null, response.getUserId(), response.getToken());
+        navigateBasedOnRole(role, email);
+    }
+
+    private void navigateBasedOnRole(String role, String email) {
+        Intent intent;
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
         } else {
-            Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+            intent = new Intent(LoginActivity.this, ClientDashboardActivity.class);
         }
+        intent.putExtra("USER_ROLE", role);
+        intent.putExtra("USER_EMAIL", email);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+        finish();
     }
 
     private void navigateToAdminDashboard() {
-        // Save session
-        SessionManager sessionManager = new SessionManager(this);
-        sessionManager.saveSession(ADMIN_EMAIL, "ADMIN", "Administrator");
-
-        Intent intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
-        intent.putExtra("USER_ROLE", "ADMIN");
-        intent.putExtra("USER_EMAIL", ADMIN_EMAIL);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
-        finish();
+        // Deprecated, use navigateBasedOnRole
     }
 
     private void navigateToClientDashboard() {
-        // Save session
-        SessionManager sessionManager = new SessionManager(this);
-        sessionManager.saveSession(CLIENT_EMAIL, "CLIENT", "Theodore Vance");
-
-        Intent intent = new Intent(LoginActivity.this, ClientDashboardActivity.class);
-        intent.putExtra("USER_ROLE", "CLIENT");
-        intent.putExtra("USER_EMAIL", CLIENT_EMAIL);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
-        finish();
+        // Deprecated, use navigateBasedOnRole
     }
 
     @Override

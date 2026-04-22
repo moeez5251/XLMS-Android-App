@@ -15,7 +15,9 @@ import com.xlms.librarymanagement.utils.SessionManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.xlms.librarymanagement.model.LendedBook;
+import com.xlms.librarymanagement.model.Reservation;
 import com.xlms.librarymanagement.utils.LendingRepository;
+import com.xlms.librarymanagement.utils.ReservationRepository;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +25,14 @@ public class ClientAccountFragment extends Fragment {
 
     private SessionManager sessionManager;
     private TextView textViewUserName, textViewUserEmail;
-    private RecyclerView recyclerViewLendingHistory;
+    private RecyclerView recyclerViewLendingHistory, recyclerViewReservations;
     private LendingHistoryAdapter lendingAdapter;
+    private ReservationAdapter reservationAdapter;
     private List<LendedBook> masterLendingList;
     private List<LendedBook> displayLendingList;
+    private List<Reservation> reservationList;
     private TextView chipAll, chipNotReturned, chipReturned;
+    private View layoutNoReservations;
 
     @Nullable
     @Override
@@ -41,8 +46,11 @@ public class ClientAccountFragment extends Fragment {
         chipAll = view.findViewById(R.id.chipAll);
         chipNotReturned = view.findViewById(R.id.chipNotReturned);
         chipReturned = view.findViewById(R.id.chipReturned);
+        recyclerViewReservations = view.findViewById(R.id.recyclerViewReservations);
+        layoutNoReservations = view.findViewById(R.id.layoutNoReservations);
 
         setupLendingHistory();
+        setupReservations();
         setupFilters();
         setupSecurityActions(view);
         
@@ -75,6 +83,28 @@ public class ClientAccountFragment extends Fragment {
         lendingAdapter = new LendingHistoryAdapter(displayLendingList);
         recyclerViewLendingHistory.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewLendingHistory.setAdapter(lendingAdapter);
+    }
+
+    private void setupReservations() {
+        ReservationRepository repository = new ReservationRepository(requireContext());
+        reservationList = repository.getReservationsByUser(sessionManager.getUserEmail());
+
+        if (reservationList.isEmpty()) {
+            // Mock data
+            reservationList.add(new Reservation(1, 101, "The Pragmatic Programmer", "Andrew Hunt", sessionManager.getUserEmail(), "2024-05-10", "2024-05-15", "Pending"));
+            repository.addReservation(reservationList.get(0));
+        }
+
+        if (reservationList.isEmpty()) {
+            layoutNoReservations.setVisibility(View.VISIBLE);
+            recyclerViewReservations.setVisibility(View.GONE);
+        } else {
+            layoutNoReservations.setVisibility(View.GONE);
+            recyclerViewReservations.setVisibility(View.VISIBLE);
+            reservationAdapter = new ReservationAdapter(reservationList);
+            recyclerViewReservations.setLayoutManager(new LinearLayoutManager(requireContext()));
+            recyclerViewReservations.setAdapter(reservationAdapter);
+        }
     }
 
     private void setupFilters() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/surface"
@@ -17,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/manrope_extrabold"
-            android:text="@string/help_title"
+            android:text="Help and Support"
             android:textColor="@color/primary"
             android:textSize="32sp" />
 
@@ -26,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/inter_medium"
-            android:text="@string/help_subtitle"
+            android:text="Find answers to our common questions or contact our support for assistance."
             android:textColor="@color/on_surface_variant"
             android:textSize="14sp" />
 
@@ -36,78 +37,372 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:fontFamily="@font/manrope_bold"
-            android:text="@string/faq_title"
+            android:text="Frequently Asked Questions"
             android:textColor="@color/primary"
             android:textSize="20sp" />
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@color/surface_container_lowest"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp">
+            android:orientation="vertical"
+            android:animateLayoutChanges="true">
 
-            <LinearLayout
+            <!-- FAQ Item 1 -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/surface_container_lowest"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
 
-                <!-- FAQ Item 1 -->
                 <LinearLayout
+                    android:id="@+id/layoutQuestion1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
-                    <TextView
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_semibold"
-                        android:text="How do I borrow a book?"
-                        android:textColor="@color/on_surface"
-                        android:textSize="16sp" />
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/manrope_bold"
+                            android:text="How can I borrow a book?"
+                            android:textColor="@color/on_surface"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/imageChevron1"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_expand_more"
+                            app:tint="@color/on_surface_variant" />
+                    </LinearLayout>
+
                     <TextView
+                        android:id="@+id/textAnswer1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/inter_regular"
-                        android:text="Search for a book in the catalog, click on it, and select 'Lend This Book'."
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="16dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="You can borrow books directly through the app. Simply browse the Catalog, select your desired book, and click 'Borrow'. You can then pick it up at the library counter by showing your digital ID."
                         android:textColor="@color/on_surface_variant"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:visibility="gone" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/outline_variant"
-                    android:alpha="0.2" />
+            <!-- FAQ Item 2 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/surface_container_lowest"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
 
-                <!-- FAQ Item 2 -->
                 <LinearLayout
+                    android:id="@+id/layoutQuestion2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/inter_semibold"
-                        android:text="What is the lending period?"
-                        android:textColor="@color/on_surface"
-                        android:textSize="16sp" />
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/inter_regular"
-                        android:text="The standard lending period is 14 days, but it may vary based on book availability."
-                        android:textColor="@color/on_surface_variant"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/manrope_bold"
+                            android:text="What happens if I return a book late?"
+                            android:textColor="@color/on_surface"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/imageChevron2"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_expand_more"
+                            app:tint="@color/on_surface_variant" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textAnswer2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="16dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Late returns are subject to a daily fine. You will receive notifications as the due date approaches to help you avoid these charges. Fines can be paid at the library desk."
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FAQ Item 3 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/surface_container_lowest"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutQuestion3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/manrope_bold"
+                            android:text="How can I check book availability?"
+                            android:textColor="@color/on_surface"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/imageChevron3"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_expand_more"
+                            app:tint="@color/on_surface_variant" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textAnswer3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="16dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Each book in the Catalog displays its current status—Available, Borrowed, or Reserved—in real-time. You can also see how many copies are left."
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FAQ Item 4 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/surface_container_lowest"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutQuestion4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/manrope_bold"
+                            android:text="Can I renew a borrowed book?"
+                            android:textColor="@color/on_surface"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/imageChevron4"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_expand_more"
+                            app:tint="@color/on_surface_variant" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textAnswer4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="16dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Yes, books can be renewed once if there are no pending reservations from other members. You can do this from the 'My Books' section in the Account tab."
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FAQ Item 5 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/surface_container_lowest"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutQuestion5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/manrope_bold"
+                            android:text="Who should I contact for technical or account issues?"
+                            android:textColor="@color/on_surface"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/imageChevron5"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_expand_more"
+                            app:tint="@color/on_surface_variant" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textAnswer5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="16dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="For any technical or account-related problems, please use the 'Submit a ticket' button below. Our support team will get back to you as soon as possible."
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- FAQ Item 6 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/surface_container_lowest"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:id="@+id/layoutQuestion6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/manrope_bold"
+                            android:text="How many copies of a book can I reserve at a time?"
+                            android:textColor="@color/on_surface"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/imageChevron6"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_expand_more"
+                            app:tint="@color/on_surface_variant" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textAnswer6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="16dp"
+                        android:fontFamily="@font/inter_medium"
+                        android:text="Members can reserve up to 3 books at a time. Reservations are held for 48 hours once the book becomes available for pickup."
+                        android:textColor="@color/on_surface_variant"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
 
         <!-- Contact Support -->
         <TextView
@@ -115,30 +410,28 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:fontFamily="@font/manrope_bold"
-            android:text="@string/contact_support"
+            android:text="Contact Support"
             android:textColor="@color/primary"
             android:textSize="20sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/button_email_librarian"
-            android:fontFamily="@font/manrope_bold"
-            app:cornerRadius="12dp"
-            app:icon="@drawable/ic_mail"
-            android:backgroundTint="@color/primary" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/inter_medium"
+            android:text="If you need further assistance, please contact us by submitting a ticket"
+            android:textColor="@color/on_surface_variant"
+            android:textSize="14sp" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/buttonSubmitTicket"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:text="@string/button_chat_us"
+            android:layout_marginTop="24dp"
+            android:text="Submit a ticket"
             android:fontFamily="@font/manrope_bold"
             app:cornerRadius="12dp"
-            app:strokeColor="@color/primary"
-            android:textColor="@color/primary" />
+            android:backgroundTint="@color/primary" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
