@@ -12,7 +12,6 @@ function generateToken(user) {
 }
 
 exports.login = async (req, res) => {
-  console.log(req.body)
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();
 
