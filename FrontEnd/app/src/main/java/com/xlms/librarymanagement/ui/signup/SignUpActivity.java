@@ -83,8 +83,46 @@ public class SignUpActivity extends AppCompatActivity
         this.email = email;
         this.password = password;
         
-        // Navigate to verification
-        loadVerificationFragment();
+        // Call register API
+        registerUser();
+    }
+
+    private void registerUser() {
+        // Show a progress dialog or some loading indicator
+        // For simplicity, we can use the activity's state or a dedicated fragment
+        
+        com.xlms.librarymanagement.api.RegisterRequest request = new com.xlms.librarymanagement.api.RegisterRequest(
+                fullName, email, "Client", "Basic", password
+        );
+
+        com.xlms.librarymanagement.api.ApiClient.getApiService(this).register(request).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    // Navigate to verification (Backend sends OTP automatically if implemented)
+                    loadVerificationFragment();
+                } else {
+                    String error = "Registration failed";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                            if (errorObj.has("error")) {
+                                error = errorObj.get("error").getAsString();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    android.widget.Toast.makeText(SignUpActivity.this, error, android.widget.Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
+                android.widget.Toast.makeText(SignUpActivity.this, "Network error: " + t.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -97,9 +135,35 @@ public class SignUpActivity extends AppCompatActivity
     
     @Override
     public void onVerificationComplete(String otp) {
-        // Here you would verify the OTP with your backend
-        // For now, proceed to success screen
-        loadSuccessFragment();
+        com.xlms.librarymanagement.api.VerifyOtpRequest request = new com.xlms.librarymanagement.api.VerifyOtpRequest(email, otp);
+        
+        com.xlms.librarymanagement.api.ApiClient.getApiService(this).verifyOtp(request).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    loadSuccessFragment();
+                } else {
+                    String error = "Verification failed";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                            if (errorObj.has("message")) {
+                                error = errorObj.get("message").getAsString();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    android.widget.Toast.makeText(SignUpActivity.this, error, android.widget.Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
+                android.widget.Toast.makeText(SignUpActivity.this, "Network error: " + t.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -109,8 +173,23 @@ public class SignUpActivity extends AppCompatActivity
 
     @Override
     public void onResendCode() {
-        // Handle resend code logic
-        // Send OTP again to user email
+        com.xlms.librarymanagement.api.OtpRequest request = new com.xlms.librarymanagement.api.OtpRequest(fullName, email);
+        
+        com.xlms.librarymanagement.api.ApiClient.getApiService(this).resendOtp(request).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    android.widget.Toast.makeText(SignUpActivity.this, "Verification code resent", android.widget.Toast.LENGTH_SHORT).show();
+                } else {
+                    android.widget.Toast.makeText(SignUpActivity.this, "Failed to resend code", android.widget.Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
+                android.widget.Toast.makeText(SignUpActivity.this, "Network error: " + t.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // ========== SignUpSuccessFragment Callbacks ==========

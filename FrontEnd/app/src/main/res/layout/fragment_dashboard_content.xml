@@ -116,12 +116,19 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="16dp" />
 
-            <View
+            <com.xlms.librarymanagement.ui.components.PieChartView
                 android:id="@+id/pieChartView"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:background="@drawable/pie_chart_background" />
+                android:layout_gravity="center" />
+
+            <LinearLayout
+                android:id="@+id/pieChartLegend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Recent Activity -->

@@ -178,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin.setText("Logging in...");
 
         LoginRequest loginRequest = new LoginRequest(email, password);
-        ApiClient.getApiService().login(loginRequest).enqueue(new retrofit2.Callback<LoginResponse>() {
+        ApiClient.getApiService(this).login(loginRequest).enqueue(new retrofit2.Callback<LoginResponse>() {
             @Override
             public void onResponse(retrofit2.Call<LoginResponse> call, retrofit2.Response<LoginResponse> response) {
                 buttonLogin.setEnabled(true);

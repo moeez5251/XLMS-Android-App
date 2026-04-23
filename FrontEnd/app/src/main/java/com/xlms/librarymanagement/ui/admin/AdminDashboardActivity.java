@@ -249,26 +249,27 @@ public class AdminDashboardActivity extends AppCompatActivity {
         }
     }
 
-    private void loadDummyNotifications() {
+    private void fetchNotifications() {
         notificationList = new ArrayList<>();
-        notificationList.add(new Notification(
-            Notification.TYPE_WARNING,
-            "Book Overdue",
-            "\"The Republic of Plato\" is now 3 days overdue.",
-            "2h ago"
-        ));
-        notificationList.add(new Notification(
-            Notification.TYPE_INFO,
-            "Reservation Ready",
-            "Your reserved copy of \"Modern Architecture\" is ready.",
-            "5h ago"
-        ));
-        notificationList.add(new Notification(
-            Notification.TYPE_SUCCESS,
-            "Renewal Successful",
-            "You have successfully extended the loan period.",
-            "Yesterday"
-        ));
+        com.xlms.librarymanagement.api.ApiClient.getApiService(this).getNotifications().enqueue(new retrofit2.Callback<List<Notification>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<Notification>> call, retrofit2.Response<List<Notification>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    notificationList.clear();
+                    notificationList.addAll(response.body());
+                    // Update badge if any
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Notification>> call, Throwable t) {
+                // Keep dummy or empty
+            }
+        });
+    }
+
+    private void loadDummyNotifications() {
+        fetchNotifications();
     }
 
     private void showNotificationPopup(View anchorView) {

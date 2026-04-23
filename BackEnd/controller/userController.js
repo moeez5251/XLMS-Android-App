@@ -3,15 +3,6 @@ const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require('uuid');
 
 exports.createUser = async (req, res) => {
-  const { API } = req.body;
-  try {
-    if (API !== process.env.XLMS_API) {
-      return res.status(400).json({ error: 'Invalid API' });
-    }
-  } catch (err) {
-    console.error('Error in API validation:', err);
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
   try {
     const { User_Name, Email, Role, Membership_Type, Password } = req.body;
 
@@ -47,10 +38,6 @@ exports.createUser = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-  const { API } = req.body;
-  if (API !== process.env.XLMS_API) {
-    return res.status(400).json({ error: 'Invalid API' });
-  }
   try {
     const pool = await poolPromise;
     const result = await pool.request().query('SELECT User_id, User_Name, Email, 	Role, Membership_Type,Status, Cost FROM users');

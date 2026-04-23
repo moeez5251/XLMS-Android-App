@@ -47,38 +47,36 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.textViewTime.setText(notification.getTime());
 
         // Update icon and background based on type
-        int iconRes, bgColor, iconColor;
+        int iconRes;
+        int bgColorRes = -1;
+        int iconColor;
+        
         switch (notification.getType()) {
             case Notification.TYPE_WARNING:
-                iconRes = R.drawable.ic_warning;
-                bgColor = R.color.error_container;
-                iconColor = R.color.on_error_container;
-                break;
             case Notification.TYPE_INFO:
-                iconRes = R.drawable.ic_menu_book;
-                bgColor = R.color.secondary_container;
-                iconColor = R.color.on_secondary_container;
+                iconRes = R.drawable.ic_help; // Info icon
+                bgColorRes = R.drawable.icon_background_info_gradient;
+                iconColor = R.color.primary;
                 break;
             case Notification.TYPE_SUCCESS:
                 iconRes = R.drawable.ic_check_circle;
-                bgColor = R.color.surface_container_high;
+                bgColorRes = -1;
+                holder.layoutIcon.setBackgroundResource(R.color.surface_container_high);
                 iconColor = R.color.primary;
-                break;
-            case Notification.TYPE_SYSTEM:
-                iconRes = R.drawable.ic_notifications_active;
-                bgColor = R.color.tertiary_fixed;
-                iconColor = R.color.on_tertiary_fixed;
                 break;
             default:
                 iconRes = R.drawable.ic_notifications;
-                bgColor = R.color.surface_container_high;
+                bgColorRes = -1;
+                holder.layoutIcon.setBackgroundResource(R.color.surface_container_high);
                 iconColor = R.color.on_surface_variant;
                 break;
         }
 
         holder.imageViewIcon.setImageResource(iconRes);
         holder.imageViewIcon.setColorFilter(ContextCompat.getColor(holder.imageViewIcon.getContext(), iconColor));
-        holder.layoutIcon.setBackgroundResource(bgColor);
+        if (bgColorRes != -1) {
+            holder.layoutIcon.setBackgroundResource(bgColorRes);
+        }
     }
 
     @Override

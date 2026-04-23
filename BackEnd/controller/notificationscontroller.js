@@ -1,7 +1,7 @@
 const { poolPromise } = require('../models/db');
 
 exports.addnotifications = async (req, res) => {
-    const {  Message } = req.body;
+    const { Message } = req.body;
     const promise = await poolPromise;
     const CreatedAt = new Date(Date.now() + 60 * 1000);
     const created = CreatedAt.toLocaleString("en-PK", {

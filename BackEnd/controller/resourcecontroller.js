@@ -1,6 +1,6 @@
 const { poolPromise } = require('../models/db');
 exports.add = async (req, res) => {
-    const { Name, Email,Website } = req.body;
+    const { Name, Email, Website } = req.body;
     const promise = await poolPromise;
     try {
         const result = await promise

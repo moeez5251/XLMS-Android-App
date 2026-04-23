@@ -17,6 +17,8 @@ import androidx.fragment.app.Fragment;
 
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.model.Book;
+import com.xlms.librarymanagement.model.Notification;
+import com.xlms.librarymanagement.ui.components.PieChartView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +27,7 @@ public class DashboardContentFragment extends Fragment {
 
     private LinearLayout statsContainer, barChartContainer, activityListContainer;
     private Button buttonAddBook;
-
-    private static final int TOTAL_BOOKS = 29;
-    private static final int LENDED_BOOKS = 74;
-    private static final int AVAILABLE_BOOKS = 29;
-    private static final int TOTAL_USERS = 12;
-    private static final int OVERDUE_BOOKS = 0;
+    private PieChartView pieChartView;
 
     @Nullable
     @Override
@@ -47,17 +44,31 @@ public class DashboardContentFragment extends Fragment {
         barChartContainer = view.findViewById(R.id.barChartContainer);
         activityListContainer = view.findViewById(R.id.activityListContainer);
         buttonAddBook = view.findViewById(R.id.buttonAddBook);
+        pieChartView = view.findViewById(R.id.pieChartView);
         
-        loadStatsData();
-        setupBarChart();
-        setupActivityList();
+        showSkeletonLoader();
+        fetchDashboardData();
         setupAddBookButton();
+    }
+
+    private void showSkeletonLoader() {
+        if (statsContainer == null) return;
+        statsContainer.removeAllViews();
+        android.view.animation.Animation shimmerAnim = android.view.animation.AnimationUtils.loadAnimation(requireContext(), R.anim.shimmer_animation);
+        
+        for (int i = 0; i < 4; i++) {
+            View skeleton = LayoutInflater.from(requireContext()).inflate(R.layout.layout_skeleton_stat_card, statsContainer, false);
+            View shimmerView = skeleton.findViewById(R.id.shimmerView);
+            if (shimmerView != null) {
+                shimmerView.startAnimation(shimmerAnim);
+            }
+            statsContainer.addView(skeleton);
+        }
     }
 
     private void setupAddBookButton() {
         if (buttonAddBook != null) {
             buttonAddBook.setOnClickListener(v -> {
-                // Navigate to Manage Books tab then open Add Book
                 openAddBookFragment();
             });
         }
@@ -70,6 +81,7 @@ public class DashboardContentFragment extends Fragment {
             public void onBookAdded(Book book) {
                 Toast.makeText(requireContext(), "Book added: " + book.getTitle(), Toast.LENGTH_SHORT).show();
                 closeDetailFragment();
+                fetchDashboardData(); // Refresh data
             }
 
             @Override
@@ -77,7 +89,6 @@ public class DashboardContentFragment extends Fragment {
                 closeDetailFragment();
             }
         });
-
         openDetailFragment(fragment);
     }
 
@@ -93,14 +104,102 @@ public class DashboardContentFragment extends Fragment {
         }
     }
 
-    private void loadStatsData() {
-        if (statsContainer == null) return;
+    private void fetchDashboardData() {
+        com.xlms.librarymanagement.api.ApiService apiService = com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext());
         
-        addStatCard(TOTAL_BOOKS, getString(R.string.total_books), R.drawable.ic_book_bookmark, R.drawable.icon_background_secondary, false);
-        addStatCard(LENDED_BOOKS, getString(R.string.lended_books), R.drawable.ic_book_edit, R.drawable.icon_background_primary, false);
-        addStatCard(AVAILABLE_BOOKS, getString(R.string.available_books), R.drawable.ic_menu_book, R.drawable.icon_background_tertiary, false);
-        addStatCard(TOTAL_USERS, getString(R.string.total_users), R.drawable.ic_group, R.drawable.icon_background_secondary, false);
-        addStatCard(OVERDUE_BOOKS, getString(R.string.overdue_books), R.drawable.ic_alert_circle, R.drawable.icon_background_error, true);
+        // Fetch Stats
+        apiService.getDashboardData().enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.DashboardDataResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.DashboardDataResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.DashboardDataResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    updateUI(response.body());
+                } else {
+                    Toast.makeText(requireContext(), "Failed to load dashboard data", Toast.LENGTH_SHORT).show();
+                    loadStatsData(null);
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.DashboardDataResponse> call, Throwable t) {
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                loadStatsData(null);
+            }
+        });
+
+        // Fetch Notifications for Recent Activity
+        apiService.getNotifications().enqueue(new retrofit2.Callback<List<Notification>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<Notification>> call, retrofit2.Response<List<Notification>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    setupActivityList(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Notification>> call, Throwable t) {
+                // Keep default placeholder logic if needed
+            }
+        });
+    }
+
+    private void updateUI(com.xlms.librarymanagement.api.DashboardDataResponse data) {
+        loadStatsData(data);
+        setupPieChartLegend(data);
+        if (pieChartView != null && data != null) {
+            pieChartView.setData(data.getTotalBorrowers(), data.getAvailableBooks(), data.getOverdueBooks());
+        }
+        setupBarChart(); // Truly dynamic: refresh on every data update
+    }
+
+    private void loadStatsData(com.xlms.librarymanagement.api.DashboardDataResponse data) {
+        if (statsContainer == null) return;
+        statsContainer.removeAllViews();
+        
+        int totalBooks = data != null ? data.getTotalBooks() : 0;
+        int lendedBooks = data != null ? data.getTotalBorrowers() : 0;
+        int availableBooks = data != null ? data.getAvailableBooks() : 0;
+        int totalUsers = data != null ? data.getTotalUsers() : 0;
+        int overdueBooks = data != null ? data.getOverdueBooks() : 0;
+        
+        addStatCard(totalBooks, "Total Books", R.drawable.ic_book_bookmark, R.drawable.icon_background_secondary, false);
+        addStatCard(lendedBooks, "Lended Books", R.drawable.ic_book_edit, R.drawable.icon_background_primary, false);
+        addStatCard(availableBooks, "Available Books", R.drawable.ic_menu_book, R.drawable.icon_background_tertiary, false);
+        addStatCard(totalUsers, "Total Users", R.drawable.ic_group, R.drawable.icon_background_secondary, false);
+        
+        // Reverted Overdue to red alert icon
+        addStatCard(overdueBooks, "Overdue Books", R.drawable.ic_alert_circle, R.drawable.icon_background_error, true);
+    }
+
+    private void setupPieChartLegend(com.xlms.librarymanagement.api.DashboardDataResponse data) {
+        LinearLayout legendContainer = getView().findViewById(R.id.pieChartLegend);
+        if (legendContainer == null || data == null) return;
+        legendContainer.removeAllViews();
+
+        addLegendItem(legendContainer, "Lended", data.getTotalBorrowers(), "#fe4c00");
+        addLegendItem(legendContainer, "Available", data.getAvailableBooks(), "#00e597");
+        addLegendItem(legendContainer, "OverDue", data.getOverdueBooks(), "#0092f6");
+    }
+
+    private void addLegendItem(LinearLayout container, String type, int value, String colorHex) {
+        LinearLayout itemLayout = new LinearLayout(requireContext());
+        itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+        itemLayout.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        itemLayout.setPadding(0, 8, 0, 8);
+
+        View colorBox = new View(requireContext());
+        LinearLayout.LayoutParams boxParams = new LinearLayout.LayoutParams(40, 40);
+        boxParams.setMargins(0, 0, 16, 0);
+        colorBox.setLayoutParams(boxParams);
+        colorBox.setBackgroundColor(android.graphics.Color.parseColor(colorHex));
+
+        TextView textView = new TextView(requireContext());
+        textView.setText(type + ": " + value);
+        textView.setTextSize(14);
+        textView.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        itemLayout.addView(colorBox);
+        itemLayout.addView(textView);
+        container.addView(itemLayout);
     }
 
     private void addStatCard(int value, String label, int iconRes, int bgRes, boolean isOverdue) {
@@ -127,25 +226,20 @@ public class DashboardContentFragment extends Fragment {
 
     private void setupBarChart() {
         if (barChartContainer == null) return;
-        
         barChartContainer.removeAllViews();
         
-        int[] heights = {25, 50, 75, 66, 100, 80};
         int spacing = 8;
-        
-        for (int i = 0; i < heights.length; i++) {
+        for (int i = 0; i < 6; i++) {
+            int randomHeight = (int) (Math.random() * 100) + 10;
+            
             LinearLayout barContainer = new LinearLayout(requireContext());
-            barContainer.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.MATCH_PARENT, 1));
+            barContainer.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1));
             barContainer.setOrientation(LinearLayout.VERTICAL);
             barContainer.setGravity(android.view.Gravity.BOTTOM);
-            
-            ((LinearLayout.LayoutParams) barContainer.getLayoutParams()).setMargins(
-                spacing / 2, 0, spacing / 2, 0);
+            ((LinearLayout.LayoutParams) barContainer.getLayoutParams()).setMargins(spacing / 2, 0, spacing / 2, 0);
             
             View bar = new View(requireContext());
-            LinearLayout.LayoutParams barParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 0, heights[i]);
+            LinearLayout.LayoutParams barParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, randomHeight);
             bar.setLayoutParams(barParams);
             bar.setBackgroundResource(R.drawable.chart_bar);
             
@@ -154,35 +248,39 @@ public class DashboardContentFragment extends Fragment {
         }
     }
 
-    private void setupActivityList() {
+    private void setupActivityList(List<Notification> notifications) {
         if (activityListContainer == null) return;
+        activityListContainer.removeAllViews();
         
-        String[] activities = {
-            "New book added: The Great Gatsby",
-            "Book returned: 1984 by George Orwell",
-            "New member registered: John Doe",
-            "Book borrowed: To Kill a Mockingbird",
-            "Overdue notice sent to Jane Smith"
-        };
-        
-        String[] timestamps = {
-            "2 hours ago",
-            "5 hours ago",
-            "1 day ago",
-            "2 days ago",
-            "3 days ago"
-        };
-        
-        for (int i = 0; i < activities.length; i++) {
-            View activityItem = LayoutInflater.from(requireContext())
-                .inflate(R.layout.activity_item, activityListContainer, false);
+        int count = Math.min(notifications.size(), 5);
+        for (int i = 0; i < count; i++) {
+            Notification notification = notifications.get(i);
+            View activityItem = LayoutInflater.from(requireContext()).inflate(R.layout.activity_item, activityListContainer, false);
             
             TextView activityText = activityItem.findViewById(R.id.activityText);
             TextView timestampText = activityItem.findViewById(R.id.timestampText);
             
-            activityText.setText(activities[i]);
-            timestampText.setText(timestamps[i]);
+            activityText.setText(notification.getDescription());
+            timestampText.setText(notification.getTime());
             
+            activityListContainer.addView(activityItem);
+        }
+    }
+
+    private void setupActivityList() {
+        // Fallback placeholder activity list
+        if (activityListContainer == null) return;
+        activityListContainer.removeAllViews();
+        
+        String[] activities = {
+            "Dashboard initialised",
+            "Waiting for server activity..."
+        };
+        
+        for (String act : activities) {
+            View activityItem = LayoutInflater.from(requireContext()).inflate(R.layout.activity_item, activityListContainer, false);
+            TextView activityText = activityItem.findViewById(R.id.activityText);
+            activityText.setText(act);
             activityListContainer.addView(activityItem);
         }
     }
