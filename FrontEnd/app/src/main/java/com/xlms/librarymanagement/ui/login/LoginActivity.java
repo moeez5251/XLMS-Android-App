@@ -219,6 +219,10 @@ public class LoginActivity extends AppCompatActivity {
         String role = response.getRole() != null ? response.getRole().toUpperCase() : "CLIENT";
         
         sessionManager.saveSession(email, role, null, response.getUserId(), response.getToken());
+        
+        // Clear the static Retrofit instance so it picks up the NEW token
+        ApiClient.resetClient();
+        
         navigateBasedOnRole(role, email);
     }
 

@@ -19,15 +19,18 @@ import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.model.Book;
 import com.xlms.librarymanagement.model.Notification;
 import com.xlms.librarymanagement.ui.components.PieChartView;
+import com.xlms.librarymanagement.ui.components.StackedAreaChartView;
+import com.xlms.librarymanagement.ui.components.MonthData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DashboardContentFragment extends Fragment {
 
-    private LinearLayout statsContainer, barChartContainer, activityListContainer;
+    private LinearLayout statsContainer, activityListContainer;
     private Button buttonAddBook;
     private PieChartView pieChartView;
+    private StackedAreaChartView stackedAreaChart;
 
     @Nullable
     @Override
@@ -41,10 +44,10 @@ public class DashboardContentFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         
         statsContainer = view.findViewById(R.id.statsContainer);
-        barChartContainer = view.findViewById(R.id.barChartContainer);
         activityListContainer = view.findViewById(R.id.activityListContainer);
         buttonAddBook = view.findViewById(R.id.buttonAddBook);
         pieChartView = view.findViewById(R.id.pieChartView);
+        stackedAreaChart = view.findViewById(R.id.stackedAreaChart);
         
         showSkeletonLoader();
         fetchDashboardData();
@@ -148,7 +151,7 @@ public class DashboardContentFragment extends Fragment {
         if (pieChartView != null && data != null) {
             pieChartView.setData(data.getTotalBorrowers(), data.getAvailableBooks(), data.getOverdueBooks());
         }
-        setupBarChart(); // Truly dynamic: refresh on every data update
+        setupStackedAreaChart();
     }
 
     private void loadStatsData(com.xlms.librarymanagement.api.DashboardDataResponse data) {
@@ -165,9 +168,25 @@ public class DashboardContentFragment extends Fragment {
         addStatCard(lendedBooks, "Lended Books", R.drawable.ic_book_edit, R.drawable.icon_background_primary, false);
         addStatCard(availableBooks, "Available Books", R.drawable.ic_menu_book, R.drawable.icon_background_tertiary, false);
         addStatCard(totalUsers, "Total Users", R.drawable.ic_group, R.drawable.icon_background_secondary, false);
-        
-        // Reverted Overdue to red alert icon
         addStatCard(overdueBooks, "Overdue Books", R.drawable.ic_alert_circle, R.drawable.icon_background_error, true);
+    }
+
+    private void setupStackedAreaChart() {
+        if (stackedAreaChart == null) return;
+        
+        String[] months = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+        
+        List<MonthData> chartData = new ArrayList<>();
+        for (String month : months) {
+            int desktop = (int) (Math.random() * 250) + 50;
+            int mobile = (int) (Math.random() * 150) + 30;
+            chartData.add(new MonthData(month, desktop, mobile));
+        }
+        
+        stackedAreaChart.setData(chartData);
     }
 
     private void setupPieChartLegend(com.xlms.librarymanagement.api.DashboardDataResponse data) {
@@ -224,30 +243,6 @@ public class DashboardContentFragment extends Fragment {
         statsContainer.addView(card);
     }
 
-    private void setupBarChart() {
-        if (barChartContainer == null) return;
-        barChartContainer.removeAllViews();
-        
-        int spacing = 8;
-        for (int i = 0; i < 6; i++) {
-            int randomHeight = (int) (Math.random() * 100) + 10;
-            
-            LinearLayout barContainer = new LinearLayout(requireContext());
-            barContainer.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1));
-            barContainer.setOrientation(LinearLayout.VERTICAL);
-            barContainer.setGravity(android.view.Gravity.BOTTOM);
-            ((LinearLayout.LayoutParams) barContainer.getLayoutParams()).setMargins(spacing / 2, 0, spacing / 2, 0);
-            
-            View bar = new View(requireContext());
-            LinearLayout.LayoutParams barParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, randomHeight);
-            bar.setLayoutParams(barParams);
-            bar.setBackgroundResource(R.drawable.chart_bar);
-            
-            barContainer.addView(bar);
-            barChartContainer.addView(barContainer);
-        }
-    }
-
     private void setupActivityList(List<Notification> notifications) {
         if (activityListContainer == null) return;
         activityListContainer.removeAllViews();
@@ -268,7 +263,6 @@ public class DashboardContentFragment extends Fragment {
     }
 
     private void setupActivityList() {
-        // Fallback placeholder activity list
         if (activityListContainer == null) return;
         activityListContainer.removeAllViews();
         
