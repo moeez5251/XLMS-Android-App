@@ -50,7 +50,8 @@ public class ClientBookInfoFragment extends Fragment {
         view.findViewById(R.id.buttonBack).setOnClickListener(v -> getParentFragmentManager().popBackStack());
         view.findViewById(R.id.buttonCancel).setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
-        view.findViewById(R.id.buttonLendThisBook).setOnClickListener(v -> {
+        view.findViewById(R.id.buttonSave).setOnClickListener(v -> {
+            // Mapping lend action to save button as it's the primary action in the updated layout
             Fragment checkoutFragment = CheckoutFragment.newInstance(book);
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
@@ -63,17 +64,12 @@ public class ClientBookInfoFragment extends Fragment {
     }
 
     private void populateData(View view) {
-        ((TextView) view.findViewById(R.id.textViewBookTitle)).setText(book.getTitle());
-        ((TextView) view.findViewById(R.id.textViewAuthor)).setText(book.getAuthor());
-        ((TextView) view.findViewById(R.id.textViewLanguage)).setText(book.getLanguage());
-        ((TextView) view.findViewById(R.id.textViewPrice)).setText(String.format(Locale.getDefault(), "Rs %.0f", book.getPrice()));
+        ((android.widget.EditText) view.findViewById(R.id.editTitle)).setText(book.getTitle());
+        ((android.widget.EditText) view.findViewById(R.id.editAuthor)).setText(book.getAuthor());
+//        ((android.widget.EditText) view.findViewById(R.id.editLanguage)).setText(book.getLanguage());
+        ((android.widget.EditText) view.findViewById(R.id.editPrice)).setText(String.format(Locale.getDefault(), "%.0f", book.getPrice()));
         ((TextView) view.findViewById(R.id.textViewStatus)).setText(book.getStatus());
-        ((TextView) view.findViewById(R.id.textViewTotalCopies)).setText(String.valueOf(book.getTotal()));
-        ((TextView) view.findViewById(R.id.textViewAvailableCopies)).setText(String.valueOf(book.getAvailable()));
-        ((TextView) view.findViewById(R.id.textViewLendedCopies)).setText(String.valueOf(book.getTotal() - book.getAvailable()));
+        ((android.widget.EditText) view.findViewById(R.id.editTotal)).setText(String.valueOf(book.getTotal()));
         ((TextView) view.findViewById(R.id.textViewBookId)).setText("BK_" + book.getBookId());
-
-        String currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        ((TextView) view.findViewById(R.id.textViewCurrentDate)).setText("System Online: " + currentDate);
     }
 }

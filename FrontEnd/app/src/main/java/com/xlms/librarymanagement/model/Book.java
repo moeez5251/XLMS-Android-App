@@ -1,17 +1,38 @@
 package com.xlms.librarymanagement.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Book implements Serializable {
+    @SerializedName("Book_ID")
     private String bookId;
+    
+    @SerializedName("Book_Title")
     private String title;
+    
+    @SerializedName("Author")
     private String author;
+    
+    @SerializedName("Category")
     private String category;
+    
+    @SerializedName("Language")
     private String language;
+    
+    @SerializedName("Price")
     private double price;
+    
+    @SerializedName("Total_Copies")
     private int total;
+    
+    @SerializedName("Available")
     private int available;
+    
+    @SerializedName("Status")
     private String status;
+    
+    @SerializedName("Pages")
+    private int pages;
 
     public Book(String bookId, String title, String author, String category, 
                 String language, double price, int total, int available, String status) {
@@ -43,4 +64,6 @@ public class Book implements Serializable {
     public void setAvailable(int available) { this.available = available; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public int getPages() { return pages; }
+    public void setPages(int pages) { this.pages = pages; }
 }

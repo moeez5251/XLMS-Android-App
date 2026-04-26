@@ -40,14 +40,6 @@
                 android:textColor="@color/primary"
                 android:fontFamily="@font/manrope_bold"
                 android:layout_marginStart="8dp" />
-
-            <ImageButton
-                android:id="@+id/buttonMoreOptions"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_more_vert"
-                android:contentDescription="More options" />
         </LinearLayout>
 
         <!-- Content -->
@@ -91,82 +83,35 @@
                         android:textAllCaps="true"
                         android:letterSpacing="0.15"
                         android:fontFamily="@font/inter_semibold" />
-
-                    <TextView
-                        android:id="@+id/textViewCurrentDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="System Online: 09/04/2026"
-                        android:textSize="16sp"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/manrope_bold" />
                 </LinearLayout>
             </FrameLayout>
 
-            <!-- Book Title -->
-            <TextView
-                android:id="@+id/textViewBookTitle"
+            <ProgressBar
+                android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="The Republic of Plato"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/editTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:textSize="24sp"
                 android:textColor="@color/on_surface"
                 android:fontFamily="@font/manrope_bold"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginBottom="4dp"
+                android:background="@null" />
 
-            <!-- Author -->
-            <TextView
-                android:id="@+id/textViewAuthor"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/editAuthor"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Plato"
                 android:textSize="14sp"
                 android:textColor="@color/on_surface_variant"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="20dp"
+                android:background="@null" />
 
-            <!-- Divider -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/outline_variant"
-                android:alpha="0.15"
-                android:layout_marginBottom="20dp" />
-
-            <!-- Book Details Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="@color/outline_variant"
-                    android:alpha="0.15" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Volume Details"
-                    android:textSize="12sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:fontFamily="@font/manrope_bold"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.15"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp" />
-
-                <View
-                    android:layout_width="48dp"
-                    android:layout_height="1dp"
-                    android:background="@color/outline_variant"
-                    android:alpha="0.15" />
-            </LinearLayout>
-
-            <!-- Details Grid -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -174,7 +119,6 @@
                 android:rowCount="4"
                 android:layout_marginBottom="20dp">
 
-                <!-- Category -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -189,20 +133,13 @@
                         android:layout_height="wrap_content"
                         android:text="Category"
                         android:textSize="11sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/textViewCategory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Philosophy"
-                        android:textSize="14sp"
-                        android:textColor="@color/on_surface"
-                        android:fontFamily="@font/manrope_bold" />
+                        android:textColor="@color/on_surface_variant" />
+                    <Spinner
+                        android:id="@+id/spinnerCategory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
-                <!-- Language -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -217,20 +154,13 @@
                         android:layout_height="wrap_content"
                         android:text="Language"
                         android:textSize="11sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/textViewLanguage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="English"
-                        android:textSize="14sp"
-                        android:textColor="@color/on_surface"
-                        android:fontFamily="@font/manrope_bold" />
+                        android:textColor="@color/on_surface_variant" />
+                    <Spinner
+                        android:id="@+id/spinnerLanguage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
-                <!-- Price -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -245,20 +175,17 @@
                         android:layout_height="wrap_content"
                         android:text="Price"
                         android:textSize="11sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/textViewPrice"
-                        android:layout_width="wrap_content"
+                        android:textColor="@color/on_surface_variant" />
+                    <EditText
+                        android:id="@+id/editPrice"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="£25.00"
+                        android:inputType="numberDecimal"
                         android:textSize="14sp"
                         android:textColor="@color/on_surface"
-                        android:fontFamily="@font/manrope_bold" />
+                        android:background="@null" />
                 </LinearLayout>
 
-                <!-- Status -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -273,174 +200,72 @@
                         android:layout_height="wrap_content"
                         android:text="Status"
                         android:textSize="11sp"
-                        android:textColor="@color/on_surface_variant"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/textViewStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Available"
-                        android:textSize="14sp"
-                        android:textColor="@color/status_active_text"
-                        android:fontFamily="@font/manrope_bold" />
+                        android:textColor="@color/on_surface_variant" />
+                    <Spinner
+                        android:id="@+id/spinnerStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </GridLayout>
 
-            <!-- Copies Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@color/surface_container_low"
                 android:padding="16dp"
-                android:layout_marginBottom="20dp"
-                android:gravity="center_vertical">
+                android:layout_marginBottom="20dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Copies"
                         android:textSize="12sp"
                         android:textColor="@color/on_surface_variant" />
-
-                    <TextView
-                        android:id="@+id/textViewTotalCopies"
-                        android:layout_width="wrap_content"
+                    <EditText
+                        android:id="@+id/editTotal"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="10"
-                        android:textSize="24sp"
+                        android:inputType="number"
+                        android:textSize="20sp"
                         android:textColor="@color/primary"
-                        android:fontFamily="@font/manrope_bold" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="40dp"
-                    android:background="@color/outline_variant"
-                    android:alpha="0.15" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Available"
-                        android:textSize="12sp"
-                        android:textColor="@color/on_surface_variant" />
-
-                    <TextView
-                        android:id="@+id/textViewAvailableCopies"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="7"
-                        android:textSize="24sp"
-                        android:textColor="@color/status_available"
-                        android:fontFamily="@font/manrope_bold" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="40dp"
-                    android:background="@color/outline_variant"
-                    android:alpha="0.15" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Lended"
-                        android:textSize="12sp"
-                        android:textColor="@color/on_surface_variant" />
-
-                    <TextView
-                        android:id="@+id/textViewLendedCopies"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="3"
-                        android:textSize="24sp"
-                        android:textColor="@color/error"
-                        android:fontFamily="@font/manrope_bold" />
+                        android:background="@null" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Book ID -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:padding="12dp"
                 android:background="@color/surface_container_low">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Book ID: "
                     android:textSize="12sp"
                     android:textColor="@color/on_surface_variant" />
-
                 <TextView
                     android:id="@+id/textViewBookId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="BK_001"
                     android:textSize="12sp"
-                    android:textColor="@color/primary"
-                    android:fontFamily="monospace"
-                    android:layout_marginStart="4dp" />
+                    android:textColor="@color/primary" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Bottom Actions -->
-        <LinearLayout
+        <Button
+            android:id="@+id/buttonSave"
             android:layout_width="match_parent"
-            android:layout_height="107dp"
-            android:background="@color/surface_container_low"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="20dp">
-
-            <Button
-                android:id="@+id/buttonCancel"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginEnd="12dp"
-                android:background="?attr/selectableItemBackground"
-                android:paddingStart="32dp"
-                android:paddingEnd="32dp"
-                android:text="Cancel"
-                android:textColor="@color/primary"
-                android:textSize="12sp" />
-
-            <Button
-                android:id="@+id/buttonLendThisBook"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:background="@drawable/button_primary_gradient"
-                android:paddingStart="26dp"
-                android:paddingEnd="26dp"
-                android:text="Lend This Book"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:layout_height="48dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/button_primary_gradient"
+            android:text="Save Changes"
+            android:textColor="@color/white" />
     </LinearLayout>
 </ScrollView>

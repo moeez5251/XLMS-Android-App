@@ -87,20 +87,32 @@
             android:background="@drawable/filter_button_background"
             android:text="Filters"
             android:textAllCaps="false"
-            android:textColor="@color/on_surface_variant"
+            android:textColor="@color/white"
             android:textSize="12sp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp" />
     </LinearLayout>
 
     <!-- Books List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewBooks"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-         />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewBooks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false" />
+
+        <LinearLayout
+            android:id="@+id/skeletonContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+        </LinearLayout>
+    </FrameLayout>
 
     <!-- Table Footer Control -->
     <LinearLayout

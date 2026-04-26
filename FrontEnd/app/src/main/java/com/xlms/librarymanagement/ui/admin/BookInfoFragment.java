@@ -1,8 +1,6 @@
 package com.xlms.librarymanagement.ui.admin;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,43 +17,40 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.xlms.librarymanagement.R;
-import com.xlms.librarymanagement.model.BookInfo;
-import com.xlms.librarymanagement.model.BookLending;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.GetByIdRequest;
+import com.xlms.librarymanagement.api.MessageResponse;
+import com.xlms.librarymanagement.model.Book;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BookInfoFragment extends Fragment {
 
-    private static final String ARG_BOOK_INFO = "book_info";
+    private static final String ARG_BOOK_ID = "book_id";
+    private EditText editTitle, editAuthor, editPrice, editTotal;
+    private TextView textViewBookId, textViewStatus;
+    private Spinner spinnerCategory, spinnerLanguage, spinnerStatus;
+    private Button buttonSave;
+    private android.widget.ProgressBar progressBar;
+    private String bookId;
+    private ImageButton buttonBack;
 
-    private TextView textViewBookTitle, textViewAuthor, textViewCategory, textViewLanguage;
-    private TextView textViewPrice, textViewStatus, textViewTotalCopies, textViewAvailableCopies;
-    private TextView textViewLendedCopies, textViewBookId, textViewCurrentDate;
-    private ImageButton buttonBack, buttonMoreOptions;
-    private Button buttonCancel, buttonLendThisBook;
+    private List<String> categories = new ArrayList<>();
+    private List<String> languages = new ArrayList<>();
+    private List<String> statuses = Arrays.asList("Available", "Limited", "Out of Stock");
 
-    private BookInfo bookInfo;
-    private OnBookInfoActionListener listener;
-
-    public interface OnBookInfoActionListener {
-        void onLendBookClick(BookInfo book);
-        void onBack();
-    }
-
-    public static BookInfoFragment newInstance(BookInfo book) {
+    public static BookInfoFragment newInstance(String bookId) {
         BookInfoFragment fragment = new BookInfoFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_BOOK_INFO, book);
+        args.putString(ARG_BOOK_ID, bookId);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public void setOnBookInfoActionListener(OnBookInfoActionListener listener) {
-        this.listener = listener;
     }
 
     @Nullable
@@ -68,76 +63,146 @@ public class BookInfoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        
         if (getArguments() != null) {
-            bookInfo = (BookInfo) getArguments().getSerializable(ARG_BOOK_INFO);
-        }
-
-        if (bookInfo == null) {
-            Toast.makeText(requireContext(), "Error: No book data", Toast.LENGTH_SHORT).show();
-            if (listener != null) listener.onBack();
-            return;
+            bookId = getArguments().getString(ARG_BOOK_ID);
         }
 
         initViews(view);
-        populateFields();
+        fetchFilterOptions();
+        fetchBookDetails();
         setupClickListeners();
     }
 
     private void initViews(View view) {
-        textViewBookTitle = view.findViewById(R.id.textViewBookTitle);
-        textViewAuthor = view.findViewById(R.id.textViewAuthor);
-        textViewCategory = view.findViewById(R.id.textViewCategory);
-        textViewLanguage = view.findViewById(R.id.textViewLanguage);
-        textViewPrice = view.findViewById(R.id.textViewPrice);
-        textViewStatus = view.findViewById(R.id.textViewStatus);
-        textViewTotalCopies = view.findViewById(R.id.textViewTotalCopies);
-        textViewAvailableCopies = view.findViewById(R.id.textViewAvailableCopies);
-        textViewLendedCopies = view.findViewById(R.id.textViewLendedCopies);
+        editTitle = view.findViewById(R.id.editTitle);
+        editAuthor = view.findViewById(R.id.editAuthor);
+        spinnerCategory = view.findViewById(R.id.spinnerCategory);
+        spinnerLanguage = view.findViewById(R.id.spinnerLanguage);
+        spinnerStatus = view.findViewById(R.id.spinnerStatus);
+        editPrice = view.findViewById(R.id.editPrice);
+        editTotal = view.findViewById(R.id.editTotal);
         textViewBookId = view.findViewById(R.id.textViewBookId);
-        textViewCurrentDate = view.findViewById(R.id.textViewCurrentDate);
+        textViewStatus = view.findViewById(R.id.textViewStatus);
+        buttonSave = view.findViewById(R.id.buttonSave);
+        progressBar = view.findViewById(R.id.progressBar);
         buttonBack = view.findViewById(R.id.buttonBack);
-        buttonMoreOptions = view.findViewById(R.id.buttonMoreOptions);
-        buttonCancel = view.findViewById(R.id.buttonCancel);
-        buttonLendThisBook = view.findViewById(R.id.buttonLendThisBook);
     }
 
-    private void populateFields() {
-        textViewBookTitle.setText(bookInfo.getTitle());
-        textViewAuthor.setText(bookInfo.getAuthor());
-        textViewCategory.setText(bookInfo.getCategory());
-        textViewLanguage.setText(bookInfo.getLanguage());
-        textViewPrice.setText(String.format(Locale.getDefault(), "£%.2f", bookInfo.getPrice()));
-        textViewStatus.setText(bookInfo.getStatus());
-        textViewTotalCopies.setText(String.valueOf(bookInfo.getTotalCopies()));
-        textViewAvailableCopies.setText(String.valueOf(bookInfo.getAvailableCopies()));
+    private void fetchFilterOptions() {
+        com.xlms.librarymanagement.api.ApiService apiService = ApiClient.getApiService(requireContext());
         
-        int lended = bookInfo.getTotalCopies() - bookInfo.getAvailableCopies();
-        textViewLendedCopies.setText(String.valueOf(lended));
-        
-        textViewBookId.setText(bookInfo.getBookId());
+        apiService.getDistinctValues(new com.xlms.librarymanagement.api.ColumnRequest(java.util.Collections.singletonList("Category")))
+            .enqueue(new Callback<List<com.google.gson.JsonObject>>() {
+                @Override
+                public void onResponse(Call<List<com.google.gson.JsonObject>> call, Response<List<com.google.gson.JsonObject>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        for (com.google.gson.JsonObject obj : response.body()) {
+                            if (obj.has("Category")) categories.add(obj.get("Category").getAsString());
+                        }
+                        setupSpinners();
+                    }
+                }
+                @Override public void onFailure(Call<List<com.google.gson.JsonObject>> call, Throwable t) {}
+            });
 
-        // Set current date
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String currentDate = sdf.format(Calendar.getInstance().getTime());
-        textViewCurrentDate.setText("System Online: " + currentDate);
+        apiService.getDistinctValues(new com.xlms.librarymanagement.api.ColumnRequest(java.util.Collections.singletonList("Language")))
+            .enqueue(new Callback<List<com.google.gson.JsonObject>>() {
+                @Override
+                public void onResponse(Call<List<com.google.gson.JsonObject>> call, Response<List<com.google.gson.JsonObject>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        for (com.google.gson.JsonObject obj : response.body()) {
+                            if (obj.has("Language")) languages.add(obj.get("Language").getAsString());
+                        }
+                        setupSpinners();
+                    }
+                }
+                @Override public void onFailure(Call<List<com.google.gson.JsonObject>> call, Throwable t) {}
+            });
+    }
+
+    private void setupSpinners() {
+        ArrayAdapter<String> catAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories);
+        spinnerCategory.setAdapter(catAdapter);
+        
+        ArrayAdapter<String> langAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, languages);
+        spinnerLanguage.setAdapter(langAdapter);
+        
+        ArrayAdapter<String> statAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, statuses);
+        spinnerStatus.setAdapter(statAdapter);
+    }
+
+    private void fetchBookDetails() {
+        progressBar.setVisibility(View.VISIBLE);
+        ApiClient.getApiService(requireContext())
+            .getBookById(new GetByIdRequest(bookId))
+            .enqueue(new Callback<List<Book>>() {
+                @Override
+                public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
+                    progressBar.setVisibility(View.GONE);
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        populateFields(response.body().get(0));
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<Book>> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Error fetching details", Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
+    private void populateFields(Book book) {
+        if (editTitle != null) editTitle.setText(book.getTitle());
+        if (editAuthor != null) editAuthor.setText(book.getAuthor());
+        if (editPrice != null) editPrice.setText(String.valueOf(book.getPrice()));
+        if (editTotal != null) editTotal.setText(String.valueOf(book.getTotal()));
+        if (textViewBookId != null) textViewBookId.setText(book.getBookId());
+        if (textViewStatus != null) textViewStatus.setText(book.getStatus());
+
+        setSpinnerSelection(spinnerCategory, categories, book.getCategory());
+        setSpinnerSelection(spinnerLanguage, languages, book.getLanguage());
+        setSpinnerSelection(spinnerStatus, statuses, book.getStatus());
+    }
+
+    private void setSpinnerSelection(Spinner spinner, List<String> list, String value) {
+        int position = list.indexOf(value);
+        if (position >= 0) spinner.setSelection(position);
     }
 
     private void setupClickListeners() {
-        buttonBack.setOnClickListener(v -> {
-            if (listener != null) listener.onBack();
-        });
+        buttonSave.setOnClickListener(v -> saveChanges());
+        buttonBack.setOnClickListener(v -> requireActivity().onBackPressed());
+    }
 
-        buttonMoreOptions.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "More options coming soon...", Toast.LENGTH_SHORT).show();
-        });
+    private void saveChanges() {
+        progressBar.setVisibility(View.VISIBLE);
+        
+        Book updatedBook = new Book(
+            bookId, 
+            editTitle.getText().toString(),
+            editAuthor.getText().toString(),
+            spinnerCategory.getSelectedItem().toString(),
+            spinnerLanguage.getSelectedItem().toString(),
+            Double.parseDouble(editPrice.getText().toString()),
+            Integer.parseInt(editTotal.getText().toString()),
+            0,
+            spinnerStatus.getSelectedItem().toString()
+        );
 
-        buttonCancel.setOnClickListener(v -> {
-            if (listener != null) listener.onBack();
-        });
-
-        buttonLendThisBook.setOnClickListener(v -> {
-            if (listener != null) listener.onLendBookClick(bookInfo);
-        });
+        ApiClient.getApiService(requireContext())
+            .updateBook(updatedBook)
+            .enqueue(new Callback<MessageResponse>() {
+                @Override
+                public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Changes saved!", Toast.LENGTH_SHORT).show();
+                }
+                @Override
+                public void onFailure(Call<MessageResponse> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Error saving changes", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 }

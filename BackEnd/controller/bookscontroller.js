@@ -1,17 +1,10 @@
 const { poolPromise } = require('../models/db');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
+
 exports.inserting = async (req, res) => {
-    const {Book_Title, Author, Category, Language, Total_Copies, Status, Pages, Price, API } = req.body;
-    try {
-        if (API !== process.env.XLMS_API) {
-            return res.status(400).json({ message: 'Invalid API' });
-        }
-    }
-    catch (err) {
-        console.error('Error in API validation:', err);
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
+    const {Book_Title, Author, Category, Language, Total_Copies, Status, Pages, Price } = req.body;
+    
     if (!Book_Title || !Author || !Category || !Language || !Total_Copies || !Status || !Pages || !Price) {
         return res.status(400).json({ error: 'All fields are required' });
     }
@@ -37,11 +30,8 @@ exports.inserting = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 exports.getting = async (req, res) => {
-    const { API } = req.body
-    if (API !== process.env.XLMS_API) {
-        return res.status(400).json({ error: 'Invalid API' });
-    }
     try {
         const pool = await poolPromise;
         const result = await pool.request().query('SELECT * FROM Books');
@@ -51,6 +41,7 @@ exports.getting = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 exports.getbyID = async (req, res) => {
     try {
         const { ID } = req.body;
@@ -69,6 +60,7 @@ exports.getbyID = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 exports.updatebook = async (req, res) => {
     const { Book_ID, Book_Title, Author, Category, Language, Total_Copies, Status, Pages, Price } = req.body;
     if (!Book_ID || !Book_Title || !Author || !Category || !Language || !Status || !Pages || !Price) {
@@ -101,6 +93,7 @@ exports.updatebook = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 exports.deletebook = async (req, res) => {
     const ID_arr = req.body;
 
@@ -128,6 +121,7 @@ exports.deletebook = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 exports.getbycolumnname = async (req, res) => {
     const { column } = req.body;
     if (column.length === 0) {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +33,14 @@ public class ManageBooksFragment extends Fragment {
     private List<Book> masterBookList;
     private TextView textViewTotalBooks;
     private EditText editTextSearch;
+    private LinearLayout skeletonContainer;
 
+    private List<String> categoriesList = new ArrayList<>();
+    private List<String> statusesList = new ArrayList<>();
+    private List<String> languagesList = new ArrayList<>();
     private String currentCategory = "All";
     private String currentStatus = "All";
+    private String currentLanguage = "All";
     private String currentSearch = "";
 
     @Nullable
@@ -50,17 +56,116 @@ public class ManageBooksFragment extends Fragment {
 
         initViews(view);
         setupRecyclerView();
-        loadDummyData();
+        fetchBooks();
+        fetchFilterOptions();
         setupSearch();
         setupClickListeners();
         
         applyFilters();
     }
 
+    private void showSkeleton(boolean show) {
+        if (skeletonContainer == null) return;
+        if (show) {
+            skeletonContainer.removeAllViews();
+            skeletonContainer.setVisibility(View.VISIBLE);
+            recyclerViewBooks.setVisibility(View.GONE);
+            
+            android.view.animation.Animation shimmerAnim = android.view.animation.AnimationUtils.loadAnimation(requireContext(), R.anim.shimmer_animation);
+            for (int i = 0; i < 5; i++) {
+                View skeleton = LayoutInflater.from(requireContext()).inflate(R.layout.layout_skeleton_book_item, skeletonContainer, false);
+                View shimmerView = skeleton.findViewById(R.id.shimmerView);
+                if (shimmerView != null) shimmerView.startAnimation(shimmerAnim);
+                skeletonContainer.addView(skeleton);
+            }
+        } else {
+            skeletonContainer.setVisibility(View.GONE);
+            recyclerViewBooks.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void fetchBooks() {
+        showSkeleton(true);
+        com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext()).getBooks().enqueue(new retrofit2.Callback<List<Book>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<Book>> call, retrofit2.Response<List<Book>> response) {
+                showSkeleton(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    masterBookList.clear();
+                    masterBookList.addAll(response.body());
+                    applyFilters();
+                } else {
+                    Toast.makeText(requireContext(), "Failed to fetch books", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Book>> call, Throwable t) {
+                showSkeleton(false);
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchFilterOptions() {
+        com.xlms.librarymanagement.api.ApiService apiService = com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext());
+        
+        // Fetch Categories
+        apiService.getDistinctValues(new com.xlms.librarymanagement.api.ColumnRequest(java.util.Collections.singletonList("Category")))
+                .enqueue(new retrofit2.Callback<List<com.google.gson.JsonObject>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<com.google.gson.JsonObject>> call, retrofit2.Response<List<com.google.gson.JsonObject>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    categoriesList.clear();
+                    categoriesList.add("All");
+                    for (com.google.gson.JsonObject obj : response.body()) {
+                        if (obj.has("Category")) categoriesList.add(obj.get("Category").getAsString());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(retrofit2.Call<List<com.google.gson.JsonObject>> call, Throwable t) {}
+        });
+
+        // Fetch Statuses
+        apiService.getDistinctValues(new com.xlms.librarymanagement.api.ColumnRequest(java.util.Collections.singletonList("Status")))
+                .enqueue(new retrofit2.Callback<List<com.google.gson.JsonObject>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<com.google.gson.JsonObject>> call, retrofit2.Response<List<com.google.gson.JsonObject>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    statusesList.clear();
+                    statusesList.add("All");
+                    for (com.google.gson.JsonObject obj : response.body()) {
+                        if (obj.has("Status")) statusesList.add(obj.get("Status").getAsString());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(retrofit2.Call<List<com.google.gson.JsonObject>> call, Throwable t) {}
+        });
+
+        // Fetch Languages
+        apiService.getDistinctValues(new com.xlms.librarymanagement.api.ColumnRequest(java.util.Collections.singletonList("Language")))
+                .enqueue(new retrofit2.Callback<List<com.google.gson.JsonObject>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<com.google.gson.JsonObject>> call, retrofit2.Response<List<com.google.gson.JsonObject>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    languagesList.clear();
+                    languagesList.add("All");
+                    for (com.google.gson.JsonObject obj : response.body()) {
+                        if (obj.has("Language")) languagesList.add(obj.get("Language").getAsString());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(retrofit2.Call<List<com.google.gson.JsonObject>> call, Throwable t) {}
+        });
+    }
     private void initViews(View view) {
         recyclerViewBooks = view.findViewById(R.id.recyclerViewBooks);
         textViewTotalBooks = view.findViewById(R.id.textViewTotalBooks);
         editTextSearch = view.findViewById(R.id.editTextSearch);
+        skeletonContainer = view.findViewById(R.id.skeletonContainer);
     }
 
     private void setupRecyclerView() {
@@ -78,17 +183,6 @@ public class ManageBooksFragment extends Fragment {
         });
         recyclerViewBooks.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewBooks.setAdapter(bookAdapter);
-    }
-
-    private void loadDummyData() {
-        masterBookList.clear();
-        masterBookList.add(new Book("14-88219-X", "Rework", "Jason Fried", "Business", "English", 15.00, 8, 8, "Available"));
-        masterBookList.add(new Book("07-43203-1", "The Great Gatsby", "F. Scott Fitzgerald", "Classic", "English", 12.50, 12, 4, "Limited"));
-        masterBookList.add(new Book("99-10293-A", "Thinking, Fast and Slow", "Daniel Kahneman", "Science", "English", 22.00, 5, 0, "Out of Stock"));
-        masterBookList.add(new Book("42-11882-X", "Sapiens", "Yuval Noah Harari", "History", "Hebrew", 18.99, 15, 11, "Available"));
-        masterBookList.add(new Book("21-33490-C", "The Alchemist", "Paulo Coelho", "Fiction", "Portuguese", 10.00, 20, 20, "Available"));
-        masterBookList.add(new Book("55-11223-B", "Atomic Habits", "James Clear", "Self-Help", "English", 16.00, 10, 2, "Limited"));
-        masterBookList.add(new Book("88-99001-Z", "1984", "George Orwell", "Classic", "English", 9.99, 15, 15, "Available"));
     }
 
     private void setupSearch() {
@@ -121,8 +215,7 @@ public class ManageBooksFragment extends Fragment {
         fragment.setOnBookActionListener(new AddBookFragment.OnBookActionListener() {
             @Override
             public void onBookAdded(Book book) {
-                masterBookList.add(0, book);
-                applyFilters();
+                fetchBooks(); // Refresh from server
                 closeDetailFragment();
                 Toast.makeText(requireContext(), "Book added: " + book.getTitle(), Toast.LENGTH_SHORT).show();
             }
@@ -137,32 +230,7 @@ public class ManageBooksFragment extends Fragment {
     }
 
     private void openBookInfoFragment(Book book) {
-        // Convert Book to BookInfo
-        BookInfo bookInfo = new BookInfo(
-            book.getBookId(),
-            book.getTitle(),
-            book.getAuthor(),
-            book.getCategory(),
-            book.getLanguage(),
-            book.getPrice(),
-            book.getTotal(),
-            book.getAvailable(),
-            book.getStatus()
-        );
-
-        BookInfoFragment fragment = BookInfoFragment.newInstance(bookInfo);
-        fragment.setOnBookInfoActionListener(new BookInfoFragment.OnBookInfoActionListener() {
-            @Override
-            public void onLendBookClick(BookInfo book) {
-                // Handle lend book click if needed
-                Toast.makeText(requireContext(), "Lend book: " + book.getTitle(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onBack() {
-                closeDetailFragment();
-            }
-        });
+        BookInfoFragment fragment = BookInfoFragment.newInstance(book.getBookId());
         openDetailFragment(fragment);
     }
 
@@ -185,6 +253,7 @@ public class ManageBooksFragment extends Fragment {
             boolean matchSearch = true;
             boolean matchCategory = true;
             boolean matchStatus = true;
+            boolean matchLanguage = true;
 
             if (!currentSearch.isEmpty()) {
                 String title = book.getTitle().toLowerCase(Locale.ROOT);
@@ -210,7 +279,11 @@ public class ManageBooksFragment extends Fragment {
                 matchStatus = book.getStatus().equalsIgnoreCase(currentStatus);
             }
 
-            if (matchSearch && matchCategory && matchStatus) {
+            if (!currentLanguage.equals("All")) {
+                matchLanguage = book.getLanguage().equalsIgnoreCase(currentLanguage);
+            }
+
+            if (matchSearch && matchCategory && matchStatus && matchLanguage) {
                 filteredList.add(book);
             }
         }
@@ -220,12 +293,13 @@ public class ManageBooksFragment extends Fragment {
     }
 
     private void showFilterDialog() {
-        String[] options = {"Filter by Category", "Filter by Status", "Reset All Filters"};
+        String[] options = {"Filter by Category", "Filter by Status", "Filter by Language", "Reset All Filters"};
         new AlertDialog.Builder(requireContext())
             .setTitle("Manage Filters")
             .setItems(options, (dialog, which) -> {
                 if (which == 0) showCategoryDialog();
                 else if (which == 1) showStatusDialog();
+                else if (which == 2) showLanguageDialog();
                 else resetAllFilters();
             })
             .setNegativeButton("Cancel", null)
@@ -233,7 +307,11 @@ public class ManageBooksFragment extends Fragment {
     }
 
     private void showCategoryDialog() {
-        String[] categories = {"All", "Business", "Classic", "Science", "History", "Fiction", "Self-Help"};
+        if (categoriesList.isEmpty()) {
+            Toast.makeText(requireContext(), "Categories still loading...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String[] categories = categoriesList.toArray(new String[0]);
         new AlertDialog.Builder(requireContext())
             .setTitle("Select Category")
             .setItems(categories, (dialog, which) -> {
@@ -247,7 +325,11 @@ public class ManageBooksFragment extends Fragment {
     }
 
     private void showStatusDialog() {
-        String[] statuses = {"All", "Available", "Limited", "Out of Stock"};
+        if (statusesList.isEmpty()) {
+            Toast.makeText(requireContext(), "Statuses still loading...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String[] statuses = statusesList.toArray(new String[0]);
         new AlertDialog.Builder(requireContext())
             .setTitle("Select Status")
             .setItems(statuses, (dialog, which) -> {
@@ -260,9 +342,29 @@ public class ManageBooksFragment extends Fragment {
             .show();
     }
 
+    private void showLanguageDialog() {
+        if (languagesList.isEmpty()) {
+            Toast.makeText(requireContext(), "Languages still loading...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String[] languages = languagesList.toArray(new String[0]);
+        new AlertDialog.Builder(requireContext())
+            .setTitle("Select Language")
+            .setItems(languages, (dialog, which) -> {
+                currentLanguage = languages[which];
+                currentCategory = "All";
+                currentStatus = "All";
+                editTextSearch.setText("");
+                applyFilters();
+            })
+            .setNegativeButton("Cancel", null)
+            .show();
+    }
+
     private void resetAllFilters() {
         currentCategory = "All";
         currentStatus = "All";
+        currentLanguage = "All";
         currentSearch = "";
         editTextSearch.setText("");
         applyFilters();

@@ -51,7 +51,11 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
         Book book = displayList.get(position);
 
-        holder.textViewBookId.setText(book.getBookId());
+        String bookId = book.getBookId();
+        if (bookId != null && bookId.length() > 4) {
+            bookId = bookId.substring(0, 4) + "...";
+        }
+        holder.textViewBookId.setText(bookId);
         holder.textViewBookTitle.setText(book.getTitle());
         holder.textViewAuthor.setText(book.getAuthor());
         holder.textViewCategory.setText(book.getCategory());

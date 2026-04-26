@@ -207,18 +207,8 @@ public class LendedBooksFragment extends Fragment {
 
     // Navigation Methods
     private void openBookInfoFragment(BookInfo bookInfo) {
-        BookInfoFragment fragment = BookInfoFragment.newInstance(bookInfo);
-        fragment.setOnBookInfoActionListener(new BookInfoFragment.OnBookInfoActionListener() {
-            @Override
-            public void onLendBookClick(BookInfo book) {
-                openLendBookFragment(book);
-            }
-
-            @Override
-            public void onBack() {
-                closeDetailFragment();
-            }
-        });
+        // Convert BookInfo to ID String
+        BookInfoFragment fragment = BookInfoFragment.newInstance(bookInfo.getBookId());
         openDetailFragment(fragment);
     }
 
