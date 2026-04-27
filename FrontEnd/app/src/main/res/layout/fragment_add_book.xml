@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/input_field_background"
-                android:hint="Enter full literary title"
+                android:hint="Enter Book Name"
                 android:inputType="textCapSentences"
                 android:padding="12dp"
                 android:textColor="@color/on_surface"

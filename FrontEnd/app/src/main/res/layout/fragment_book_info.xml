@@ -42,230 +42,334 @@
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
-        <!-- Content -->
+        <!-- Main Content Layout with Shimmer Support -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Content when loaded -->
+            <LinearLayout
+                android:id="@+id/contentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Book Cover Placeholder -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/book_cover_background"
+                    android:clipToOutline="true">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_menu_book"
+                        android:alpha="0.15"
+                        android:layout_gravity="center"
+                        app:tint="@color/white" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="bottom"
+                        android:padding="16dp"
+                        android:background="@drawable/bottom_gradient">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Current Book Status"
+                            android:textSize="10sp"
+                            android:textColor="@color/white"
+                            android:alpha="0.7"
+                            android:textAllCaps="true"
+                            android:letterSpacing="0.15"
+                            android:fontFamily="@font/inter_semibold" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <EditText
+                    android:id="@+id/editTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:textColor="@color/on_surface"
+                    android:fontFamily="@font/manrope_bold"
+                    android:layout_marginBottom="4dp"
+                    android:background="@null" />
+
+                <EditText
+                    android:id="@+id/editAuthor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:layout_marginBottom="20dp"
+                    android:background="@null" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="4"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:background="@color/surface_container_low"
+                        android:layout_margin="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Category"
+                            android:textSize="11sp"
+                            android:textColor="@color/on_surface_variant" />
+                        <Spinner
+                            android:id="@+id/spinnerCategory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:background="@color/surface_container_low"
+                        android:layout_margin="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Language"
+                            android:textSize="11sp"
+                            android:textColor="@color/on_surface_variant" />
+                        <Spinner
+                            android:id="@+id/spinnerLanguage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:background="@color/surface_container_low"
+                        android:layout_margin="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Price"
+                            android:textSize="11sp"
+                            android:textColor="@color/on_surface_variant" />
+                        <EditText
+                            android:id="@+id/editPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal"
+                            android:textSize="14sp"
+                            android:textColor="@color/on_surface"
+                            android:background="@null" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:background="@color/surface_container_low"
+                        android:layout_margin="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Status"
+                            android:textSize="11sp"
+                            android:textColor="@color/on_surface_variant" />
+                        <Spinner
+                            android:id="@+id/spinnerStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </GridLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@color/surface_container_low"
+                    android:padding="16dp"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Copies"
+                            android:textSize="12sp"
+                            android:textColor="@color/on_surface_variant" />
+                        <EditText
+                            android:id="@+id/editTotal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:textSize="20sp"
+                            android:textColor="@color/primary"
+                            android:background="@null" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Pages Field -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@color/surface_container_low"
+                    android:padding="16dp"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Pages"
+                            android:textSize="12sp"
+                            android:textColor="@color/on_surface_variant" />
+                        <EditText
+                            android:id="@+id/editPages"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:textSize="20sp"
+                            android:textColor="@color/primary"
+                            android:background="@null" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:background="@color/surface_container_low">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Book ID: "
+                        android:textSize="12sp"
+                        android:textColor="@color/on_surface_variant" />
+                    <TextView
+                        android:id="@+id/textViewBookId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/primary" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Shimmer Overlay -->
+            <LinearLayout
+                android:id="@+id/shimmerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:visibility="gone">
+                <!-- Book Cover Placeholder Shimmer -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@color/outline_variant"
+                    android:alpha="0.5" />
+
+                <!-- Title Shimmer -->
+                <View android:layout_width="match_parent" android:layout_height="24dp" android:background="@color/outline_variant" android:alpha="0.8" android:layout_marginBottom="4dp" />
+                <!-- Author Shimmer -->
+                <View android:layout_width="200dp" android:layout_height="14dp" android:background="@color/outline_variant" android:alpha="0.5" android:layout_marginBottom="20dp" />
+
+                <!-- Grid Shimmer -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp">
+                    <View android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:background="@color/outline_variant" android:alpha="0.5" android:layout_margin="4dp" />
+                    <View android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:background="@color/outline_variant" android:alpha="0.5" android:layout_margin="4dp" />
+                </LinearLayout>
+                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp">
+                    <View android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:background="@color/outline_variant" android:alpha="0.5" android:layout_margin="4dp" />
+                    <View android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:background="@color/outline_variant" android:alpha="0.5" android:layout_margin="4dp" />
+                </LinearLayout>
+
+                <!-- Copies Shimmer -->
+                <View android:layout_width="match_parent" android:layout_height="80dp" android:background="@color/outline_variant" android:alpha="0.5" android:layout_marginBottom="20dp" />
+
+                <!-- Pages Shimmer -->
+                <View android:layout_width="match_parent" android:layout_height="80dp" android:background="@color/outline_variant" android:alpha="0.5" android:layout_marginBottom="20dp" />
+
+
+                <!-- Book ID Shimmer -->
+                <View android:layout_width="150dp" android:layout_height="20dp" android:background="@color/outline_variant" android:alpha="0.5" />
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Bottom Actions -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Book Cover Placeholder -->
-            <FrameLayout
+            <Button
+                android:id="@+id/buttonSave"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/book_cover_background"
-                android:clipToOutline="true">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_menu_book"
-                    android:alpha="0.15"
-                    android:layout_gravity="center"
-                    app:tint="@color/white" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_gravity="bottom"
-                    android:padding="16dp"
-                    android:background="@drawable/bottom_gradient">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Current Archive Status"
-                        android:textSize="10sp"
-                        android:textColor="@color/white"
-                        android:alpha="0.7"
-                        android:textAllCaps="true"
-                        android:letterSpacing="0.15"
-                        android:fontFamily="@font/inter_semibold" />
-                </LinearLayout>
-            </FrameLayout>
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/editTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textColor="@color/on_surface"
-                android:fontFamily="@font/manrope_bold"
-                android:layout_marginBottom="4dp"
-                android:background="@null" />
-
-            <EditText
-                android:id="@+id/editAuthor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/button_primary_gradient"
+                android:text="Save Changes"
+                android:textColor="@color/white"
                 android:textSize="14sp"
-                android:textColor="@color/on_surface_variant"
-                android:layout_marginBottom="20dp"
-                android:background="@null" />
+                android:textStyle="bold" />
 
-            <GridLayout
+            <Button
+                android:id="@+id/buttonDelete"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:rowCount="4"
-                android:layout_marginBottom="20dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="@color/surface_container_low"
-                    android:layout_margin="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Category"
-                        android:textSize="11sp"
-                        android:textColor="@color/on_surface_variant" />
-                    <Spinner
-                        android:id="@+id/spinnerCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="@color/surface_container_low"
-                    android:layout_margin="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Language"
-                        android:textSize="11sp"
-                        android:textColor="@color/on_surface_variant" />
-                    <Spinner
-                        android:id="@+id/spinnerLanguage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="@color/surface_container_low"
-                    android:layout_margin="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Price"
-                        android:textSize="11sp"
-                        android:textColor="@color/on_surface_variant" />
-                    <EditText
-                        android:id="@+id/editPrice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textSize="14sp"
-                        android:textColor="@color/on_surface"
-                        android:background="@null" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="@color/surface_container_low"
-                    android:layout_margin="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Status"
-                        android:textSize="11sp"
-                        android:textColor="@color/on_surface_variant" />
-                    <Spinner
-                        android:id="@+id/spinnerStatus"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </GridLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/surface_container_low"
-                android:padding="16dp"
-                android:layout_marginBottom="20dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Total Copies"
-                        android:textSize="12sp"
-                        android:textColor="@color/on_surface_variant" />
-                    <EditText
-                        android:id="@+id/editTotal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textSize="20sp"
-                        android:textColor="@color/primary"
-                        android:background="@null" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="12dp"
-                android:background="@color/surface_container_low">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Book ID: "
-                    android:textSize="12sp"
-                    android:textColor="@color/on_surface_variant" />
-                <TextView
-                    android:id="@+id/textViewBookId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="@color/primary" />
-            </LinearLayout>
+                android:layout_height="56dp"
+                android:backgroundTint="@color/error"
+                android:text="Delete Book"
+                android:textColor="@color/white"
+                android:layout_marginBottom="12dp"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/buttonSave"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_margin="20dp"
-            android:background="@drawable/button_primary_gradient"
-            android:text="Save Changes"
-            android:textColor="@color/white" />
     </LinearLayout>
 </ScrollView>

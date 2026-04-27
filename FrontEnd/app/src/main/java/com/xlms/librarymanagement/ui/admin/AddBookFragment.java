@@ -71,23 +71,31 @@ public class AddBookFragment extends Fragment {
     }
 
     private void setupSpinners() {
-        // Category Spinner
-        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.book_categories, android.R.layout.simple_spinner_item);
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(categoryAdapter);
+        String[] categories = {
+            "Fiction", "Non-fiction", "Fantasy", "Science Fiction", "Mystery", "Thriller",
+            "Romance", "Historical", "Biography", "Autobiography", "Self-help", "Health & Wellness",
+            "Science", "Mathematics", "Technology", "Business", "Economics", "Politics", "Philosophy",
+            "Psychology", "Religion", "Spirituality", "Art & Design", "Photography", "Travel", "Cooking",
+            "Children's", "Young Adult", "Comics & Graphic Novels", "Education", "Poetry", "Drama", "Law",
+            "Language & Grammar", "Horror", "Adventure", "Humor", "Sports", "Music", "Parenting", "True Crime"
+        };
+        
+        String[] languages = {
+            "English", "Urdu", "Arabic", "Spanish", "French", "German", "Chinese", "Japanese", "Korean",
+            "Hindi", "Russian", "Portuguese", "Italian", "Turkish", "Bengali", "Punjabi", "Persian", "Greek",
+            "Swahili", "Thai"
+        };
 
-        // Language Spinner
-        ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.book_languages, android.R.layout.simple_spinner_item);
-        languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerLanguage.setAdapter(languageAdapter);
+        String[] statuses = {"Available", "Reserved", "Out of stock"};
 
-        // Status Spinner
-        ArrayAdapter<CharSequence> statusAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.book_statuses, android.R.layout.simple_spinner_item);
-        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerStatus.setAdapter(statusAdapter);
+        ArrayAdapter<String> catAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, categories);
+        spinnerCategory.setAdapter(catAdapter);
+        
+        ArrayAdapter<String> langAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, languages);
+        spinnerLanguage.setAdapter(langAdapter);
+        
+        ArrayAdapter<String> statAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, statuses);
+        spinnerStatus.setAdapter(statAdapter);
     }
 
     private void setupClickListeners() {
@@ -96,10 +104,39 @@ public class AddBookFragment extends Fragment {
         });
 
         buttonSave.setOnClickListener(v -> {
-            if (validateAndSave()) {
-                if (listener != null) listener.onCancel();
-            }
+            validateAndSave();
         });
+    }
+
+    private void saveBookToApi(Book book) {
+        buttonSave.setEnabled(false);
+        buttonSave.setText("Adding...");
+
+        com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext())
+            .insertBook(book)
+            .enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
+                @Override
+                public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
+                    buttonSave.setEnabled(true);
+                    buttonSave.setText("Save");
+                    if (!isAdded()) return;
+                    if (response.isSuccessful()) {
+                        Toast.makeText(requireContext(), "Book " + book.getTitle() + " added!", Toast.LENGTH_SHORT).show();
+                        // Notify that we added a book successfully
+                        if (listener != null) listener.onBookAdded(book);
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to add book", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
+                    buttonSave.setEnabled(true);
+                    buttonSave.setText("Save");
+                    if (!isAdded()) return; // Safety check
+                    Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     private boolean validateAndSave() {
@@ -109,47 +146,23 @@ public class AddBookFragment extends Fragment {
         String priceStr = editTextPrice.getText().toString().trim();
         String pagesStr = editTextPages.getText().toString().trim();
 
-        if (TextUtils.isEmpty(title)) {
-            editTextTitle.setError("Title is required");
-            editTextTitle.requestFocus();
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(author) || TextUtils.isEmpty(totalCopiesStr) || TextUtils.isEmpty(priceStr) || TextUtils.isEmpty(pagesStr)) {
+            Toast.makeText(requireContext(), "All fields are required", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (TextUtils.isEmpty(author)) {
-            editTextAuthor.setError("Author is required");
-            editTextAuthor.requestFocus();
-            return false;
-        }
-
-        int totalCopies = 0;
-        if (!TextUtils.isEmpty(totalCopiesStr)) {
-            totalCopies = Integer.parseInt(totalCopiesStr);
-        }
-
-        double price = 0.0;
-        if (!TextUtils.isEmpty(priceStr)) {
-            price = Double.parseDouble(priceStr);
-        }
-
-        int pages = 0;
-        if (!TextUtils.isEmpty(pagesStr)) {
-            pages = Integer.parseInt(pagesStr);
-        }
-
+        int totalCopies = Integer.parseInt(totalCopiesStr);
+        double price = Double.parseDouble(priceStr);
+        int pages = Integer.parseInt(pagesStr);
+        
         String category = spinnerCategory.getSelectedItem().toString();
         String language = spinnerLanguage.getSelectedItem().toString();
         String status = spinnerStatus.getSelectedItem().toString();
 
-        // Generate Book ID
-        String bookId = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        Book newBook = new Book(null, title, author, category, language, price, totalCopies, totalCopies, status);
+        newBook.setPages(pages);
 
-        Book newBook = new Book(bookId, title, author, category, language, price, totalCopies, totalCopies, status);
-
-        if (listener != null) {
-            listener.onBookAdded(newBook);
-        }
-
-        Toast.makeText(requireContext(), "Book added successfully!", Toast.LENGTH_SHORT).show();
+        saveBookToApi(newBook);
         return true;
     }
 }

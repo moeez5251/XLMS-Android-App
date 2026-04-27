@@ -11,6 +11,14 @@ function generateToken(user) {
   );
 }
 
+function generateRefreshToken(user) {
+  return jwt.sign(
+    { id: user.User_id, email: user.Email, type: 'refresh' },
+    process.env.JWT_REFRESH || process.env.JWT + '_refresh',
+    { expiresIn: '7d' }
+  );
+}
+
 exports.login = async (req, res) => {
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();
@@ -37,17 +45,28 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user);
+    const refreshToken = generateRefreshToken(user);
+
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "None",
-      secure: true
+      secure: true,
+      maxAge: 3600000 // 1 hour
     });
 
-    res.json({ 
-      message: 'Login successful', 
-      token, 
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 604800000 // 7 days
+    });
+
+    res.json({
+      message: 'Login successful',
+      token,
+      refreshToken,
       userid: user.User_id,
-      role: user.Role 
+      role: user.Role
     });
 
   } catch (error) {
@@ -62,7 +81,14 @@ exports.logout = async (req, res) => {
       httpOnly: true,
       sameSite: "None",
       secure: true,
-      path: "/",  // explicitly specify path if you used it during set
+      path: "/",
+    });
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      path: "/",
     });
 
 

@@ -215,9 +215,11 @@ public class ManageBooksFragment extends Fragment {
         fragment.setOnBookActionListener(new AddBookFragment.OnBookActionListener() {
             @Override
             public void onBookAdded(Book book) {
-                fetchBooks(); // Refresh from server
+                // Refresh the list immediately
+                fetchBooks(); 
+                // Navigate back now that we are confirmed success
                 closeDetailFragment();
-                Toast.makeText(requireContext(), "Book added: " + book.getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Book " + book.getTitle() + " added!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -231,6 +233,7 @@ public class ManageBooksFragment extends Fragment {
 
     private void openBookInfoFragment(Book book) {
         BookInfoFragment fragment = BookInfoFragment.newInstance(book.getBookId());
+        fragment.setOnBookChangedListener(this::fetchBooks);
         openDetailFragment(fragment);
     }
 

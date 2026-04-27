@@ -142,13 +142,26 @@
     </LinearLayout>
 
     <!-- Members List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMembers"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="8dp" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMembers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/skeletonContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+        </LinearLayout>
+    </FrameLayout>
 
     <!-- Footer -->
     <LinearLayout

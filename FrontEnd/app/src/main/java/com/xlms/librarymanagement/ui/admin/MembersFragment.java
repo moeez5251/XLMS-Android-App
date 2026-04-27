@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,9 +31,10 @@ public class MembersFragment extends Fragment {
     private List<Member> masterMemberList;
     private TextView textViewTotalUsers;
     private EditText editTextSearch;
+    private LinearLayout skeletonContainer;
     
     private Button buttonAllUsers, buttonActiveUsers, buttonDeactivatedUsers;
-    private Button buttonAddUser; // Added declaration
+    private Button buttonAddUser;
 
     private String currentFilter = "All";
     private String currentSearch = "";
@@ -50,7 +52,7 @@ public class MembersFragment extends Fragment {
 
         initViews(view);
         setupRecyclerView();
-        loadDummyData();
+        fetchMembers();
         setupSearch();
         setupFilterButtons();
     }
@@ -62,9 +64,51 @@ public class MembersFragment extends Fragment {
         buttonAllUsers = view.findViewById(R.id.buttonAllUsers);
         buttonActiveUsers = view.findViewById(R.id.buttonActiveUsers);
         buttonDeactivatedUsers = view.findViewById(R.id.buttonDeactivatedUsers);
-        
-        // Initialize the button
         buttonAddUser = view.findViewById(R.id.buttonAddUser); 
+        skeletonContainer = view.findViewById(R.id.skeletonContainer);
+    }
+
+    private void showSkeleton(boolean show) {
+        if (skeletonContainer == null) return;
+        if (show) {
+            skeletonContainer.removeAllViews();
+            skeletonContainer.setVisibility(View.VISIBLE);
+            recyclerViewMembers.setVisibility(View.GONE);
+            
+            android.view.animation.Animation shimmerAnim = android.view.animation.AnimationUtils.loadAnimation(requireContext(), R.anim.shimmer_animation);
+            for (int i = 0; i < 5; i++) {
+                View skeleton = LayoutInflater.from(requireContext()).inflate(R.layout.layout_skeleton_member_item, skeletonContainer, false);
+                View shimmerView = skeleton.findViewById(R.id.shimmerView);
+                if (shimmerView != null) shimmerView.startAnimation(shimmerAnim);
+                skeletonContainer.addView(skeleton);
+            }
+        } else {
+            skeletonContainer.setVisibility(View.GONE);
+            recyclerViewMembers.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void fetchMembers() {
+        showSkeleton(true);
+        com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext()).getAllUsers().enqueue(new retrofit2.Callback<List<Member>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<Member>> call, retrofit2.Response<List<Member>> response) {
+                showSkeleton(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    masterMemberList.clear();
+                    masterMemberList.addAll(response.body());
+                    applyFilters();
+                } else {
+                    Toast.makeText(requireContext(), "Failed to fetch members", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Member>> call, Throwable t) {
+                showSkeleton(false);
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupRecyclerView() {
@@ -82,18 +126,6 @@ public class MembersFragment extends Fragment {
         });
         recyclerViewMembers.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewMembers.setAdapter(memberAdapter);
-    }
-
-    private void loadDummyData() {
-        masterMemberList.clear();
-        masterMemberList.add(new Member("Md69e1e82", "Moeez", "moeeiz5522@abc.com", "Admin", "English", 0, "Active"));
-        masterMemberList.add(new Member("Lx22v9k11", "Sarah Chen", "s.chen@academy.edu", "Faculty", "Research", 120, "Active"));
-        masterMemberList.add(new Member("St88m0w42", "Jameson Burke", "j.burke@student.org", "Student", "Standard", 45, "Deactivated"));
-        masterMemberList.add(new Member("Ab33x7y91", "Emily Watson", "e.watson@university.edu", "Admin", "English", 0, "Active"));
-        masterMemberList.add(new Member("St44n2w88", "Michael Brown", "m.brown@student.org", "Student", "Standard", 45, "Active"));
-        masterMemberList.add(new Member("Fa11v5k22", "Dr. Lisa Park", "l.park@academy.edu", "Faculty", "Research", 120, "Active"));
-        
-        applyFilters();
     }
 
     private void setupSearch() {
@@ -203,10 +235,8 @@ public class MembersFragment extends Fragment {
         fragment.setOnUserActionListener(new AddUserFragment.OnUserActionListener() {
             @Override
             public void onUserAdded(Member member) {
-                masterMemberList.add(0, member);
-                applyFilters();
+                fetchMembers(); // Refresh from server
                 closeDetailFragment();
-                Toast.makeText(requireContext(), "User added: " + member.getName(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -223,29 +253,19 @@ public class MembersFragment extends Fragment {
         fragment.setOnUserInfoActionListener(new UserInfoFragment.OnUserInfoActionListener() {
             @Override
             public void onUserUpdated(Member updatedMember) {
-                int index = masterMemberList.indexOf(member);
-                if (index >= 0) {
-                    masterMemberList.set(index, updatedMember);
-                    applyFilters();
-                }
+                fetchMembers(); // Refresh from server
                 closeDetailFragment();
             }
 
             @Override
             public void onUserDeleted(Member member) {
-                masterMemberList.remove(member);
-                applyFilters();
+                fetchMembers(); // Refresh from server
                 closeDetailFragment();
-                Toast.makeText(requireContext(), "User deleted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onUserStatusChanged(Member member) {
-                int index = masterMemberList.indexOf(member);
-                if (index >= 0) {
-                    masterMemberList.set(index, member);
-                    applyFilters();
-                }
+                fetchMembers(); // Refresh from server
             }
 
             @Override

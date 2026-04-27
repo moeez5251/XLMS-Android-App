@@ -49,7 +49,7 @@ exports.getAllUsers = async (req, res) => {
 };
 exports.getuserbyid = async (req, res) => {
   try {
-   
+
     const pool = await poolPromise;
     const result = await pool
       .request()

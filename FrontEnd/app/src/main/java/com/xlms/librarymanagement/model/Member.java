@@ -1,14 +1,28 @@
 package com.xlms.librarymanagement.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Member implements Serializable {
+    @SerializedName("User_id")
     private String userId;
+    
+    @SerializedName("User_Name")
     private String name;
+    
+    @SerializedName("Email")
     private String email;
+    
+    @SerializedName("Role")
     private String role;
+    
+    @SerializedName("Membership_Type")
     private String membershipType;
+    
+    @SerializedName("Cost")
     private double cost;
+    
+    @SerializedName("Status")
     private String status; // "Active" or "Deactivated"
     private boolean isSelected;
 

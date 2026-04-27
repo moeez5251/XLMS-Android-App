@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,17 +34,41 @@ import retrofit2.Response;
 public class BookInfoFragment extends Fragment {
 
     private static final String ARG_BOOK_ID = "book_id";
-    private EditText editTitle, editAuthor, editPrice, editTotal;
-    private TextView textViewBookId, textViewStatus;
+    private EditText editTitle, editAuthor, editPrice, editTotal, editPages;
+    private TextView textViewBookId;
     private Spinner spinnerCategory, spinnerLanguage, spinnerStatus;
-    private Button buttonSave;
+    private Button buttonSave, buttonDelete;
     private android.widget.ProgressBar progressBar;
     private String bookId;
     private ImageButton buttonBack;
+    private LinearLayout contentLayout, shimmerLayout;
 
-    private List<String> categories = new ArrayList<>();
-    private List<String> languages = new ArrayList<>();
-    private List<String> statuses = Arrays.asList("Available", "Limited", "Out of Stock");
+    private final List<String> languages = Arrays.asList(
+            "English", "Urdu", "Arabic", "Spanish", "French", "German", "Chinese", "Japanese", "Korean",
+            "Hindi", "Russian", "Portuguese", "Italian", "Turkish", "Bengali", "Punjabi", "Persian", "Greek",
+            "Swahili", "Thai"
+    );
+
+    private final List<String> categories = Arrays.asList(
+            "Fiction", "Non-fiction", "Fantasy", "Science Fiction", "Mystery", "Thriller",
+            "Romance", "Historical", "Biography", "Autobiography", "Self-help", "Health & Wellness",
+            "Science", "Mathematics", "Technology", "Business", "Economics", "Politics", "Philosophy",
+            "Psychology", "Religion", "Spirituality", "Art & Design", "Photography", "Travel", "Cooking",
+            "Children's", "Young Adult", "Comics & Graphic Novels", "Education", "Poetry", "Drama", "Law",
+            "Language & Grammar", "Horror", "Adventure", "Humor", "Sports", "Music", "Parenting", "True Crime"
+    );
+
+    private final List<String> statuses = Arrays.asList("Available", "Reserved", "Out of stock");
+
+    public interface OnBookChangedListener {
+        void onBookChanged();
+    }
+
+    private OnBookChangedListener listener;
+
+    public void setOnBookChangedListener(OnBookChangedListener listener) {
+        this.listener = listener;
+    }
 
     public static BookInfoFragment newInstance(String bookId) {
         BookInfoFragment fragment = new BookInfoFragment();
@@ -69,7 +94,7 @@ public class BookInfoFragment extends Fragment {
         }
 
         initViews(view);
-        fetchFilterOptions();
+        setupSpinners();
         fetchBookDetails();
         setupClickListeners();
     }
@@ -82,43 +107,14 @@ public class BookInfoFragment extends Fragment {
         spinnerStatus = view.findViewById(R.id.spinnerStatus);
         editPrice = view.findViewById(R.id.editPrice);
         editTotal = view.findViewById(R.id.editTotal);
+        editPages = view.findViewById(R.id.editPages);
         textViewBookId = view.findViewById(R.id.textViewBookId);
-        textViewStatus = view.findViewById(R.id.textViewStatus);
         buttonSave = view.findViewById(R.id.buttonSave);
+        buttonDelete = view.findViewById(R.id.buttonDelete);
         progressBar = view.findViewById(R.id.progressBar);
+        contentLayout = view.findViewById(R.id.contentLayout);
+        shimmerLayout = view.findViewById(R.id.shimmerLayout);
         buttonBack = view.findViewById(R.id.buttonBack);
-    }
-
-    private void fetchFilterOptions() {
-        com.xlms.librarymanagement.api.ApiService apiService = ApiClient.getApiService(requireContext());
-        
-        apiService.getDistinctValues(new com.xlms.librarymanagement.api.ColumnRequest(java.util.Collections.singletonList("Category")))
-            .enqueue(new Callback<List<com.google.gson.JsonObject>>() {
-                @Override
-                public void onResponse(Call<List<com.google.gson.JsonObject>> call, Response<List<com.google.gson.JsonObject>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        for (com.google.gson.JsonObject obj : response.body()) {
-                            if (obj.has("Category")) categories.add(obj.get("Category").getAsString());
-                        }
-                        setupSpinners();
-                    }
-                }
-                @Override public void onFailure(Call<List<com.google.gson.JsonObject>> call, Throwable t) {}
-            });
-
-        apiService.getDistinctValues(new com.xlms.librarymanagement.api.ColumnRequest(java.util.Collections.singletonList("Language")))
-            .enqueue(new Callback<List<com.google.gson.JsonObject>>() {
-                @Override
-                public void onResponse(Call<List<com.google.gson.JsonObject>> call, Response<List<com.google.gson.JsonObject>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        for (com.google.gson.JsonObject obj : response.body()) {
-                            if (obj.has("Language")) languages.add(obj.get("Language").getAsString());
-                        }
-                        setupSpinners();
-                    }
-                }
-                @Override public void onFailure(Call<List<com.google.gson.JsonObject>> call, Throwable t) {}
-            });
     }
 
     private void setupSpinners() {
@@ -132,33 +128,44 @@ public class BookInfoFragment extends Fragment {
         spinnerStatus.setAdapter(statAdapter);
     }
 
+    private void showSkeleton(boolean show) {
+        if (shimmerLayout == null) return;
+        if (show) {
+            shimmerLayout.setVisibility(View.VISIBLE);
+            contentLayout.setVisibility(View.GONE);
+        } else {
+            shimmerLayout.setVisibility(View.GONE);
+            contentLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void fetchBookDetails() {
-        progressBar.setVisibility(View.VISIBLE);
+        showSkeleton(true);
         ApiClient.getApiService(requireContext())
             .getBookById(new GetByIdRequest(bookId))
             .enqueue(new Callback<List<Book>>() {
                 @Override
                 public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
-                    progressBar.setVisibility(View.GONE);
+                    showSkeleton(false);
                     if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                         populateFields(response.body().get(0));
                     }
                 }
                 @Override
                 public void onFailure(Call<List<Book>> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
+                    showSkeleton(false);
                     Toast.makeText(requireContext(), "Error fetching details", Toast.LENGTH_SHORT).show();
                 }
             });
     }
 
     private void populateFields(Book book) {
-        if (editTitle != null) editTitle.setText(book.getTitle());
-        if (editAuthor != null) editAuthor.setText(book.getAuthor());
-        if (editPrice != null) editPrice.setText(String.valueOf(book.getPrice()));
-        if (editTotal != null) editTotal.setText(String.valueOf(book.getTotal()));
-        if (textViewBookId != null) textViewBookId.setText(book.getBookId());
-        if (textViewStatus != null) textViewStatus.setText(book.getStatus());
+        editTitle.setText(book.getTitle());
+        editAuthor.setText(book.getAuthor());
+        editPrice.setText(String.valueOf((int)book.getPrice()));
+        editTotal.setText(String.valueOf(book.getTotal()));
+        editPages.setText(String.valueOf(book.getPages()));
+        textViewBookId.setText(book.getBookId());
 
         setSpinnerSelection(spinnerCategory, categories, book.getCategory());
         setSpinnerSelection(spinnerLanguage, languages, book.getLanguage());
@@ -166,17 +173,26 @@ public class BookInfoFragment extends Fragment {
     }
 
     private void setSpinnerSelection(Spinner spinner, List<String> list, String value) {
-        int position = list.indexOf(value);
+        int position = -1;
+        for(int i=0; i<list.size(); i++) {
+            if(list.get(i).equalsIgnoreCase(value)) {
+                position = i;
+                break;
+            }
+        }
         if (position >= 0) spinner.setSelection(position);
     }
 
     private void setupClickListeners() {
         buttonSave.setOnClickListener(v -> saveChanges());
         buttonBack.setOnClickListener(v -> requireActivity().onBackPressed());
+        buttonDelete.setOnClickListener(v -> deleteBook());
     }
 
     private void saveChanges() {
-        progressBar.setVisibility(View.VISIBLE);
+        if (editTitle.getText().toString().isEmpty()) return;
+
+        showSkeleton(true);
         
         Book updatedBook = new Book(
             bookId, 
@@ -189,20 +205,58 @@ public class BookInfoFragment extends Fragment {
             0,
             spinnerStatus.getSelectedItem().toString()
         );
+        updatedBook.setPages(Integer.parseInt(editPages.getText().toString()));
 
         ApiClient.getApiService(requireContext())
             .updateBook(updatedBook)
             .enqueue(new Callback<MessageResponse>() {
                 @Override
                 public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(requireContext(), "Changes saved!", Toast.LENGTH_SHORT).show();
+                    showSkeleton(false);
+                    if (response.isSuccessful()) {
+                        Toast.makeText(requireContext(), "Changes saved successfully!", Toast.LENGTH_SHORT).show();
+                        if (listener != null) listener.onBookChanged();
+                        requireActivity().onBackPressed();
+                    } else {
+                        Toast.makeText(requireContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 @Override
                 public void onFailure(Call<MessageResponse> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(requireContext(), "Error saving changes", Toast.LENGTH_SHORT).show();
+                    showSkeleton(false);
+                    Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show();
                 }
             });
+    }
+
+    private void deleteBook() {
+        new android.app.AlertDialog.Builder(requireContext())
+                .setTitle("Delete Book")
+                .setMessage("Are you sure you want to delete this book?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    showSkeleton(true);
+                    List<String> ids = new ArrayList<>();
+                    ids.add(bookId);
+                    ApiClient.getApiService(requireContext()).deleteBook(ids).enqueue(new Callback<MessageResponse>() {
+                        @Override
+                        public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                            showSkeleton(false);
+                            if (response.isSuccessful()) {
+                                Toast.makeText(requireContext(), "Book deleted", Toast.LENGTH_SHORT).show();
+                                if (listener != null) listener.onBookChanged();
+                                requireActivity().onBackPressed();
+                            } else {
+                                Toast.makeText(requireContext(), "Delete failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<MessageResponse> call, Throwable t) {
+                            showSkeleton(false);
+                            Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

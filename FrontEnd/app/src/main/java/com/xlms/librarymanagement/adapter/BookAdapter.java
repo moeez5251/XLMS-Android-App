@@ -60,7 +60,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         holder.textViewAuthor.setText(book.getAuthor());
         holder.textViewCategory.setText(book.getCategory());
         holder.textViewLanguage.setText(book.getLanguage());
-        holder.textViewPrice.setText("$" + String.format("%.2f", book.getPrice()));
+        holder.textViewPrice.setText("PKR " + String.format("%.2f", book.getPrice()));
         holder.textViewTotal.setText(String.valueOf(book.getTotal()));
         holder.textViewAvailable.setText(String.valueOf(book.getAvailable()));
         holder.textViewStatus.setText(book.getStatus());

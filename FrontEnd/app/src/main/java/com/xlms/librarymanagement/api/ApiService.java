@@ -1,5 +1,7 @@
 package com.xlms.librarymanagement.api;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -35,4 +37,12 @@ public interface ApiService {
 
     @POST("books/col")
     Call<java.util.List<com.google.gson.JsonObject>> getDistinctValues(@Body ColumnRequest columnRequest);
+    @POST("books/insert")
+    Call<MessageResponse> insertBook(@Body com.xlms.librarymanagement.model.Book book);
+
+    @retrofit2.http.HTTP(method = "DELETE", path = "books/delete", hasBody = true)
+    Call<MessageResponse> deleteBook(@Body List<String> bookIds);
+
+    @POST("users/all")
+    Call<java.util.List<com.xlms.librarymanagement.model.Member>> getAllUsers();
 }
