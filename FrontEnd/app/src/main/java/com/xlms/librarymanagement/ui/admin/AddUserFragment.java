@@ -26,15 +26,17 @@ import java.util.UUID;
 public class AddUserFragment extends Fragment {
 
     private EditText editTextName, editTextEmail, editTextPassword;
-    private Spinner spinnerMembershipType, spinnerMembershipTier;
+    private Spinner spinnerMembershipType;
     private RadioGroup radioGroupRole;
     private RadioButton radioUser, radioAdmin;
     private Button buttonCancel, buttonCreate;
+    private android.widget.ProgressBar progressBar;
 
     private OnUserActionListener listener;
+    private final String[] membershipOptions = {"English", "Urdu", "French", "Hindi"};
 
     public interface OnUserActionListener {
-        void onUserAdded(Member member);
+        void onUserAdded();
         void onCancel();
     }
 
@@ -52,7 +54,6 @@ public class AddUserFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initViews(view);
         setupSpinners();
         setupClickListeners();
@@ -63,24 +64,18 @@ public class AddUserFragment extends Fragment {
         editTextEmail = view.findViewById(R.id.editTextEmail);
         editTextPassword = view.findViewById(R.id.editTextPassword);
         spinnerMembershipType = view.findViewById(R.id.spinnerMembershipType);
-        spinnerMembershipTier = view.findViewById(R.id.spinnerMembershipTier);
         radioGroupRole = view.findViewById(R.id.radioGroupRole);
         radioUser = view.findViewById(R.id.radioUser);
         radioAdmin = view.findViewById(R.id.radioAdmin);
         buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonCreate = view.findViewById(R.id.buttonCreate);
+        progressBar = view.findViewById(R.id.progressBar);
     }
 
     private void setupSpinners() {
-        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.membership_types, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, membershipOptions);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMembershipType.setAdapter(typeAdapter);
-
-        ArrayAdapter<CharSequence> tierAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.membership_tiers, android.R.layout.simple_spinner_item);
-        tierAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMembershipTier.setAdapter(tierAdapter);
     }
 
     private void setupClickListeners() {
@@ -88,48 +83,65 @@ public class AddUserFragment extends Fragment {
             if (listener != null) listener.onCancel();
         });
 
-        buttonCreate.setOnClickListener(v -> {
-            if (validateAndCreate()) {
-                if (listener != null) listener.onCancel();
-            }
-        });
+        buttonCreate.setOnClickListener(v -> validateAndCreate());
     }
 
-    private boolean validateAndCreate() {
+    private void validateAndCreate() {
         String name = editTextName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(name)) {
-            editTextName.setError("Name is required");
-            editTextName.requestFocus();
-            return false;
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            Toast.makeText(requireContext(), "All fields are required", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        if (TextUtils.isEmpty(email)) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-            return false;
+        if (password.length() < 6) {
+            editTextPassword.setError("Password too short");
+            return;
         }
 
-        if (TextUtils.isEmpty(password) || password.length() < 6) {
-            editTextPassword.setError("Password must be at least 6 characters");
-            editTextPassword.requestFocus();
-            return false;
-        }
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        buttonCreate.setEnabled(false);
 
         String role = radioAdmin.isChecked() ? "Admin" : "User";
-        String membershipType = spinnerMembershipType.getSelectedItem().toString();
-        String membershipTier = spinnerMembershipTier.getSelectedItem().toString();
-        String userId = "Us" + UUID.randomUUID().toString().substring(0, 7).toLowerCase();
+        String type = spinnerMembershipType.getSelectedItem().toString();
 
-        Member newMember = new Member(userId, name, email, role, membershipType, 0, "Active");
+        com.xlms.librarymanagement.api.RegisterRequest request = new com.xlms.librarymanagement.api.RegisterRequest(
+            name, email, role, type, password
+        );
 
-        if (listener != null) {
-            listener.onUserAdded(newMember);
-        }
-
-        Toast.makeText(requireContext(), "User created successfully!", Toast.LENGTH_SHORT).show();
-        return true;
+        com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext())
+            .register(request)
+            .enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
+                @Override
+                public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
+                    buttonCreate.setEnabled(true);
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    
+                    if (response.isSuccessful()) {
+                        Toast.makeText(requireContext(), "User created successfully!", Toast.LENGTH_SHORT).show();
+                        if (listener != null) listener.onUserAdded();
+                    } else {
+                        String errorMessage = "Registration failed";
+                        if (response.body() != null && response.body().getError() != null) {
+                            errorMessage = response.body().getError();
+                        } else if (response.errorBody() != null) {
+                            try {
+                                String errorJson = response.errorBody().string();
+                                com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                                if (errorObj.has("error")) errorMessage = errorObj.get("error").getAsString();
+                            } catch (Exception e) { e.printStackTrace(); }
+                        }
+                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    buttonCreate.setEnabled(true);
+                    Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 }

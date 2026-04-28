@@ -234,7 +234,7 @@ public class MembersFragment extends Fragment {
         AddUserFragment fragment = new AddUserFragment();
         fragment.setOnUserActionListener(new AddUserFragment.OnUserActionListener() {
             @Override
-            public void onUserAdded(Member member) {
+            public void onUserAdded() {
                 fetchMembers(); // Refresh from server
                 closeDetailFragment();
             }
@@ -252,20 +252,15 @@ public class MembersFragment extends Fragment {
         UserInfoFragment fragment = UserInfoFragment.newInstance(member);
         fragment.setOnUserInfoActionListener(new UserInfoFragment.OnUserInfoActionListener() {
             @Override
-            public void onUserUpdated(Member updatedMember) {
+            public void onUserUpdated() {
                 fetchMembers(); // Refresh from server
                 closeDetailFragment();
             }
 
             @Override
-            public void onUserDeleted(Member member) {
+            public void onUserDeleted() {
                 fetchMembers(); // Refresh from server
                 closeDetailFragment();
-            }
-
-            @Override
-            public void onUserStatusChanged(Member member) {
-                fetchMembers(); // Refresh from server
             }
 
             @Override

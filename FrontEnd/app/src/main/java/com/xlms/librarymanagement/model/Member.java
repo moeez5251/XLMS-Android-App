@@ -7,6 +7,9 @@ public class Member implements Serializable {
     @SerializedName("User_id")
     private String userId;
     
+    @SerializedName("ID")
+    private String id;
+    
     @SerializedName("User_Name")
     private String name;
     
@@ -29,6 +32,7 @@ public class Member implements Serializable {
     public Member(String userId, String name, String email, String role, 
                   String membershipType, double cost, String status) {
         this.userId = userId;
+        this.id = userId; // Backend needs ID
         this.name = name;
         this.email = email;
         this.role = role;
@@ -39,6 +43,8 @@ public class Member implements Serializable {
     }
 
     public String getUserId() { return userId; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getEmail() { return email; }

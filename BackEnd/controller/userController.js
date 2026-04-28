@@ -84,18 +84,25 @@ exports.getmemberbyid = async (req, res) => {
 exports.updateuser = async (req, res) => {
   const { ID, User_Name, Email, Role, Membership_Type } = req.body;
   try {
-    if (!ID || !User_Name || !Email || !Role || !Membership_Type) {
-      return res.status(400).json({ error: 'All fields are required' });
+    if (!ID) {
+      return res.status(400).json({ error: 'User ID is required' });
     }
     const pool = await poolPromise;
-    const result = await pool
-      .request()
-      .input('ID', ID)
-      .input('User_Name', User_Name)
-      .input('Email', Email)
-      .input('Role', Role)
-      .input('Membership_Type', Membership_Type)
-      .query('UPDATE users SET User_Name = @User_Name, Email = @Email, Role = @Role, Membership_Type = @Membership_Type WHERE User_id = @ID');
+    const request = pool.request();
+    request.input('ID', ID);
+
+    let updates = [];
+    if (User_Name) { request.input('User_Name', User_Name); updates.push('User_Name = @User_Name'); }
+    if (Email) { request.input('Email', Email); updates.push('Email = @Email'); }
+    if (Role) { request.input('Role', Role); updates.push('Role = @Role'); }
+    if (Membership_Type) { request.input('Membership_Type', Membership_Type); updates.push('Membership_Type = @Membership_Type'); }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: 'No fields provided for update' });
+    }
+
+    const query = `UPDATE users SET ${updates.join(', ')} WHERE User_id = @ID`;
+    await request.query(query);
     res.json({ message: 'User updated successfully' });
   } catch (err) {
     console.error('Error updating user:', err);

@@ -1,5 +1,7 @@
 package com.xlms.librarymanagement.api;
 
+import com.xlms.librarymanagement.model.Member;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -45,4 +47,16 @@ public interface ApiService {
 
     @POST("users/all")
     Call<java.util.List<com.xlms.librarymanagement.model.Member>> getAllUsers();
+
+    @POST("users/update")
+    Call<MessageResponse> updateUser(@Body Member request);
+
+    @retrofit2.http.HTTP(method = "DELETE", path = "users/delete", hasBody = true)
+    Call<MessageResponse> deleteUser(@Body List<String> userIds);
+
+    @POST("users/activate")
+    Call<MessageResponse> activateUser(@Body com.google.gson.JsonObject idObj);
+
+    @POST("users/deactivate")
+    Call<MessageResponse> deactivateUser(@Body List<String> userIds);
 }

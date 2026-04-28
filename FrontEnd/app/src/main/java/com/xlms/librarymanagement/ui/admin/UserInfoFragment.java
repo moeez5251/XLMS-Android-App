@@ -2,7 +2,6 @@ package com.xlms.librarymanagement.ui.admin;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -18,11 +18,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.MessageResponse;
 import com.xlms.librarymanagement.model.Member;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserInfoFragment extends Fragment {
 
@@ -31,20 +40,22 @@ public class UserInfoFragment extends Fragment {
     private TextView textViewTitle, textViewUserId, textViewStatus;
     private LinearLayout layoutStatus;
     private EditText editTextName, editTextEmail, editTextPassword;
-    private Spinner spinnerMembershipType, spinnerMembershipTier;
+    private Spinner spinnerMembershipType;
     private RadioGroup radioGroupRole;
     private RadioButton radioUser, radioAdmin;
     private Button buttonEdit, buttonSave, buttonCancelEdit, buttonDelete, buttonToggleStatus;
     private LinearLayout layoutViewActions, layoutEditActions;
+    private ProgressBar progressBar;
 
     private Member currentMember;
     private boolean isEditMode = false;
     private OnUserInfoActionListener listener;
 
+    private final String[] membershipOptions = {"English", "Urdu", "French", "Hindi"};
+
     public interface OnUserInfoActionListener {
-        void onUserUpdated(Member member);
-        void onUserDeleted(Member member);
-        void onUserStatusChanged(Member member);
+        void onUserUpdated();
+        void onUserDeleted();
         void onBack();
     }
 
@@ -76,7 +87,6 @@ public class UserInfoFragment extends Fragment {
         }
 
         if (currentMember == null) {
-            Toast.makeText(requireContext(), "Error: No user data", Toast.LENGTH_SHORT).show();
             if (listener != null) listener.onBack();
             return;
         }
@@ -97,7 +107,6 @@ public class UserInfoFragment extends Fragment {
         editTextEmail = view.findViewById(R.id.editTextEmail);
         editTextPassword = view.findViewById(R.id.editTextPassword);
         spinnerMembershipType = view.findViewById(R.id.spinnerMembershipType);
-        spinnerMembershipTier = view.findViewById(R.id.spinnerMembershipTier);
         radioGroupRole = view.findViewById(R.id.radioGroupRole);
         radioUser = view.findViewById(R.id.radioUser);
         radioAdmin = view.findViewById(R.id.radioAdmin);
@@ -105,33 +114,30 @@ public class UserInfoFragment extends Fragment {
         buttonSave = view.findViewById(R.id.buttonSave);
         buttonCancelEdit = view.findViewById(R.id.buttonCancelEdit);
         buttonDelete = view.findViewById(R.id.buttonDelete);
-        buttonToggleStatus = view.findViewById(R.id.buttonDeactivate); // Reusing the button ID
+        buttonToggleStatus = view.findViewById(R.id.buttonDeactivate);
         layoutViewActions = view.findViewById(R.id.layoutViewActions);
         layoutEditActions = view.findViewById(R.id.layoutEditActions);
+        progressBar = view.findViewById(R.id.progressBar);
+        View backButton = view.findViewById(R.id.buttonBack);
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> { if(listener != null) listener.onBack(); });
+        }
     }
 
     private void setupSpinners() {
-        ArrayAdapter<CharSequence> typeAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.membership_types, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, membershipOptions);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMembershipType.setAdapter(typeAdapter);
-
-        ArrayAdapter<CharSequence> tierAdapter = ArrayAdapter.createFromResource(requireContext(),
-                R.array.membership_tiers, android.R.layout.simple_spinner_item);
-        tierAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMembershipTier.setAdapter(tierAdapter);
     }
 
     private void populateFields() {
         textViewUserId.setText("ID: " + currentMember.getUserId());
         editTextName.setText(currentMember.getName());
         editTextEmail.setText(currentMember.getEmail());
-        editTextPassword.setText("••••••••••");
 
         setSpinnerSelection(spinnerMembershipType, currentMember.getMembershipType());
-        setSpinnerSelection(spinnerMembershipTier, currentMember.getRole());
 
-        if ("Admin".equals(currentMember.getRole())) {
+        if ("Admin".equalsIgnoreCase(currentMember.getRole())) {
             radioAdmin.setChecked(true);
         } else {
             radioUser.setChecked(true);
@@ -153,28 +159,17 @@ public class UserInfoFragment extends Fragment {
 
     private void updateStatusBadge() {
         if ("Active".equals(currentMember.getStatus())) {
-            layoutStatus.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.status_active_bg));
-            textViewStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_active_text));
             textViewStatus.setText("Active");
         } else {
-            layoutStatus.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.status_deactivated_bg));
-            textViewStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_deactivated_text));
             textViewStatus.setText("Deactivated");
         }
     }
 
-    /**
-     * Updates the button text and color based on current status.
-     * - Active -> Show "Deactivate" (Red/Error color)
-     * - Deactivated -> Show "Activate" (Green/Success color)
-     */
     private void updateToggleStatusButton() {
         if ("Active".equals(currentMember.getStatus())) {
             buttonToggleStatus.setText("Deactivate");
-            buttonToggleStatus.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.error));
         } else {
             buttonToggleStatus.setText("Activate");
-            buttonToggleStatus.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.status_active_bg));
         }
     }
 
@@ -186,31 +181,20 @@ public class UserInfoFragment extends Fragment {
 
         buttonCancelEdit.setOnClickListener(v -> {
             isEditMode = false;
-            populateFields(); // Reset fields
+            populateFields();
             updateUIForMode();
         });
 
-        buttonSave.setOnClickListener(v -> {
-            if (validateAndSave()) {
-                isEditMode = false;
-                updateUIForMode();
-            }
-        });
-
-        buttonDelete.setOnClickListener(v -> showDeleteConfirmationDialog());
-
+        buttonSave.setOnClickListener(v -> saveChanges());
+        buttonDelete.setOnClickListener(v -> deleteUser());
         buttonToggleStatus.setOnClickListener(v -> toggleUserStatus());
     }
 
     private void updateUIForMode() {
         boolean editable = isEditMode;
-        
         editTextName.setEnabled(editable);
         editTextEmail.setEnabled(editable);
-        // Password field is NEVER editable
-        editTextPassword.setEnabled(false);
         spinnerMembershipType.setEnabled(editable);
-        spinnerMembershipTier.setEnabled(editable);
         radioUser.setEnabled(editable);
         radioAdmin.setEnabled(editable);
 
@@ -224,77 +208,116 @@ public class UserInfoFragment extends Fragment {
             layoutEditActions.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.VISIBLE);
             textViewTitle.setText("User Information");
-            updateStatusBadge();
-            updateToggleStatusButton();
         }
     }
 
-    private boolean validateAndSave() {
-        String name = editTextName.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
+    private void saveChanges() {
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        currentMember.setName(editTextName.getText().toString());
+        currentMember.setEmail(editTextEmail.getText().toString());
+        currentMember.setMembershipType(spinnerMembershipType.getSelectedItem().toString());
+        currentMember.setRole(radioAdmin.isChecked() ? "Admin" : "User");
 
-        if (TextUtils.isEmpty(name)) {
-            editTextName.setError("Name is required");
-            editTextName.requestFocus();
-            return false;
+        // Ensure ID is set for the backend update call
+        if (currentMember.getId() == null || currentMember.getId().isEmpty()) {
+            currentMember.setId(currentMember.getUserId());
         }
 
-        if (TextUtils.isEmpty(email)) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-            return false;
-        }
-
-        String role = radioAdmin.isChecked() ? "Admin" : "User";
-        String membershipType = spinnerMembershipType.getSelectedItem().toString();
-        String membershipTier = spinnerMembershipTier.getSelectedItem().toString();
-
-        // Update member
-        currentMember.setName(name);
-        currentMember.setEmail(email);
-        currentMember.setRole(role);
-        currentMember.setMembershipType(membershipType);
-
-        if (listener != null) {
-            listener.onUserUpdated(currentMember);
-        }
-
-        Toast.makeText(requireContext(), "User updated successfully!", Toast.LENGTH_SHORT).show();
-        return true;
+        ApiClient.getApiService(requireContext())
+            .updateUser(currentMember)
+            .enqueue(new Callback<MessageResponse>() {
+                @Override
+                public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    if (response.isSuccessful()) {
+                        Toast.makeText(requireContext(), "User updated", Toast.LENGTH_SHORT).show();
+                        if (listener != null) listener.onUserUpdated();
+                        isEditMode = false;
+                        updateUIForMode();
+                    } else {
+                        Toast.makeText(requireContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<MessageResponse> call, Throwable t) {
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
-    private void showDeleteConfirmationDialog() {
+    private void deleteUser() {
         new AlertDialog.Builder(requireContext())
             .setTitle("Delete User")
-            .setMessage("Are you sure you want to delete \"" + currentMember.getName() + "\"? This action cannot be undone.")
+            .setMessage("Are you sure you want to delete this user? This action cannot be undone.")
             .setPositiveButton("Delete", (dialog, which) -> {
-                if (listener != null) {
-                    listener.onUserDeleted(currentMember);
-                }
+                if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+                List<String> ids = new ArrayList<>();
+                ids.add(currentMember.getUserId());
+                ApiClient.getApiService(requireContext()).deleteUser(ids).enqueue(new Callback<MessageResponse>() {
+                    @Override
+                    public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                        if (response.isSuccessful()) {
+                            Toast.makeText(requireContext(), "User deleted", Toast.LENGTH_SHORT).show();
+                            if (listener != null) listener.onUserDeleted();
+                        } else {
+                            Toast.makeText(requireContext(), "Delete failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override 
+                    public void onFailure(Call<MessageResponse> call, Throwable t) {
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                        Toast.makeText(requireContext(), "Error deleting user", Toast.LENGTH_SHORT).show();
+                    }
+                });
             })
             .setNegativeButton("Cancel", null)
             .show();
     }
 
     private void toggleUserStatus() {
-        String currentStatus = currentMember.getStatus();
-        String newStatus = "Active".equals(currentStatus) ? "Deactivated" : "Active";
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        boolean isDeactivating = "Active".equals(currentMember.getStatus());
         
-        String action = "Active".equals(newStatus) ? "activate" : "deactivate";
-        
-        new AlertDialog.Builder(requireContext())
-            .setTitle(action.substring(0, 1).toUpperCase() + action.substring(1) + " User")
-            .setMessage("Are you sure you want to " + action + " \"" + currentMember.getName() + "\"?")
-            .setPositiveButton(action.substring(0, 1).toUpperCase() + action.substring(1), (dialog, which) -> {
-                currentMember.setStatus(newStatus);
-                updateStatusBadge();
-                updateToggleStatusButton(); // Update button appearance immediately
-                if (listener != null) {
-                    listener.onUserStatusChanged(currentMember);
+        if (isDeactivating) {
+            List<String> ids = new java.util.ArrayList<>();
+            ids.add(currentMember.getUserId());
+            ApiClient.getApiService(requireContext()).deactivateUser(ids).enqueue(new Callback<MessageResponse>() {
+                @Override
+                public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    if (response.isSuccessful()) {
+                        currentMember.setStatus("Deactivated");
+                        updateUIAfterStatusChange();
+                    }
                 }
-                Toast.makeText(requireContext(), "User " + action + "d successfully", Toast.LENGTH_SHORT).show();
-            })
-            .setNegativeButton("Cancel", null)
-            .show();
+                @Override public void onFailure(Call<MessageResponse> call, Throwable t) { 
+                    if (progressBar != null) progressBar.setVisibility(View.GONE); 
+                }
+            });
+        } else {
+            com.google.gson.JsonObject idObj = new com.google.gson.JsonObject();
+            idObj.addProperty("ID", currentMember.getUserId());
+            ApiClient.getApiService(requireContext()).activateUser(idObj).enqueue(new Callback<MessageResponse>() {
+                @Override
+                public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                    if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    if (response.isSuccessful()) {
+                        currentMember.setStatus("Active");
+                        updateUIAfterStatusChange();
+                    }
+                }
+                @Override public void onFailure(Call<MessageResponse> call, Throwable t) { 
+                    if (progressBar != null) progressBar.setVisibility(View.GONE); 
+                }
+            });
+        }
+    }
+
+    private void updateUIAfterStatusChange() {
+        updateStatusBadge();
+        updateToggleStatusButton();
+        if (listener != null) listener.onUserUpdated();
     }
 }

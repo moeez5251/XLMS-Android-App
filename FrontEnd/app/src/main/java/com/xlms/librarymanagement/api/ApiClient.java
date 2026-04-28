@@ -1,19 +1,21 @@
 package com.xlms.librarymanagement.api;
 
 import android.content.Context;
+import androidx.annotation.Nullable;
 import com.xlms.librarymanagement.utils.SessionManager;
+import okhttp3.Authenticator;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.Route;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import java.io.IOException;
-
 import java.util.HashSet;
 import java.util.Set;
-import android.preference.PreferenceManager;
+import java.util.concurrent.TimeUnit;
 
 public class ApiClient {
     private static final String BASE_URL = "http://127.0.0.1:5000/api/";
@@ -29,27 +31,52 @@ public class ApiClient {
 
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(logging)
+                    .authenticator(new Authenticator() {
+                        @Nullable
+                        @Override
+                        public Request authenticate(@Nullable Route route, Response response) throws IOException {
+                            if (responseCount(response) >= 2) return null;
+
+                            SessionManager sessionManager = new SessionManager(appContext);
+                            String newToken = sessionManager.getAuthToken();
+
+                            if (newToken != null) {
+                                return response.request().newBuilder()
+                                        .header("Authorization", "Bearer " + newToken)
+                                        .build();
+                            }
+                            return null;
+                        }
+                    })
                     .addInterceptor(new Interceptor() {
                         @Override
                         public Response intercept(Chain chain) throws IOException {
                             Request original = chain.request();
                             Request.Builder requestBuilder = original.newBuilder();
 
-                            // Add stored cookies to outgoing request
                             for (String cookie : cookies) {
                                 requestBuilder.addHeader("Cookie", cookie);
                             }
 
-                            // Add Authorization header
                             SessionManager sessionManager = new SessionManager(appContext);
                             String token = sessionManager.getAuthToken();
                             if (token != null && !token.isEmpty() && original.header("Authorization") == null) {
                                 requestBuilder.addHeader("Authorization", "Bearer " + token);
                             }
-
+                            // Proceed with the request
                             Response response = chain.proceed(requestBuilder.build());
 
-                            // Save new cookies from incoming response
+                            // Check if backend sent a new token in response headers
+                            String newToken = response.header("X-New-Token");
+                            if (newToken != null && !newToken.isEmpty()) {
+                                // Preserve user info and update token
+                                String email = sessionManager.getUserEmail();
+                                String role = sessionManager.getUserRole();
+                                String userId = sessionManager.getUserId();
+                                sessionManager.saveSession(email, role, null, userId, newToken);
+                            }
+
+                            // Save cookies
                             if (!response.headers("Set-Cookie").isEmpty()) {
                                 for (String header : response.headers("Set-Cookie")) {
                                     cookies.add(header);
@@ -58,8 +85,8 @@ public class ApiClient {
                             return response;
                         }
                     })
-                    .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
-                    .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+                    .connectTimeout(15, TimeUnit.SECONDS)
+                    .readTimeout(15, TimeUnit.SECONDS)
                     .build();
 
             retrofit = new Retrofit.Builder()
@@ -71,8 +98,16 @@ public class ApiClient {
         return retrofit.create(ApiService.class);
     }
 
+    private static int responseCount(Response response) {
+        int result = 1;
+        while ((response = response.priorResponse()) != null) {
+            result++;
+        }
+        return result;
+    }
+
     public static void resetClient() {
         retrofit = null;
-        cookies.clear(); // Clear cookies on client reset
+        cookies.clear();
     }
 }
