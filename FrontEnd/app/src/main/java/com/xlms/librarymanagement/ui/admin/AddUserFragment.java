@@ -104,7 +104,7 @@ public class AddUserFragment extends Fragment {
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
         buttonCreate.setEnabled(false);
 
-        String role = radioAdmin.isChecked() ? "Admin" : "User";
+        String role = radioAdmin.isChecked() ? "Admin" : "Standard-User";
         String type = spinnerMembershipType.getSelectedItem().toString();
 
         com.xlms.librarymanagement.api.RegisterRequest request = new com.xlms.librarymanagement.api.RegisterRequest(

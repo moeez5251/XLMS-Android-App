@@ -11,6 +11,7 @@ public class SessionManager {
     private static final String KEY_USER_ROLE = "role"; // "ADMIN" or "CLIENT"
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_AUTH_TOKEN = "authToken";
+    private static final String KEY_COOKIES = "cookies";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -58,6 +59,15 @@ public class SessionManager {
 
     public String getAuthToken() {
         return sharedPreferences.getString(KEY_AUTH_TOKEN, null);
+    }
+
+    public void saveCookies(java.util.Set<String> cookies) {
+        editor.putStringSet(KEY_COOKIES, cookies);
+        editor.apply();
+    }
+
+    public java.util.Set<String> getCookies() {
+        return sharedPreferences.getStringSet(KEY_COOKIES, new java.util.HashSet<String>());
     }
 
     public void clearSession() {

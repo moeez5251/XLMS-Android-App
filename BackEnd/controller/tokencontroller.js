@@ -33,7 +33,9 @@ exports.update = async (req, res) => {
             .input('token', token)
             .query('SELECT * FROM PasswordResetTokens WHERE token = @token');
         const userid = result.recordset[0].user_id
-
+        if (!result.recordset.length) {
+            return res.status(400).json({ error: 'Invalid token' });
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
         await pool
             .request()

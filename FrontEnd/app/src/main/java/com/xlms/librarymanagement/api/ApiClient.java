@@ -24,6 +24,7 @@ public class ApiClient {
 
     public static ApiService getApiService(Context context) {
         final Context appContext = context.getApplicationContext();
+        final SessionManager sessionManager = new SessionManager(appContext);
 
         if (retrofit == null) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -54,33 +55,44 @@ public class ApiClient {
                             Request original = chain.request();
                             Request.Builder requestBuilder = original.newBuilder();
 
-                            for (String cookie : cookies) {
-                                requestBuilder.addHeader("Cookie", cookie);
-                            }
-
-                            SessionManager sessionManager = new SessionManager(appContext);
                             String token = sessionManager.getAuthToken();
-                            if (token != null && !token.isEmpty() && original.header("Authorization") == null) {
-                                requestBuilder.addHeader("Authorization", "Bearer " + token);
+                            Set<String> savedCookies = sessionManager.getCookies();
+                            
+                            if (token != null && !token.isEmpty()) {
+                                if (original.header("Authorization") == null) {
+                                    requestBuilder.addHeader("Authorization", "Bearer " + token);
+                                }
                             }
+                            
+                            // Always send saved cookies (which includes the refresh token)
+                            if (!savedCookies.isEmpty()) {
+                                StringBuilder cookieHeader = new StringBuilder();
+                                for (String cookie : savedCookies) {
+                                    // Extract only the key=value part of the cookie
+                                    String cookieValue = cookie.split(";")[0];
+                                    if (cookieHeader.length() > 0) cookieHeader.append("; ");
+                                    cookieHeader.append(cookieValue);
+                                }
+                                requestBuilder.header("Cookie", cookieHeader.toString());
+                            }
+                            
                             // Proceed with the request
                             Response response = chain.proceed(requestBuilder.build());
 
                             // Check if backend sent a new token in response headers
                             String newToken = response.header("X-New-Token");
                             if (newToken != null && !newToken.isEmpty()) {
-                                // Preserve user info and update token
+                                // Update session with new token
                                 String email = sessionManager.getUserEmail();
                                 String role = sessionManager.getUserRole();
                                 String userId = sessionManager.getUserId();
                                 sessionManager.saveSession(email, role, null, userId, newToken);
                             }
 
-                            // Save cookies
+                            // Save cookies persistently
                             if (!response.headers("Set-Cookie").isEmpty()) {
-                                for (String header : response.headers("Set-Cookie")) {
-                                    cookies.add(header);
-                                }
+                                Set<String> newCookies = new HashSet<>(response.headers("Set-Cookie"));
+                                sessionManager.saveCookies(newCookies);
                             }
                             return response;
                         }

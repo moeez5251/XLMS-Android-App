@@ -1,6 +1,8 @@
 const { poolPromise } = require('../models/db');
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require('uuid');
+const { generatetoken } = require('./tokengenerator');
+const { sendEmail } = require('./mailer');
 
 exports.createUser = async (req, res) => {
   try {
@@ -213,4 +215,21 @@ exports.changepassword = async (req, res) => {
     console.error('Error changing password:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+}
+exports.forgotpassword = async (req, res) => {
+  const { ID } = req.body;
+  if (!ID) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+  const Email = await poolPromise.then(pool => pool.request()
+    .input('ID', ID)
+    .query('SELECT Email FROM users WHERE User_id = @ID')).then(result => {
+      if (result.recordset.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      return result.recordset[0].Email;
+    });
+  const link = await generatetoken(ID);
+  sendEmail(Email, 'Password Reset Request', `Hello user, Click the link to reset your password: ${link}`, `<table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);"> <tr> <td style="background:#2563eb; padding:25px; text-align:center; color:#ffffff; font-size:26px; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Password Reset Request </td> </tr> <tr> <td style="padding:35px; color:#333333; font-size:16px; line-height:1.7; font-family:Arial, Helvetica, sans-serif;"> <p style="margin-top:0;">Hello User,</p> <p> We received a request to reset your password. Click the button below to create a new password. </p> <p style="text-align:center; margin:35px 0;"> <a href="${link}" style="background:#2563eb; color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:6px; display:inline-block; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Reset Password </a> </p> <p> If the button doesn't work, copy and paste this link into your browser: </p> <p style="word-break:break-all; color:#2563eb; font-weight:bold;"> ${link} </p> <p> If you did not request a password reset, you can ignore this email. </p> <p style="margin-bottom:0;"> Regards,<br /> Support Team </p> </td> </tr> <tr> <td style="background:#f9fafb; padding:18px; text-align:center; font-size:13px; color:#777777; font-family:Arial, Helvetica, sans-serif;"> © 2026 XLMS. All rights reserved. </td> </tr> </table> </td>`);
+  res.status(200).json({ message: 'Password reset link sent to email' });
 }

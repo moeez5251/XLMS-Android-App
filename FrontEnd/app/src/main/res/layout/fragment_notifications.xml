@@ -54,7 +54,38 @@
             android:layout_weight="1"
             android:padding="16dp"
             android:clipToPadding="false" />
+
+        <!-- Skeleton Loader -->
+        <LinearLayout
+            android:id="@+id/layoutSkeleton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:visibility="gone">
+            <include layout="@layout/item_notification_skeleton" />
+            <include layout="@layout/item_notification_skeleton" />
+            <include layout="@layout/item_notification_skeleton" />
+            <include layout="@layout/item_notification_skeleton" />
+            <include layout="@layout/item_notification_skeleton" />
+        </LinearLayout>
     </LinearLayout>
+
+    <!-- Mark as Read Loader Overlay -->
+    <FrameLayout
+        android:id="@+id/layoutLoadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#4D000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white" />
+    </FrameLayout>
 
     <!-- Empty State (Hidden by default) -->
     <LinearLayout

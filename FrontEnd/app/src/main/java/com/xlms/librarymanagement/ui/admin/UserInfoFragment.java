@@ -193,7 +193,7 @@ public class UserInfoFragment extends Fragment {
     private void updateUIForMode() {
         boolean editable = isEditMode;
         editTextName.setEnabled(editable);
-        editTextEmail.setEnabled(editable);
+        editTextEmail.setEnabled(false);
         spinnerMembershipType.setEnabled(editable);
         radioUser.setEnabled(editable);
         radioAdmin.setEnabled(editable);
@@ -216,7 +216,7 @@ public class UserInfoFragment extends Fragment {
         currentMember.setName(editTextName.getText().toString());
         currentMember.setEmail(editTextEmail.getText().toString());
         currentMember.setMembershipType(spinnerMembershipType.getSelectedItem().toString());
-        currentMember.setRole(radioAdmin.isChecked() ? "Admin" : "User");
+        currentMember.setRole(radioAdmin.isChecked() ? "Admin" : "Standard-User");
 
         // Ensure ID is set for the backend update call
         if (currentMember.getId() == null || currentMember.getId().isEmpty()) {

@@ -16,17 +16,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.NotificationAdapter;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.MessageResponse;
 import com.xlms.librarymanagement.model.Notification;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class NotificationsFragment extends Fragment {
 
     private RecyclerView recyclerViewNotifications;
     private NotificationAdapter notificationAdapter;
-    private List<Notification> notificationList;
-    private LinearLayout layoutNotifications, layoutEmptyState;
+    private List<Notification> notificationList = new ArrayList<>();
+    private LinearLayout layoutNotifications, layoutEmptyState, layoutSkeleton;
+    private View layoutLoadingOverlay;
     private Button buttonClearAll, buttonRefresh;
 
     @Nullable
@@ -40,93 +47,93 @@ public class NotificationsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        try {
-            initViews(view);
-            setupRecyclerView();
-            loadDummyData();
-            setupClickListeners();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(requireContext(), "Error loading notifications", Toast.LENGTH_SHORT).show();
-        }
+        initViews(view);
+        setupRecyclerView();
+        fetchNotifications();
+        setupClickListeners();
     }
 
     private void initViews(View view) {
         recyclerViewNotifications = view.findViewById(R.id.recyclerViewNotifications);
         layoutNotifications = view.findViewById(R.id.layoutNotifications);
         layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
+        layoutSkeleton = view.findViewById(R.id.layoutSkeleton);
+        layoutLoadingOverlay = view.findViewById(R.id.layoutLoadingOverlay);
         buttonClearAll = view.findViewById(R.id.buttonClearAll);
         buttonRefresh = view.findViewById(R.id.buttonRefresh);
     }
 
     private void setupRecyclerView() {
-        if (recyclerViewNotifications == null) return;
-        
-        notificationList = new ArrayList<>();
         notificationAdapter = new NotificationAdapter();
         recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewNotifications.setAdapter(notificationAdapter);
     }
 
-    private void loadDummyData() {
-        if (notificationList == null) return;
-        
-        notificationList.clear();
-        
-        notificationList.add(new Notification(
-            Notification.TYPE_WARNING,
-            "Book Overdue",
-            "\"The Republic of Plato\" is now 3 days overdue. Please return it to avoid further fines.",
-            "2h ago"
-        ));
-
-        notificationList.add(new Notification(
-            Notification.TYPE_INFO,
-            "Reservation Ready",
-            "Your reserved copy of \"Modern Architecture\" is ready for pickup at the Central Desk.",
-            "5h ago"
-        ));
-
-        notificationList.add(new Notification(
-            Notification.TYPE_SUCCESS,
-            "Renewal Successful",
-            "You have successfully extended the loan period for 3 items in your collection.",
-            "Yesterday"
-        ));
-
-        notificationList.add(new Notification(
-            Notification.TYPE_SYSTEM,
-            "Library Hours Update",
-            "The Reading Room will be closing early this Friday at 6:00 PM for maintenance.",
-            "Oct 12"
-        ));
-
-        if (notificationAdapter != null) {
-            notificationAdapter.submitList(notificationList);
+    private void fetchNotifications() {
+        if (layoutSkeleton != null) {
+            layoutSkeleton.setVisibility(View.VISIBLE);
+            recyclerViewNotifications.setVisibility(View.GONE);
+            layoutEmptyState.setVisibility(View.GONE);
         }
-        updateEmptyState();
+        
+        ApiClient.getApiService(requireContext()).getNotifications().enqueue(new Callback<List<Notification>>() {
+            @Override
+            public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
+                if (!isAdded()) return;
+                
+                if (layoutSkeleton != null) layoutSkeleton.setVisibility(View.GONE);
+                recyclerViewNotifications.setVisibility(View.VISIBLE);
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    notificationList = response.body();
+                    notificationAdapter.submitList(notificationList);
+                    updateEmptyState();
+                }
+            }
+            @Override public void onFailure(Call<List<Notification>> call, Throwable t) {
+                if (!isAdded()) return;
+                if (layoutSkeleton != null) layoutSkeleton.setVisibility(View.GONE);
+                recyclerViewNotifications.setVisibility(View.VISIBLE);
+                Toast.makeText(requireContext(), "Error fetching", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupClickListeners() {
         if (buttonClearAll != null) {
-            buttonClearAll.setOnClickListener(v -> {
-                if (notificationList != null) {
-                    notificationList.clear();
-                }
-                if (notificationAdapter != null) {
-                    notificationAdapter.clear();
-                }
-                updateEmptyState();
-                Toast.makeText(requireContext(), "All notifications cleared", Toast.LENGTH_SHORT).show();
-            });
+            buttonClearAll.setText("Read All");
+            buttonClearAll.setOnClickListener(v -> markAllAsRead());
         }
 
         if (buttonRefresh != null) {
-            buttonRefresh.setOnClickListener(v -> {
-                loadDummyData();
-                Toast.makeText(requireContext(), "Notifications refreshed", Toast.LENGTH_SHORT).show();
-            });
+            buttonRefresh.setOnClickListener(v -> fetchNotifications());
         }
+    }
+
+    private void markAllAsRead() {
+        if (layoutLoadingOverlay != null) {
+            layoutLoadingOverlay.setVisibility(View.VISIBLE);
+        }
+        
+        com.google.gson.JsonObject body = new com.google.gson.JsonObject();
+        body.addProperty("status", "read");
+        ApiClient.getApiService(requireContext()).markAsReadAll(body).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (!isAdded()) return;
+                if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.GONE);
+                
+                if (response.isSuccessful()) {
+                    Toast.makeText(requireContext(), "All marked as read", Toast.LENGTH_SHORT).show();
+                    fetchNotifications();
+                }
+            }
+            @Override public void onFailure(Call<MessageResponse> call, Throwable t) {
+                if (!isAdded()) return;
+                if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.GONE);
+                Toast.makeText(requireContext(), "Failed to mark as read", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateEmptyState() {

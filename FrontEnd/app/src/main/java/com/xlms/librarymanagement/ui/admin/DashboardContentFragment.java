@@ -108,23 +108,26 @@ public class DashboardContentFragment extends Fragment {
     }
 
     private void fetchDashboardData() {
+        if (!isAdded()) return;
         com.xlms.librarymanagement.api.ApiService apiService = com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext());
         
         // Fetch Stats
         apiService.getDashboardData().enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.DashboardDataResponse>() {
             @Override
             public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.DashboardDataResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.DashboardDataResponse> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     updateUI(response.body());
                 } else {
-                    Toast.makeText(requireContext(), "Failed to load dashboard data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to load dashboard data", Toast.LENGTH_SHORT).show();
                     loadStatsData(null);
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.DashboardDataResponse> call, Throwable t) {
-                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 loadStatsData(null);
             }
         });
@@ -133,6 +136,7 @@ public class DashboardContentFragment extends Fragment {
         apiService.getNotifications().enqueue(new retrofit2.Callback<List<Notification>>() {
             @Override
             public void onResponse(retrofit2.Call<List<Notification>> call, retrofit2.Response<List<Notification>> response) {
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     setupActivityList(response.body());
                 }
@@ -200,6 +204,7 @@ public class DashboardContentFragment extends Fragment {
     }
 
     private void addLegendItem(LinearLayout container, String type, int value, String colorHex) {
+        if (!isAdded()) return;
         LinearLayout itemLayout = new LinearLayout(requireContext());
         itemLayout.setOrientation(LinearLayout.HORIZONTAL);
         itemLayout.setGravity(android.view.Gravity.CENTER_VERTICAL);
@@ -222,6 +227,7 @@ public class DashboardContentFragment extends Fragment {
     }
 
     private void addStatCard(int value, String label, int iconRes, int bgRes, boolean isOverdue) {
+        if (!isAdded()) return;
         View card = LayoutInflater.from(requireContext()).inflate(R.layout.stat_card_simple, statsContainer, false);
         
         ImageView icon = card.findViewById(R.id.statIcon);
@@ -244,7 +250,7 @@ public class DashboardContentFragment extends Fragment {
     }
 
     private void setupActivityList(List<Notification> notifications) {
-        if (activityListContainer == null) return;
+        if (activityListContainer == null || !isAdded()) return;
         activityListContainer.removeAllViews();
         
         int count = Math.min(notifications.size(), 5);
@@ -256,7 +262,7 @@ public class DashboardContentFragment extends Fragment {
             TextView timestampText = activityItem.findViewById(R.id.timestampText);
             
             activityText.setText(notification.getDescription());
-            timestampText.setText(notification.getTime());
+            timestampText.setText(com.xlms.librarymanagement.adapter.NotificationAdapter.getRelativeTime(notification.getTime()));
             
             activityListContainer.addView(activityItem);
         }

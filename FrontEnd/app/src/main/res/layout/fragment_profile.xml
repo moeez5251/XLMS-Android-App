@@ -1,262 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/surface"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="@color/surface"
+        android:fillViewport="true">
 
-        <!-- Top App Bar -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:background="@color/surface"
-            android:elevation="2dp">
-
-            <ImageButton
-                android:id="@+id/buttonMenu"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_menu"
-                android:contentDescription="Menu" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="XLMS"
-                android:textSize="18sp"
-                android:textColor="@color/primary"
-                android:fontFamily="@font/manrope_extrabold"
-                android:textAllCaps="true"
-                android:letterSpacing="0.1"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
-
-        <!-- Content -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:orientation="vertical">
 
-            <!-- Account Information Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="20dp">
+            <!-- Top App Bar -->
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_badge"
-                    app:tint="@color/primary_container"
-                    android:layout_marginEnd="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Account Information"
-                    android:textSize="18sp"
-                    android:textColor="@color/primary"
-                    android:fontFamily="@font/manrope_bold" />
-            </LinearLayout>
-
-            <!-- Archive ID (Readonly) -->
+            <!-- Content -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:padding="24dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User ID"
-                    android:textSize="11sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.15"
-                    android:layout_marginBottom="4dp"
-                    android:paddingStart="4dp" />
-
-                <TextView
-                    android:id="@+id/textViewArchiveId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="XLMS-2944-XBD-09"
-                    android:textSize="14sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:fontFamily="monospace"
-                    android:background="@color/surface_container"
-                    android:padding="12dp"
-                    android:layout_marginStart="4dp" />
-            </LinearLayout>
-
-            <!-- Full Name -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Full Name"
-                    android:textSize="11sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.15"
-                    android:layout_marginBottom="4dp"
-                    android:paddingStart="4dp" />
-
-                <EditText
-                    android:id="@+id/editTextFullName"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@drawable/input_field_background"
-                    android:text="Dr. Julian Vane"
-                    android:textColor="@color/on_surface"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
-            </LinearLayout>
-
-            <!-- Institutional Email -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="32dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="User Email"
-                    android:textSize="11sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.15"
-                    android:layout_marginBottom="4dp"
-                    android:paddingStart="4dp" />
-
-                <EditText
-                    android:id="@+id/editTextEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@drawable/input_field_background"
-                    android:text="j.vane@university-archival.edu"
-                    android:inputType="textEmailAddress"
-                    android:textColor="@color/on_surface"
-                    android:textSize="14sp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
-            </LinearLayout>
-
-            <!-- Change Password Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="20dp">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_lock_reset"
-                    app:tint="@color/primary_container"
-                    android:layout_marginEnd="8dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Change Password"
-                    android:textSize="18sp"
-                    android:textColor="@color/primary"
-                    android:fontFamily="@font/manrope_bold" />
-
-                <Button
-                    android:id="@+id/buttonForgotPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:text="Forget Password?"
-                    android:textColor="@color/primary"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.1" />
-            </LinearLayout>
-
-            <!-- Current Password -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Current Password"
-                    android:textSize="11sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.15"
-                    android:layout_marginBottom="4dp"
-                    android:paddingStart="4dp" />
-
-                <EditText
-                    android:id="@+id/editTextCurrentPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@drawable/input_field_background"
-                    android:hint="••••••••••••"
-                    android:inputType="textPassword"
-                    android:textColor="@color/on_surface"
-                    android:textSize="14sp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp" />
-            </LinearLayout>
-
-            <!-- New Password & Verify Password -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="32dp">
-
+                <!-- Account Information Section -->
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="20dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_badge"
+                        app:tint="@color/primary_container"
+                        android:layout_marginEnd="8dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Password"
+                        android:text="Account Information"
+                        android:textSize="18sp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/manrope_bold" />
+                </LinearLayout>
+
+                <!-- Archive ID (Readonly) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User ID"
+                        android:textSize="11sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.15"
+                        android:layout_marginBottom="4dp"
+                        android:paddingStart="4dp" />
+
+                    <TextView
+                        android:id="@+id/textViewArchiveId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Loading..."
+                        android:textSize="14sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:fontFamily="monospace"
+                        android:background="@color/surface_container"
+                        android:padding="12dp"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+                <!-- Full Name -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Full Name"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_variant"
                         android:textStyle="bold"
@@ -266,29 +100,28 @@
                         android:paddingStart="4dp" />
 
                     <EditText
-                        android:id="@+id/editTextNewPassword"
+                        android:id="@+id/editTextFullName"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/input_field_background"
-                        android:hint="Min. 12 characters"
-                        android:inputType="textPassword"
+                        android:text="Loading..."
                         android:textColor="@color/on_surface"
                         android:textSize="14sp"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp" />
                 </LinearLayout>
 
+                <!-- Institutional Email -->
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_marginStart="8dp">
+                    android:layout_marginBottom="32dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Verify Password"
+                        android:text="User Email"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_variant"
                         android:textStyle="bold"
@@ -298,52 +131,201 @@
                         android:paddingStart="4dp" />
 
                     <EditText
-                        android:id="@+id/editTextVerifyPassword"
+                        android:id="@+id/editTextEmail"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:background="@drawable/input_field_background"
-                        android:hint="Confirm new password"
+                        android:text="Loading..."
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/on_surface"
+                        android:textSize="14sp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp" />
+                </LinearLayout>
+
+                <!-- Change Password Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="20dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_lock_reset"
+                        app:tint="@color/primary_container"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Change Password"
+                        android:textSize="18sp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/manrope_bold" />
+
+                    <Button
+                        android:id="@+id/buttonForgotPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:text="Forget Password?"
+                        android:textColor="@color/primary"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.1" />
+                </LinearLayout>
+
+                <!-- Current Password -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Current Password"
+                        android:textSize="11sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.15"
+                        android:layout_marginBottom="4dp"
+                        android:paddingStart="4dp" />
+
+                    <EditText
+                        android:id="@+id/editTextCurrentPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/input_field_background"
+                        android:hint="••••••••••••"
                         android:inputType="textPassword"
                         android:textColor="@color/on_surface"
                         android:textSize="14sp"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp" />
                 </LinearLayout>
-            </LinearLayout>
 
-            <!-- Action Buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:paddingTop="20dp">
+                <!-- New Password & Verify Password -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="32dp">
 
-                <Button
-                    android:id="@+id/buttonCancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:text="Cancel Changes"
-                    android:textColor="@color/primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="24dp"
-                    android:layout_marginEnd="12dp" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
 
-                <Button
-                    android:id="@+id/buttonUpdate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:background="@drawable/button_primary_gradient"
-                    android:text="Update"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:paddingStart="32dp"
-                    android:paddingEnd="32dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="New Password"
+                            android:textSize="11sp"
+                            android:textColor="@color/on_surface_variant"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:letterSpacing="0.15"
+                            android:layout_marginBottom="4dp"
+                            android:paddingStart="4dp" />
+
+                        <EditText
+                            android:id="@+id/editTextNewPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/input_field_background"
+                            android:hint="Min. 12 characters"
+                            android:inputType="textPassword"
+                            android:textColor="@color/on_surface"
+                            android:textSize="14sp"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Verify Password"
+                            android:textSize="11sp"
+                            android:textColor="@color/on_surface_variant"
+                            android:textStyle="bold"
+                            android:textAllCaps="true"
+                            android:letterSpacing="0.15"
+                            android:layout_marginBottom="4dp"
+                            android:paddingStart="4dp" />
+
+                        <EditText
+                            android:id="@+id/editTextVerifyPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/input_field_background"
+                            android:hint="Confirm new password"
+                            android:inputType="textPassword"
+                            android:textColor="@color/on_surface"
+                            android:textSize="14sp"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Action Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingTop="20dp">
+
+                    <Button
+                        android:id="@+id/buttonCancel"
+                        android:layout_width="139dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"
+                        android:text="Cancel Changes"
+                        android:textColor="@color/primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/buttonUpdate"
+                        android:layout_width="140dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/button_primary_gradient"
+                        android:paddingStart="32dp"
+                        android:paddingEnd="32dp"
+                        android:text="Update"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>

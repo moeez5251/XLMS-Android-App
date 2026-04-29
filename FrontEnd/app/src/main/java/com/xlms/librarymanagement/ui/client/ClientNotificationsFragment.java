@@ -23,7 +23,8 @@ public class ClientNotificationsFragment extends Fragment {
     private RecyclerView recyclerViewNotifications;
     private NotificationAdapter notificationAdapter;
     private List<Notification> notificationList;
-    private LinearLayout layoutNotifications, layoutEmptyState;
+    private LinearLayout layoutNotifications, layoutEmptyState, layoutSkeleton;
+    private View layoutLoadingOverlay;
     private Button buttonClearAll, buttonRefresh;
 
     @Nullable
@@ -45,6 +46,8 @@ public class ClientNotificationsFragment extends Fragment {
         recyclerViewNotifications = view.findViewById(R.id.recyclerViewNotifications);
         layoutNotifications = view.findViewById(R.id.layoutNotifications);
         layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
+        layoutSkeleton = view.findViewById(R.id.layoutSkeleton);
+        layoutLoadingOverlay = view.findViewById(R.id.layoutLoadingOverlay);
         buttonClearAll = view.findViewById(R.id.buttonClearAll);
         buttonRefresh = view.findViewById(R.id.buttonRefresh);
     }
@@ -57,28 +60,47 @@ public class ClientNotificationsFragment extends Fragment {
     }
 
     private void loadDummyData() {
-        notificationList.clear();
-        notificationList.add(new Notification(Notification.TYPE_WARNING, "Book Overdue", "The Republic of Plato is now 3 days overdue.", "2h ago"));
-        notificationList.add(new Notification(Notification.TYPE_INFO, "Reservation Ready", "Your reserved copy of Modern Architecture is ready.", "5h ago"));
-        notificationList.add(new Notification(Notification.TYPE_SUCCESS, "Renewal Successful", "You have successfully extended the loan period.", "Yesterday"));
-        
-        notificationAdapter.submitList(notificationList);
-        updateEmptyState();
+        if (layoutSkeleton != null) {
+            layoutSkeleton.setVisibility(View.VISIBLE);
+            recyclerViewNotifications.setVisibility(View.GONE);
+            layoutEmptyState.setVisibility(View.GONE);
+        }
+
+        // Simulate network delay
+        recyclerViewNotifications.postDelayed(() -> {
+            if (!isAdded()) return;
+            if (layoutSkeleton != null) layoutSkeleton.setVisibility(View.GONE);
+            recyclerViewNotifications.setVisibility(View.VISIBLE);
+
+            notificationList.clear();
+            notificationList.add(new Notification(Notification.TYPE_WARNING, "Book Overdue", "The Republic of Plato is now 3 days overdue.", "2h ago"));
+            notificationList.add(new Notification(Notification.TYPE_INFO, "Reservation Ready", "Your reserved copy of Modern Architecture is ready.", "5h ago"));
+            notificationList.add(new Notification(Notification.TYPE_SUCCESS, "Renewal Successful", "You have successfully extended the loan period.", "Yesterday"));
+
+            notificationAdapter.submitList(notificationList);
+            updateEmptyState();
+        }, 1000);
     }
 
     private void setupClickListeners() {
         if (buttonClearAll != null) {
             buttonClearAll.setOnClickListener(v -> {
-                notificationList.clear();
-                notificationAdapter.clear();
-                updateEmptyState();
-                Toast.makeText(requireContext(), "All notifications cleared", Toast.LENGTH_SHORT).show();
+                if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.VISIBLE);
+                
+                // Simulate API call
+                v.postDelayed(() -> {
+                    if (!isAdded()) return;
+                    if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.GONE);
+                    notificationList.clear();
+                    notificationAdapter.clear();
+                    updateEmptyState();
+                    Toast.makeText(requireContext(), "All notifications cleared", Toast.LENGTH_SHORT).show();
+                }, 800);
             });
         }
         if (buttonRefresh != null) {
             buttonRefresh.setOnClickListener(v -> {
                 loadDummyData();
-                Toast.makeText(requireContext(), "Notifications refreshed", Toast.LENGTH_SHORT).show();
             });
         }
     }

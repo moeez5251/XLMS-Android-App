@@ -28,6 +28,9 @@ public interface ApiService {
     @retrofit2.http.GET("notifications/get")
     Call<java.util.List<com.xlms.librarymanagement.model.Notification>> getNotifications();
 
+    @POST("notifications/markasread")
+    Call<MessageResponse> markAsReadAll(@Body com.google.gson.JsonObject body);
+
     @POST("books/getbyID")
     Call<java.util.List<com.xlms.librarymanagement.model.Book>> getBookById(@Body GetByIdRequest request);
 
@@ -59,4 +62,13 @@ public interface ApiService {
 
     @POST("users/deactivate")
     Call<MessageResponse> deactivateUser(@Body List<String> userIds);
-}
+
+    @retrofit2.http.GET("users/getbyid")
+    Call<com.xlms.librarymanagement.model.Member> getUserProfile();
+
+    @POST("users/forgotpassword")
+    Call<MessageResponse> forgotPassword(@Body com.google.gson.JsonObject body);
+
+    @PUT("users/changepassword")
+    Call<MessageResponse> changePassword(@Body com.google.gson.JsonObject body);
+    }

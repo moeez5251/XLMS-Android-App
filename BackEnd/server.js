@@ -25,7 +25,7 @@ const unprotectedRoutes = [
   '/api/auth/logout',
   '/',
   '/api/token/verify',
-  '/api/token/update'
+  '/api/token/update',
 ]; 
 app.use((req, res, next) => {
   if (unprotectedRoutes.includes(req.path)) return next();

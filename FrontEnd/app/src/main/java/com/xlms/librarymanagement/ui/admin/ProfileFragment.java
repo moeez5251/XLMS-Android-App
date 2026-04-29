@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,14 +15,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.MessageResponse;
+
+import com.google.gson.JsonObject;
+import com.xlms.librarymanagement.model.Member;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
 
-    private ImageButton buttonMenu;
     private TextView textViewArchiveId;
     private EditText editTextFullName, editTextEmail;
     private EditText editTextCurrentPassword, editTextNewPassword, editTextVerifyPassword;
     private Button buttonForgotPassword, buttonCancel, buttonUpdate;
+    private android.widget.ProgressBar progressBar;
 
     @Nullable
     @Override
@@ -37,104 +45,131 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
+        loadProfileData();
         setupClickListeners();
     }
 
     private void initViews(View view) {
-        buttonMenu = view.findViewById(R.id.buttonMenu);
         textViewArchiveId = view.findViewById(R.id.textViewArchiveId);
         editTextFullName = view.findViewById(R.id.editTextFullName);
+        editTextFullName.setEnabled(false);
         editTextEmail = view.findViewById(R.id.editTextEmail);
+        editTextEmail.setEnabled(false); // Disable email edit
         editTextCurrentPassword = view.findViewById(R.id.editTextCurrentPassword);
         editTextNewPassword = view.findViewById(R.id.editTextNewPassword);
         editTextVerifyPassword = view.findViewById(R.id.editTextVerifyPassword);
         buttonForgotPassword = view.findViewById(R.id.buttonForgotPassword);
         buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonUpdate = view.findViewById(R.id.buttonUpdate);
+        progressBar = view.findViewById(R.id.progressBar);
+    }
 
-        // Set dummy data
-        textViewArchiveId.setText("XLMS-2944-XBD-09");
+    private void loadProfileData() {
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        ApiClient.getApiService(requireContext()).getUserProfile().enqueue(new Callback<Member>() {
+            @Override
+            public void onResponse(Call<Member> call, Response<Member> response) {
+                if (!isAdded()) return;
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                if (response.isSuccessful() && response.body() != null) {
+                    Member member = response.body();
+                    textViewArchiveId.setText("ID: " + member.getUserId());
+                    editTextFullName.setText(member.getName());
+                    editTextEmail.setText(member.getEmail());
+                } else {
+                    Toast.makeText(getContext(), "Failed to load profile", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Member> call, Throwable t) {
+                if (!isAdded()) return;
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupClickListeners() {
-        // Menu button opens bottom sheet
-        if (buttonMenu != null) {
-            buttonMenu.setOnClickListener(v -> {
-                if (getActivity() instanceof AdminDashboardActivity) {
-                    ((AdminDashboardActivity) getActivity()).openBottomSheet();
-                }
-            });
-        }
-
-        // Forgot Password button opens ForgotPasswordFragment
         if (buttonForgotPassword != null) {
             buttonForgotPassword.setOnClickListener(v -> openForgotPasswordFragment());
         }
-
-        // Cancel button resets form
         if (buttonCancel != null) {
-            buttonCancel.setOnClickListener(v -> {
-                editTextFullName.setText("Dr. Julian Vane");
-                editTextEmail.setText("j.vane@university-archival.edu");
-                editTextCurrentPassword.setText("");
-                editTextNewPassword.setText("");
-                editTextVerifyPassword.setText("");
-                Toast.makeText(requireContext(), "Changes cancelled", Toast.LENGTH_SHORT).show();
-            });
+            buttonCancel.setOnClickListener(v -> loadProfileData());
         }
-
-        // Update button validates and saves
         if (buttonUpdate != null) {
             buttonUpdate.setOnClickListener(v -> handleUpdate());
         }
     }
 
     private void handleUpdate() {
-        String fullName = editTextFullName.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
-        String currentPassword = editTextCurrentPassword.getText().toString().trim();
         String newPassword = editTextNewPassword.getText().toString().trim();
+        String currentPassword = editTextCurrentPassword.getText().toString().trim();
         String verifyPassword = editTextVerifyPassword.getText().toString().trim();
 
-        // Validate required fields
-        if (TextUtils.isEmpty(fullName)) {
-            editTextFullName.setError("Full name is required");
-            editTextFullName.requestFocus();
+        if (TextUtils.isEmpty(currentPassword) || TextUtils.isEmpty(newPassword)) {
+            Toast.makeText(requireContext(), "Fill password fields to update", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(currentPassword.equals(newPassword) || currentPassword.equals(verifyPassword)){
+            Toast.makeText(requireContext(), "New password cannot be same as old password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!newPassword.equals(verifyPassword)) {
+            editTextVerifyPassword.setError("Passwords do not match");
             return;
         }
 
-        if (TextUtils.isEmpty(email)) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-            return;
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
         }
+        
+        JsonObject body = new JsonObject();
+        body.addProperty("OldPassword", currentPassword);
+        body.addProperty("NewPassword", newPassword);
 
-        // If changing password, validate all password fields
-        if (!TextUtils.isEmpty(currentPassword) || !TextUtils.isEmpty(newPassword) || !TextUtils.isEmpty(verifyPassword)) {
-            if (TextUtils.isEmpty(currentPassword)) {
-                editTextCurrentPassword.setError("Current password is required");
-                editTextCurrentPassword.requestFocus();
-                return;
+        ApiClient.getApiService(requireContext()).changePassword(body).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (!isAdded()) return;
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                
+                if (response.isSuccessful()) {
+                    Toast.makeText(requireContext(), "Password updated", Toast.LENGTH_SHORT).show();
+                    editTextCurrentPassword.setText("");
+                    editTextNewPassword.setText("");
+                    editTextVerifyPassword.setText("");
+                } else {
+                    String error = "Failed to update";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                            if (errorObj.has("error")) error = errorObj.get("error").getAsString();
+                        }
+                    } catch (Exception e) {}
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                }
             }
-
-            if (newPassword.length() < 12) {
-                editTextNewPassword.setError("Password must be at least 12 characters");
-                editTextNewPassword.requestFocus();
-                return;
+            @Override public void onFailure(Call<MessageResponse> call, Throwable t) {
+                if (!isAdded()) return;
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show();
             }
-
-            if (!newPassword.equals(verifyPassword)) {
-                editTextVerifyPassword.setError("Passwords do not match");
-                editTextVerifyPassword.requestFocus();
-                return;
-            }
-        }
-
-        Toast.makeText(requireContext(), "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void openForgotPasswordFragment() {
-        ForgotPasswordFragment fragment = new ForgotPasswordFragment();
+        String fullId = textViewArchiveId.getText().toString();
+        String userId = "";
+        if (fullId.startsWith("ID: ")) {
+            userId = fullId.substring(4);
+        }
+        
+        ForgotPasswordFragment fragment = ForgotPasswordFragment.newInstance(
+                editTextEmail.getText().toString(),
+                userId
+        );
         fragment.setOnForgotPasswordActionListener(new ForgotPasswordFragment.OnForgotPasswordActionListener() {
             @Override
             public void onBack() {
@@ -154,5 +189,11 @@ public class ProfileFragment extends Fragment {
         if (getActivity() instanceof AdminDashboardActivity) {
             ((AdminDashboardActivity) getActivity()).closeDetailScreen();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Clear references if needed
     }
 }
