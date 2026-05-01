@@ -11,153 +11,52 @@ SplashActivity (launcher)
     └── LoginActivity (if not logged in)
 
 LoginActivity
-├── Email + Password fields
-├── Password visibility toggle
-├── Remember Me switch
-├── "Sign Up" link → SignUpActivity
-├── "Forgot Password" link → ForgotPasswordActivity
-└── Login → saves session → navigates to dashboard
-
-SignUpActivity (hosts 3-step flow)
-├── SignUpFragment → EmailVerificationFragment → SignUpSuccessFragment
-└── Success → back to LoginActivity
-
-ForgotPasswordActivity
-├── Email input
-└── Sends reset request (toast confirmation, no actual API call)
+├── API-backed authentication
+└── navigates to dashboard
 
 AdminDashboardActivity (main admin screen)
 ├── ViewPager2 (5 tabs)
-│   ├── DashboardContentFragment
-│   ├── ManageBooksFragment
-│   ├── MembersFragment
-│   ├── NotificationsFragment
-│   └── ProfileFragment
-├── BottomNavigationView (5 items)
-├── Slide-out Bottom Sheet (7 nav links)
-├── Notification PopupWindow
-└── Detail Fragments (pushed on back stack)
-    ├── BookInfoFragment
-    ├── LendBookFragment
-    ├── UserInfoFragment
-    ├── LendedBooksFragment
-    ├── AddBookFragment
-    ├── AddUserFragment
-    ├── ForgotPasswordFragment
-    └── ResourcesFragment
+│   ├── DashboardContentFragment (Live Stats + Custom Charts + Recent Activity)
+│   ├── ManageBooksFragment (List + Shimmers + Dynamic Filters)
+│   ├── MembersFragment (User Management + Shimmers)
+│   ├── NotificationsFragment (In-App List + Read All)
+│   └── ProfileFragment (Real Data + Change Password)
+├── Detail Fragments (pushed on back stack)
+    ├── BookInfoFragment (Edit form with Spinners + Delete)
+    ├── UserInfoFragment (Profile edit + Status toggle + Delete)
+    ├── AddBookFragment (Form with dynamic options)
+    ├── AddUserFragment (Registration form)
+    └── ForgotPasswordFragment (Pre-filled email + Send instructions)
 
-ClientDashboardActivity (main client screen)
-├── DrawerLayout (root)
-│   ├── AppBarLayout (hamburger, title, bell, avatar)
-│   ├── FrameLayout (mainContentFrame)
-│   │   └── ClientDashboardContentFragment (Welcome + metrics + charts)
-│   ├── BottomNavigationView (6 tabs: Dashboard, Catalog, Account, Search, Help, Exit)
-│   └── NavigationView (sidebar drawer with 5 items + logout)
-└── Detail fragments (stubbed)
-    ├── ClientCatalogFragment (coming soon)
-    ├── ClientAccountFragment (coming soon)
-    └── ClientSearchFragment (coming soon)
+Custom Components
+├── PieChartView: Real-time book availability visualization
+└── StackedAreaChartView: 12-month visitor activity chart
 ```
 
-## Layout Files (~38 total)
+## Design Language (v3.0)
 
-### Activity Layouts
-| Layout | Description |
-|--------|-------------|
-| `activity_splash.xml` | Splash screen with logo, branding content, animated progress bar |
-| `activity_login.xml` | Login form with email, password, remember me, sign up link |
-| `activity_admin_dashboard.xml` | Main admin container with ViewPager2, bottom nav, bottom sheet overlay |
-| `activity_client_dashboard.xml` | Main client container with DrawerLayout, AppBar, BottomNav, NavigationView |
-| `activity_forgot_password.xml` | Password recovery email input |
-| `activity_sign_up.xml` | Container for signup fragments |
+### Key Components
+- **Skeleton Shimmers**: Used in Books and Members tabs to replace traditional progress bars. Multi-item placeholders match the final content structure.
+- **Dynamic Spinners**: Input forms (Book Info, Add Book) use server-synced or comprehensive hardcoded lists for Languages and Categories.
+- **Tonal Icons**: Notifications use an informational **info icon** (`ic_help`) with a **light blue gradient** background for a modern, non-alert look.
+- **ID Shortening**: Lists display only the first 4 characters of UUIDs (e.g., `8f2a...`) to maintain a clean, table-like appearance.
 
-### Fragment Layouts
-| Layout | Description |
-|--------|-------------|
-| `fragment_dashboard_content.xml` | Admin: Stats cards, bar chart container, activity feed |
-| `fragment_client_dashboard_content.xml` | Client: Welcome, metric cards, 12-month bar chart |
-| `fragment_manage_books.xml` | Admin: Search bar, filter chips, RecyclerView for books |
-| `fragment_members.xml` | Admin: Search bar, filter chips, RecyclerView for members |
-| `fragment_notifications.xml` | RecyclerView for notifications, clear/refresh buttons |
-| `fragment_profile.xml` | Profile header, password change form |
-| `fragment_book_info.xml` | Full book details display |
-| `fragment_lend_book.xml` | Lending form with spinners, date picker |
-| `fragment_user_info.xml` | User profile view/edit toggle |
-| `fragment_lended_books.xml` | Lent books list with filters |
-| `fragment_add_book.xml` | Book addition form with spinners |
-| `fragment_add_user.xml` | User creation form with role radio buttons |
-| `fragment_forgot_password.xml` | In-dashboard password reset |
-| `fragment_resources.xml` | Placeholder "coming soon" |
-| `fragment_placeholder.xml` | Generic centered text on solid background |
-| `fragment_sign_up.xml` | Registration form |
-| `fragment_email_verification.xml` | 6-digit OTP input with auto-focus |
-| `fragment_sign_up_success.xml` | Success confirmation screen |
+### Visual Styles
+- **Primary Action Buttons**: Blue-to-DarkBlue gradients.
+- **Danger Actions**: Solid red background with white text (e.g., Delete Book/User).
+- **Chart theme**: Visitor charts use an **Orange and Green** high-contrast theme.
 
-### Popup/Reusable Layouts
-| Layout | Description |
-|--------|-------------|
-| `popup_notifications.xml` | Notification preview list for PopupWindow |
-| `bottom_sheet_nav.xml` | Admin sidebar navigation with 7 links |
-| `nav_header_client.xml` | Client drawer header (avatar + name + role) |
-| `card_book.xml` | Book card item for RecyclerView |
-| `card_member.xml` | Member card item |
-| `card_notification.xml` | Notification card with type icon |
-| `card_lended_book.xml` | Lent book record card |
-| `metric_card_item.xml` | (Placeholder) reusable metric card for client |
+## Layout Inventory (Updated)
 
-## Design System (from DESIGN.md)
-
-### Typography
-| Purpose | Font | Usage |
-|---------|------|-------|
-| Display/Headlines | **Manrope** | Dashboard greetings, large titles (3.5rem) |
-| Titles/Body | **Work Sans** | Book titles, body text (1.375rem) |
-| Data/Labels | **Inter** | Metadata, ISBNs, status tags |
-
-### Color Palette
-| Token | Value | Usage |
-|-------|-------|-------|
-| `surface` | #f9f9ff | Base canvas |
-| `surface_container_low` | #f0f3ff | Sidebars, utility panels |
-| `surface_container_lowest` | #ffffff | Primary content cards |
-| `surface_container_high` | #dee8ff | Hover states, active areas |
-| `primary` | #002045 | Primary buttons, accent |
-| `primary_container` | #1a365d | Gradient end color |
-| `on_surface` | #121c2c | Text color (never pure black) |
-| `outline_variant` | #c4c6cf | Ghost borders (20% opacity) |
-| `error` | #ba1a1a | Overdue warnings |
-| `error_container` | #ffdad6 | Error backgrounds |
-| `tertiary_container` | #4f2e00 | Status chips |
-
-### Key Design Rules
-- **No-Line Rule**: No 1px borders; use tonal layering instead
-- **Signature Gradient**: Primary → Primary_container at 135° for CTAs
-- **Glassmorphism**: Semi-transparent surfaces with backdrop-blur for floating elements
-- **Status Ribbons**: Tonal chips instead of standard labels
-- **Anti-Grid**: Vertical white space instead of dividers between list items
-- **Rounded Corners**: xl (0.75rem) for containers, full for tags
-- **Shadows**: Tinted with `on_surface`, 8px offset, 24px blur, 6% opacity
-
-## Animation Files (~14 total)
-- `splash_progress_sweep.xml` — Progress bar sweep on splash
-- `slide_right_in.xml` — Detail fragment enter animation
-- `slide_right_out.xml` — Detail fragment exit animation
-- `slide_left_in.xml` — Back transition
-- `slide_left_out.xml` — Back transition
-- Additional fade/scale animations for various UI transitions
-
-## Fonts (3 families)
-- **Manrope**: `.ttf` + `.xml` font family definition
-- **Work Sans**: `.ttf` + `.xml`
-- **Inter**: `.ttf` + `.xml`
-
-## Menu Files
-- `bottom_nav_menu.xml` — 5 items (Dashboard, Books, Members, Alerts, Profile)
-- `nav_drawer_menu.xml` — 7 items (Dashboard, Resources, Manage Books, Lended Books, Members, Notifications, Profile)
+| Layout | Purpose | New Elements |
+|--------|---------|--------------|
+| `fragment_book_info.xml` | Book detail/edit | Vertical Save/Delete buttons, Spinners |
+| `layout_skeleton_book_item.xml`| Book list loader | Shimmering placeholders |
+| `layout_skeleton_member_item.xml`| Member list loader | Shimmering placeholders |
+| `item_notification.xml` | Notification card | Side-by-side Title/Time layout |
+| `fragment_dashboard_content.xml` | Admin Home | Legend-backed Stacked Area Chart |
+| `icon_background_info_gradient.xml`| Drawable | Light blueish info icon background |
 
 ## Navigation Behavior
-- Bottom nav switches ViewPager2 tab
-- Sidebar nav links trigger same tab switch or open specific detail screens
-- Detail screens push onto Fragment back stack with slide animation
-- Back button: dismisses popup → closes drawer → pops back stack → goes to first tab → exits app
-- Notification bell shows PopupWindow with 3 latest notifications + "View All" link
+- **Sync-Back**: After a **Save** or **Delete** action in a detail fragment, the parent list (Books or Members) automatically re-fetches its data from the server before the detail fragment closes.
+- **Wait-for-API**: Detail screens (Add Book/User) stay open with a loading state until the API response is confirmed.

@@ -16,7 +16,7 @@
 - `authController`: Login, logout, role checks.
 - `bookscontroller`: Book CRUD & status management.
 - `userController`: User lifecycle & password hashing.
-- `lendersControllers`: The core lending logic and user auto-creation.
+- `notificationscontroller`: In-app notification management.
 - `other`: Aggregated dashboard statistics.
 
 ## Frontend Architecture
@@ -24,8 +24,8 @@
 ### Networking Layer (`com.xlms.librarymanagement.api`)
 - **`ApiClient`**: Configures OkHttpClient with:
     - `HttpLoggingInterceptor` for debugging.
-    - Custom `Interceptor` that injects the `Authorization: Bearer <token>` header from `SessionManager`.
-    - Cookie handling for session persistence.
+    - Custom `Interceptor` that injects `Authorization: Bearer <token>` and handles session cookies.
+    - **Auto-Refresh**: Interceptor extracts `X-New-Token` from server responses to update local session seamlessly.
 - **`ApiService`**: Retrofit interface defining the API endpoints.
 
 ### Navigation Flow
@@ -37,18 +37,17 @@ SplashActivity → SessionManager check →
 ```
 
 ### Component Structure
-- **Activities**: Act as containers for top-level navigation (Tabs or Drawer).
-- **Fragments**: Handle specific UI sections (e.g., `ManageBooksFragment`). Detail screens are pushed onto the back stack with slide animations.
-- **Adapters**: Connect model lists (e.g., `List<Book>`) to `RecyclerView` components.
-- **SessionManager**: Encapsulates `SharedPreferences` for secure storage of JWT tokens and user metadata.
+- **Activities**: Top-level containers (ViewPager2 for Admin, Drawer for Client).
+- **Fragments**: Modular UI sections. Details are pushed onto the back stack.
+- **Custom Views**:
+    - `PieChartView`: Native canvas-drawn book availability chart.
+    - `StackedAreaChartView`: Smooth area chart for 12-month visitor data.
+- **Adapters**: Connect dynamic lists to RecyclerViews.
 
 ### Data Model
-- Standard POJOs (`Book`, `Member`, `Notification`, etc.) used for both dummy data and Retrofit deserialization.
+- **POJOs**: `Book`, `Member`, `Notification` are fully mapped to backend columns using GSON `@SerializedName`.
 
 ## API Integration Patterns
-1. **Request**: Activity/Fragment calls `ApiClient.getApiService(context).someMethod(request)`.
-2. **Execution**: `enqueue()` for asynchronous processing.
-3. **Session**: Interceptor automatically adds the JWT token to the headers.
-4. **Response**: 
-   - On Success: Update local models and notify adapters.
-   - On Failure: Parse error body to show specific backend messages (e.g., "Account deactivated").
+1. **Automated Session**: Token injection and refresh are handled at the network layer.
+2. **Asynchronous UI**: All requests are non-blocking.
+3. **Synchronization**: Parent fragments (e.g., ManageBooks) listen for changes in detail screens to refresh data immediately upon Save or Delete.

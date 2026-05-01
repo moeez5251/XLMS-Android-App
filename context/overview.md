@@ -11,12 +11,12 @@
 |-------|-----------|
 | Backend Framework | Express.js v5.1.0 |
 | Database | Microsoft SQL Server (via `mssql`) |
-| Auth | JWT + HTTP-only cookies + Bearer Token |
+| Auth | JWT + Custom Cookie/Bearer Token Interceptor |
 | Email | Gmail API (OAuth2) |
 | Android UI | XML layouts + Material Design + ViewPager2 |
 | Android Language | Java |
-| Networking | Retrofit 2 + OkHttp 3 |
-| Session (Android) | SharedPreferences (via `SessionManager`) |
+| Networking | Retrofit 2 + OkHttp 3 + Custom Shimmers |
+| Session (Android) | SharedPreferences + Automated Token Refresh |
 
 ## Project Structure
 
@@ -26,24 +26,25 @@ Admin/
 │   ├── server.js          # Entry point, CORS, middleware registration
 │   ├── controller/        # Business logic
 │   ├── routes/            # Express routers
-│   ├── middleware/        # JWT auth middleware
+│   ├── middleware/        # JWT auth + Auto-Refresh logic
 │   └── models/            # SQL Server connection pool
 ├── FrontEnd/              # Android App
 │   ├── app/src/main/
 │   │   ├── java/com/xlms/librarymanagement/
-│   │   │   ├── api/       # Retrofit interfaces and API client
+│   │   │   ├── api/       # Retrofit interfaces, Interceptors, Authenticators
 │   │   │   ├── utils/     # SessionManager, constants
 │   │   │   ├── model/     # POJOs (Book, Member, Notification, etc.)
 │   │   │   ├── adapter/   # RecyclerView adapters
-│   │   │   └── ui/        # Activities + Fragments
+│   │   │   └── ui/        # Activities + Fragments + Custom Views
 │   │   └── res/           # layouts, drawables, menus, colors, animations, fonts
 │   └── build.gradle.kts
-├── context/               # Project documentation (v2.0)
+├── context/               # Project documentation (v3.0)
 └── README.md
 ```
 
 ## Integration Status
-The Android app is currently in a **Partial Integration** phase.
-- **Operational**: Authentication (Login/Signup), Dashboard Statistics, and In-App Notifications are fully connected to the backend API.
-- **In-Progress**: CRUD operations for Books and Members are still using dummy data in the UI and require migration to the existing backend endpoints.
+The Android app has moved into the **Full Integration** phase for core modules.
+- **Operational**: Authentication (Login/Signup), Dashboard Statistics, and In-App Notifications are fully connected.
+- **Books & Members**: Full CRUD (Create, Read, Update, Delete) integrated with real-time UI synchronization and skeleton loading.
+- **Session Management**: Automated token refresh and persistent cookie management are active.
 - **UI-Only**: The Client Dashboard and Resource sections are fully designed but not yet wired to the API.
