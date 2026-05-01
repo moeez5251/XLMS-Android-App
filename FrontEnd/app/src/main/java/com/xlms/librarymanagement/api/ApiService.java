@@ -57,6 +57,12 @@ public interface ApiService {
     @retrofit2.http.HTTP(method = "DELETE", path = "users/delete", hasBody = true)
     Call<MessageResponse> deleteUser(@Body List<String> userIds);
 
+    @retrofit2.http.GET("lenders/all")
+    Call<java.util.List<com.xlms.librarymanagement.model.BookLending>> getLenders();
+
+    @POST("lenders/getlenderbyid")
+    Call<com.xlms.librarymanagement.model.BookLending> getLenderById(@Body GetByIdRequest request);
+
     @POST("users/activate")
     Call<MessageResponse> activateUser(@Body com.google.gson.JsonObject idObj);
 

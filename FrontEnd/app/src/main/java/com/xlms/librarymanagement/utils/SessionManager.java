@@ -2,6 +2,9 @@ package com.xlms.librarymanagement.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class SessionManager {
     private static final String PREF_NAME = "XLMS_Session";
@@ -61,13 +64,29 @@ public class SessionManager {
         return sharedPreferences.getString(KEY_AUTH_TOKEN, null);
     }
 
-    public void saveCookies(java.util.Set<String> cookies) {
-        editor.putStringSet(KEY_COOKIES, cookies);
+    public void saveCookies(Set<String> newCookies) {
+        Set<String> allCookies = getCookies(); // This now returns a new HashSet copy
+        
+        for (String newCookie : newCookies) {
+            String name = newCookie.split("=")[0];
+            Iterator<String> it = allCookies.iterator();
+            while (it.hasNext()) {
+                if (it.next().startsWith(name + "=")) {
+                    it.remove();
+                }
+            }
+            allCookies.add(newCookie);
+        }
+        editor.putStringSet(KEY_COOKIES, allCookies);
         editor.apply();
     }
 
-    public java.util.Set<String> getCookies() {
-        return sharedPreferences.getStringSet(KEY_COOKIES, new java.util.HashSet<String>());
+    public Set<String> getCookies() {
+        Set<String> cookies = sharedPreferences.getStringSet(KEY_COOKIES, null);
+        if (cookies == null) {
+            return new HashSet<>();
+        }
+        return new HashSet<>(cookies); // Always return a copy for mutability
     }
 
     public void clearSession() {

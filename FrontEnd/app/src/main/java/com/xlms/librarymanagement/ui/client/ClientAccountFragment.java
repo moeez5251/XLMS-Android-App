@@ -75,7 +75,7 @@ public class ClientAccountFragment extends Fragment {
 
         if (masterLendingList.isEmpty()) {
             // Add some mock data if empty for first time demo
-            masterLendingList.add(new LendedBook(1, sessionManager.getUserEmail(), sessionManager.getUserName(), "TV", "The Great Gatsby", "F. Scott Fitzgerald", "Classic", 1, "2024-04-15", "2024-04-29", "Returned"));
+            masterLendingList.add(new LendedBook("101", "B001", sessionManager.getUserEmail(), sessionManager.getUserName(), "TV", "The Great Gatsby", "F. Scott Fitzgerald", "Classic", 1, "2024-04-15", "2024-04-29", "Returned"));
             repository.addLending(masterLendingList.get(0));
         }
 

@@ -1,17 +1,47 @@
 package com.xlms.librarymanagement.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class BookLending implements Serializable {
+    @SerializedName("Name")
     private String lenderName;
+    
+    @SerializedName("Email")
     private String lenderEmail;
+    
+    @SerializedName("BookTitle")
     private String bookTitle;
+    
+    @SerializedName("Category")
     private String bookCategory;
+    
+    @SerializedName("Author")
     private String bookAuthor;
+    
+    @SerializedName("IssuedDate")
     private String issuedDate;
+    
+    @SerializedName("DueDate")
     private String dueDate;
+    
+    @SerializedName("CopiesLent")
     private int copiesLent;
+    
+    @SerializedName("FinePerDay")
     private double perDayFine;
+
+    @SerializedName("user_id")
+    private String userId;
+
+    @SerializedName("Book_ID")
+    private String bookId;
+
+    @SerializedName("Status")
+    private String status;
+
+    @SerializedName("Borrower_ID")
+    private int borrowerId;
 
     public BookLending() {}
 
@@ -41,4 +71,16 @@ public class BookLending implements Serializable {
 
     public double getPerDayFine() { return perDayFine; }
     public void setPerDayFine(double perDayFine) { this.perDayFine = perDayFine; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
+
+    public String getBookId() { return bookId; }
+    public void setBookId(String bookId) { this.bookId = bookId; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public int getBorrowerId() { return borrowerId; }
+    public void setBorrowerId(int borrowerId) { this.borrowerId = borrowerId; }
 }

@@ -15,8 +15,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.LendedBookAdapter;
+import com.xlms.librarymanagement.api.ApiClient;
 import com.xlms.librarymanagement.model.BookInfo;
 import com.xlms.librarymanagement.model.BookLending;
 import com.xlms.librarymanagement.model.LendedBook;
@@ -25,14 +27,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LendedBooksFragment extends Fragment {
 
     private RecyclerView recyclerViewLendedBooks;
     private LendedBookAdapter lendedBookAdapter;
-    private List<LendedBook> masterLendedBookList;
+    private List<LendedBook> masterLendedBookList = new ArrayList<>();
     private TextView textViewTotalUsers;
     private EditText editTextSearch;
     private Button buttonAll, buttonReturned, buttonNotReturned, buttonLendBook;
+    private ShimmerFrameLayout shimmerLendedBooks;
 
     private String currentFilter = "All";
     private String currentSearch = "";
@@ -50,7 +57,7 @@ public class LendedBooksFragment extends Fragment {
 
         initViews(view);
         setupRecyclerView();
-        loadDummyData();
+        fetchLenders();
         setupSearch();
         setupFilterButtons();
     }
@@ -63,55 +70,99 @@ public class LendedBooksFragment extends Fragment {
         buttonReturned = view.findViewById(R.id.buttonReturned);
         buttonNotReturned = view.findViewById(R.id.buttonNotReturned);
         buttonLendBook = view.findViewById(R.id.buttonLendBook);
+        shimmerLendedBooks = view.findViewById(R.id.shimmerLendedBooks);
     }
 
     private void setupRecyclerView() {
-        masterLendedBookList = new ArrayList<>();
         lendedBookAdapter = new LendedBookAdapter(new LendedBookAdapter.OnLendedBookClickListener() {
             @Override
             public void onBookClick(LendedBook book) {
-                // Open Book Info with dummy book data
-                BookInfo bookInfo = createBookInfoFromLended(book);
-                openBookInfoFragment(bookInfo);
-            }
-
-            @Override
-            public void onMoreOptionsClick(LendedBook book, View anchorView) {
-                Toast.makeText(requireContext(), "Options for: " + book.getBookTitle(), Toast.LENGTH_SHORT).show();
+                // Navigate using the real borrowerId
+                LendedBookInfoFragment fragment = LendedBookInfoFragment.newInstance(Integer.parseInt(book.getBorrowerId()));
+                openDetailFragment(fragment);
             }
         });
         recyclerViewLendedBooks.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewLendedBooks.setAdapter(lendedBookAdapter);
     }
 
-    private BookInfo createBookInfoFromLended(LendedBook lended) {
-        double price = 25.00;
-        int total = 10;
-        int available = "Returned".equals(lended.getStatus()) ? 7 : 3;
-        String status = available > 0 ? "Available" : "Out of Stock";
-        
-        return new BookInfo(
-            "BK_" + lended.getBookId(),
-            lended.getBookTitle(),
-            lended.getAuthor(),
-            lended.getCategory(),
-            "English",
-            price,
-            total,
-            available,
-            status
-        );
+    private void fetchLenders() {
+        if (shimmerLendedBooks != null) {
+            shimmerLendedBooks.setVisibility(View.VISIBLE);
+            shimmerLendedBooks.startShimmer();
+        }
+        recyclerViewLendedBooks.setVisibility(View.GONE);
+
+        ApiClient.getApiService(requireContext()).getLenders().enqueue(new Callback<List<BookLending>>() {
+            @Override
+            public void onResponse(Call<List<BookLending>> call, Response<List<BookLending>> response) {
+                if (shimmerLendedBooks != null) {
+                    shimmerLendedBooks.stopShimmer();
+                    shimmerLendedBooks.setVisibility(View.GONE);
+                }
+                recyclerViewLendedBooks.setVisibility(View.VISIBLE);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    mapLendersToModel(response.body());
+                } else {
+                    Toast.makeText(requireContext(), "Failed to fetch lenders", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<BookLending>> call, Throwable t) {
+                if (shimmerLendedBooks != null) {
+                    shimmerLendedBooks.stopShimmer();
+                    shimmerLendedBooks.setVisibility(View.GONE);
+                }
+                recyclerViewLendedBooks.setVisibility(View.VISIBLE);
+                Toast.makeText(requireContext(), "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void loadDummyData() {
+    private void mapLendersToModel(List<BookLending> apiList) {
         masterLendedBookList.clear();
-        masterLendedBookList.add(new LendedBook(2, "M6ea45869", "Moeez", "M", "Rework", "Jason Fried", "Business", 7, "29/09/2025", "30/09/2025", "Returned"));
-        masterLendedBookList.add(new LendedBook(4, "K9bb21004", "Elena", "E", "Deep Work", "Cal Newport", "Productivity", 1, "25/09/2025", "02/10/2025", "Not Returned"));
-        masterLendedBookList.add(new LendedBook(12, "S1aa98234", "Samir", "S", "Atomic Habits", "James Clear", "Self-Help", 3, "27/09/2025", "04/10/2025", "Not Returned"));
-        masterLendedBookList.add(new LendedBook(8, "A3cc12345", "Ali", "A", "The Republic", "Plato", "Philosophy", 2, "20/09/2025", "27/09/2025", "Returned"));
-        masterLendedBookList.add(new LendedBook(15, "F5dd67890", "Fatima", "F", "Modern Architecture", "Le Corbusier", "Arts", 1, "28/09/2025", "05/10/2025", "Not Returned"));
-        
+        for (BookLending apiItem : apiList) {
+            String initial = apiItem.getLenderName() != null && !apiItem.getLenderName().isEmpty() 
+                    ? apiItem.getLenderName().substring(0, 1).toUpperCase() : "?";
+            
+            masterLendedBookList.add(new LendedBook(
+                String.valueOf(apiItem.getBorrowerId()),
+                apiItem.getBookId(),
+                apiItem.getUserId(),
+                apiItem.getLenderName(),
+                initial,
+                apiItem.getBookTitle(),
+                apiItem.getBookAuthor(),
+                apiItem.getBookCategory(),
+                apiItem.getCopiesLent(),
+                formatIsoDate(apiItem.getIssuedDate()),
+                formatIsoDate(apiItem.getDueDate()),
+                apiItem.getStatus()
+            ));
+        }
         applyFilters();
+    }
+
+    private String formatIsoDate(String isoDate) {
+        if (isoDate == null || isoDate.isEmpty()) return "N/A";
+        try {
+            String cleanDate = isoDate.replace("Z", "+0000");
+            java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+            java.util.Date date = inputFormat.parse(cleanDate);
+            java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("dd/MM/yyyy", Locale.US);
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            try {
+                java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                java.util.Date date = inputFormat.parse(isoDate.split("T")[0]);
+                java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("dd/MM/yyyy", Locale.US);
+                return outputFormat.format(date);
+            } catch (Exception e2) {
+                return isoDate;
+            }
+        }
     }
 
     private void setupSearch() {
@@ -181,10 +232,10 @@ public class LendedBooksFragment extends Fragment {
             boolean matchFilter = true;
 
             if (!currentSearch.isEmpty()) {
-                String userName = book.getUserName().toLowerCase(Locale.ROOT);
-                String userId = book.getUserId().toLowerCase(Locale.ROOT);
-                String bookTitle = book.getBookTitle().toLowerCase(Locale.ROOT);
-                String author = book.getAuthor().toLowerCase(Locale.ROOT);
+                String userName = book.getUserName() != null ? book.getUserName().toLowerCase(Locale.ROOT) : "";
+                String userId = book.getUserId() != null ? book.getUserId().toLowerCase(Locale.ROOT) : "";
+                String bookTitle = book.getBookTitle() != null ? book.getBookTitle().toLowerCase(Locale.ROOT) : "";
+                String author = book.getAuthor() != null ? book.getAuthor().toLowerCase(Locale.ROOT) : "";
 
                 matchSearch = userName.contains(currentSearch) ||
                               userId.contains(currentSearch) ||
@@ -193,7 +244,7 @@ public class LendedBooksFragment extends Fragment {
             }
 
             if (!"All".equals(currentFilter)) {
-                matchFilter = book.getStatus().equalsIgnoreCase(currentFilter);
+                matchFilter = book.getStatus() != null && book.getStatus().trim().equalsIgnoreCase(currentFilter);
             }
 
             if (matchSearch && matchFilter) {
@@ -205,60 +256,22 @@ public class LendedBooksFragment extends Fragment {
         textViewTotalUsers.setText(String.valueOf(filteredList.size()));
     }
 
-    // Navigation Methods
-    private void openBookInfoFragment(BookInfo bookInfo) {
-        // Convert BookInfo to ID String
-        BookInfoFragment fragment = BookInfoFragment.newInstance(bookInfo.getBookId());
-        openDetailFragment(fragment);
-    }
-
     private void openLendBookFragment(BookInfo bookInfo) {
-        BookInfo book = bookInfo != null ? bookInfo : createDummyBookInfo();
-        LendBookFragment fragment = LendBookFragment.newInstance(book);
+        LendBookFragment fragment = LendBookFragment.newInstance(bookInfo);
         fragment.setOnLendBookActionListener(new LendBookFragment.OnLendBookActionListener() {
             @Override
             public void onBookLended(BookLending lending) {
-                // Add to lended books list
-                String userId = "U" + System.currentTimeMillis() % 10000;
-                String initial = lending.getLenderName().substring(0, 1).toUpperCase();
-                masterLendedBookList.add(0, new LendedBook(
-                    masterLendedBookList.size() + 1,
-                    userId,
-                    lending.getLenderName(),
-                    initial,
-                    lending.getBookTitle(),
-                    lending.getBookAuthor(),
-                    lending.getBookCategory(),
-                    lending.getCopiesLent(),
-                    lending.getIssuedDate(),
-                    lending.getDueDate(),
-                    "Not Returned"
-                ));
-                applyFilters();
-                closeDetailFragment();
-                Toast.makeText(requireContext(), "Book lended to " + lending.getLenderName(), Toast.LENGTH_SHORT).show();
+                fetchLenders();
+                closeDetailScreen();
+                Toast.makeText(requireContext(), "Book lended successfully", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onBack() {
-                closeDetailFragment();
+                closeDetailScreen();
             }
         });
         openDetailFragment(fragment);
-    }
-
-    private BookInfo createDummyBookInfo() {
-        return new BookInfo(
-            "BK_001",
-            "The Republic of Plato",
-            "Plato",
-            "Philosophy",
-            "English",
-            25.00,
-            10,
-            7,
-            "Available"
-        );
     }
 
     private void openDetailFragment(Fragment fragment) {
@@ -267,7 +280,7 @@ public class LendedBooksFragment extends Fragment {
         }
     }
 
-    private void closeDetailFragment() {
+    private void closeDetailScreen() {
         if (getActivity() instanceof AdminDashboardActivity) {
             ((AdminDashboardActivity) getActivity()).closeDetailScreen();
         }

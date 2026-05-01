@@ -3,7 +3,8 @@ package com.xlms.librarymanagement.model;
 import java.io.Serializable;
 
 public class LendedBook implements Serializable {
-    private int bookId;
+    private String borrowerId;
+    private String bookId;
     private String userId;
     private String userName;
     private String userInitial;
@@ -15,9 +16,10 @@ public class LendedBook implements Serializable {
     private String dueDate;
     private String status; // "Returned" or "Not Returned"
 
-    public LendedBook(int bookId, String userId, String userName, String userInitial,
+    public LendedBook(String borrowerId, String bookId, String userId, String userName, String userInitial,
                       String bookTitle, String author, String category, int copies,
                       String issuedDate, String dueDate, String status) {
+        this.borrowerId = borrowerId;
         this.bookId = bookId;
         this.userId = userId;
         this.userName = userName;
@@ -31,7 +33,8 @@ public class LendedBook implements Serializable {
         this.status = status;
     }
 
-    public int getBookId() { return bookId; }
+    public String getBorrowerId() { return borrowerId; }
+    public String getBookId() { return bookId; }
     public String getUserId() { return userId; }
     public String getUserName() { return userName; }
     public String getUserInitial() { return userInitial; }

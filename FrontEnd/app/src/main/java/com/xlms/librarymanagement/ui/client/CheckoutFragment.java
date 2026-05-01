@@ -78,7 +78,8 @@ public class CheckoutFragment extends Fragment {
         }
 
         LendedBook lendedBook = new LendedBook(
-                (int) System.currentTimeMillis(), // Fake numeric ID
+                String.valueOf(System.currentTimeMillis()),
+                selectedBook.getBookId(),
                 email,
                 name,
                 initials,

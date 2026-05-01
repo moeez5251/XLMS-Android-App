@@ -4,10 +4,6 @@ const { v4: uuidv4 } = require('uuid');
 const { sendEmail } = require('./mailer');
 const { generatetoken } = require('./tokengenerator')
 exports.getalllenders = async (req, res) => {
-    const { API } = req.body;
-    if (API !== process.env.XLMS_API) {
-        return res.status(400).json({ message: 'Invalid API' });
-    }
     try {
         const pool = await poolPromise;
         const result = await pool.request().query('SELECT * FROM borrower');

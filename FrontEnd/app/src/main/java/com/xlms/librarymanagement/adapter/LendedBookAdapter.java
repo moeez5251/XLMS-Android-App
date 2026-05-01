@@ -3,7 +3,6 @@ package com.xlms.librarymanagement.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,7 +23,6 @@ public class LendedBookAdapter extends RecyclerView.Adapter<LendedBookAdapter.Le
 
     public interface OnLendedBookClickListener {
         void onBookClick(LendedBook book);
-        void onMoreOptionsClick(LendedBook book, View anchorView);
     }
 
     public LendedBookAdapter(OnLendedBookClickListener listener) {
@@ -49,7 +47,7 @@ public class LendedBookAdapter extends RecyclerView.Adapter<LendedBookAdapter.Le
     public void onBindViewHolder(@NonNull LendedBookViewHolder holder, int position) {
         LendedBook book = displayList.get(position);
 
-        holder.textViewBookId.setText("B_ID: " + book.getBookId());
+        holder.textViewBookId.setText("B_ID: " + book.getBorrowerId());
         holder.textViewUserId.setText(book.getUserId());
         holder.textViewUserName.setText(book.getUserName());
         holder.textViewUserAvatar.setText(book.getUserInitial());
@@ -65,7 +63,6 @@ public class LendedBookAdapter extends RecyclerView.Adapter<LendedBookAdapter.Le
         updateStatusBadge(holder.layoutStatus, holder.textViewStatus, book.getStatus());
 
         holder.itemView.setOnClickListener(v -> listener.onBookClick(book));
-        holder.buttonMoreOptions.setOnClickListener(v -> listener.onMoreOptionsClick(book, v));
     }
 
     private void updateStatusBadge(LinearLayout layoutStatus, TextView textViewStatus, String status) {
@@ -93,7 +90,6 @@ public class LendedBookAdapter extends RecyclerView.Adapter<LendedBookAdapter.Le
         TextView textViewBookTitle, textViewAuthor, textViewCategory;
         TextView textViewCopies, textViewIssuedDate, textViewDueDate, textViewStatus;
         LinearLayout layoutStatus;
-        ImageButton buttonMoreOptions;
 
         LendedBookViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,7 +105,6 @@ public class LendedBookAdapter extends RecyclerView.Adapter<LendedBookAdapter.Le
             textViewDueDate = itemView.findViewById(R.id.textViewDueDate);
             textViewStatus = itemView.findViewById(R.id.textViewStatus);
             layoutStatus = itemView.findViewById(R.id.layoutStatus);
-            buttonMoreOptions = itemView.findViewById(R.id.buttonMoreOptions);
         }
     }
 }
