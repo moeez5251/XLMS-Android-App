@@ -37,10 +37,13 @@ import java.util.List;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
+    private TextView textViewToolbarTitle;
     private ViewPager2 viewPager;
     private BottomNavigationView bottomNavigation;
     private FrameLayout mainContentFrame;
-    private ImageButton buttonNotifications, buttonOpenDrawer;
+    private ImageButton buttonNotifications;
+    private View buttonOpenDrawer;
+    private TextView textViewNavbarInitial;
     private View backdropOverlay;
     private LinearLayout bottomSheetContent;
     
@@ -63,26 +66,66 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        textViewToolbarTitle = findViewById(R.id.textViewToolbarTitle);
         viewPager = findViewById(R.id.viewPager);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         mainContentFrame = findViewById(R.id.mainContentFrame);
         buttonNotifications = findViewById(R.id.buttonNotifications);
         buttonOpenDrawer = findViewById(R.id.buttonOpenDrawer);
+        textViewNavbarInitial = findViewById(R.id.textViewNavbarInitial);
         backdropOverlay = findViewById(R.id.backdropOverlay);
         bottomSheetContent = findViewById(R.id.bottomSheetContent);
     }
 
     private void setupBottomSheet() {
         bottomSheetContent.post(() -> {
-            // Set sheet height to 65% of screen so it doesn't cover everything
             int screenHeight = bottomSheetContent.getResources().getDisplayMetrics().heightPixels;
             ViewGroup.LayoutParams params = bottomSheetContent.getLayoutParams();
             params.height = (int) (screenHeight * 0.75);
             bottomSheetContent.setLayoutParams(params);
             bottomSheetContent.requestLayout();
 
-            // Hide bottom sheet initially using translationY
             bottomSheetContent.setTranslationY(bottomSheetContent.getHeight());
+        });
+
+        updateUserInfo();
+        fetchUserProfile();
+    }
+
+    private void updateUserInfo() {
+        SessionManager session = new SessionManager(this);
+        TextView tvInitial = bottomSheetContent.findViewById(R.id.textViewUserInitial);
+        TextView tvName = bottomSheetContent.findViewById(R.id.textViewUserName);
+        TextView tvId = bottomSheetContent.findViewById(R.id.textViewUserId);
+        TextView tvRole = bottomSheetContent.findViewById(R.id.textViewUserRole);
+
+        String name = session.getUserName();
+        if (tvName != null) tvName.setText(name);
+        if (tvId != null) tvId.setText("ID: " + session.getUserId());
+        if (tvRole != null) tvRole.setText(session.getUserRole());
+        
+        if (name != null && !name.isEmpty()) {
+            String initial = name.substring(0, 1).toUpperCase();
+            if (tvInitial != null) tvInitial.setText(initial);
+            if (textViewNavbarInitial != null) textViewNavbarInitial.setText(initial);
+        }
+    }
+
+    private void fetchUserProfile() {
+        com.xlms.librarymanagement.api.ApiClient.getApiService(this).getUserProfile().enqueue(new retrofit2.Callback<com.xlms.librarymanagement.model.Member>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.model.Member> call, retrofit2.Response<com.xlms.librarymanagement.model.Member> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    com.xlms.librarymanagement.model.Member member = response.body();
+                    SessionManager session = new SessionManager(AdminDashboardActivity.this);
+                    // Update session with fresh data
+                    session.saveSession(member.getEmail(), session.getUserRole(), member.getName(), member.getUserId(), session.getAuthToken());
+                    updateUserInfo();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.model.Member> call, Throwable t) {}
         });
     }
 
@@ -122,8 +165,13 @@ public class AdminDashboardActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                bottomNavigation.getMenu().getItem(position).setChecked(true);
                 syncSidebarWithViewPager(position);
+                
+                // Refresh data in the fragment when page is selected
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("f" + position);
+                if (fragment instanceof Refreshable) {
+                    ((Refreshable) fragment).refreshData();
+                }
             }
         });
     }
@@ -326,18 +374,61 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
     private void setupBackStackListener() {
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+            if (backStackCount == 0) {
                 int currentPos = viewPager.getCurrentItem();
                 syncSidebarWithViewPager(currentPos);
+                
+                // Refresh the current tab fragment
+                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
+                if (currentFragment instanceof Refreshable) {
+                    ((Refreshable) currentFragment).refreshData();
+                }
+            } else {
+                // Update title based on the top fragment in backstack
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.mainContentFrame);
+                updateTitleForDetailFragment(fragment);
             }
         });
     }
 
+    private void updateTitleForDetailFragment(Fragment fragment) {
+        if (fragment instanceof ResourcesFragment) {
+            textViewToolbarTitle.setText("Resources");
+        } else if (fragment instanceof LendedBooksFragment) {
+            textViewToolbarTitle.setText("Lended Books");
+        } else if (fragment instanceof AddBookFragment) {
+            textViewToolbarTitle.setText("Add New Book");
+        } else if (fragment instanceof BookInfoFragment) {
+            textViewToolbarTitle.setText("Book Details");
+        } else if (fragment instanceof LendedBookInfoFragment) {
+            textViewToolbarTitle.setText("Lending Details");
+        } else if (fragment instanceof LendBookFragment) {
+            textViewToolbarTitle.setText("Lend Book");
+        }
+    }
+
     private void syncSidebarWithViewPager(int position) {
         bottomNavigation.getMenu().getItem(position).setChecked(true);
+        updateToolbarTitle(position);
         if (isDrawerOpen) {
             updateNavigationHighlight();
         }
+    }
+
+    private void updateToolbarTitle(int position) {
+        if (textViewToolbarTitle == null) return;
+        switch (position) {
+            case 0: textViewToolbarTitle.setText("Dashboard"); break;
+            case 1: textViewToolbarTitle.setText("Manage Books"); break;
+            case 2: textViewToolbarTitle.setText("Members"); break;
+            case 3: textViewToolbarTitle.setText("Notifications"); break;
+            case 4: textViewToolbarTitle.setText("Profile"); break;
+        }
+    }
+
+    public interface Refreshable {
+        void refreshData();
     }
 
     public void openDetailScreen(Fragment fragment) {

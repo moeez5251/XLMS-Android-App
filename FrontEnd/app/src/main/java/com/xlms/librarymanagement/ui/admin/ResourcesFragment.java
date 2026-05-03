@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.xlms.librarymanagement.R;
 
-public class ResourcesFragment extends Fragment {
+public class ResourcesFragment extends Fragment implements AdminDashboardActivity.Refreshable {
 
     private Button buttonAddResource;
 
@@ -33,5 +33,10 @@ public class ResourcesFragment extends Fragment {
         buttonAddResource.setOnClickListener(v -> {
             Toast.makeText(requireContext(), "Add Resource coming soon...", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @Override
+    public void refreshData() {
+        // Refresh resources if applicable
     }
 }

@@ -25,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements AdminDashboardActivity.Refreshable {
 
     private TextView textViewArchiveId;
     private EditText editTextFullName, editTextEmail;
@@ -47,6 +47,11 @@ public class ProfileFragment extends Fragment {
         initViews(view);
         loadProfileData();
         setupClickListeners();
+    }
+
+    @Override
+    public void refreshData() {
+        loadProfileData();
     }
 
     private void initViews(View view) {

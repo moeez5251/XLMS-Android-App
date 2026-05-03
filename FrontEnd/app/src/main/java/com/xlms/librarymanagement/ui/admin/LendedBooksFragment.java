@@ -19,6 +19,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.adapter.LendedBookAdapter;
 import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.model.Book;
 import com.xlms.librarymanagement.model.BookInfo;
 import com.xlms.librarymanagement.model.BookLending;
 import com.xlms.librarymanagement.model.LendedBook;
@@ -31,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LendedBooksFragment extends Fragment {
+public class LendedBooksFragment extends Fragment implements AdminDashboardActivity.Refreshable {
 
     private RecyclerView recyclerViewLendedBooks;
     private LendedBookAdapter lendedBookAdapter;
@@ -256,14 +257,13 @@ public class LendedBooksFragment extends Fragment {
         textViewTotalUsers.setText(String.valueOf(filteredList.size()));
     }
 
-    private void openLendBookFragment(BookInfo bookInfo) {
-        LendBookFragment fragment = LendBookFragment.newInstance(bookInfo);
+    private void openLendBookFragment(Book book) {
+        LendBookFragment fragment = LendBookFragment.newInstance(book);
         fragment.setOnLendBookActionListener(new LendBookFragment.OnLendBookActionListener() {
             @Override
-            public void onBookLended(BookLending lending) {
+            public void onBookLended() {
                 fetchLenders();
                 closeDetailScreen();
-                Toast.makeText(requireContext(), "Book lended successfully", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -278,6 +278,11 @@ public class LendedBooksFragment extends Fragment {
         if (getActivity() instanceof AdminDashboardActivity) {
             ((AdminDashboardActivity) getActivity()).openDetailScreen(fragment);
         }
+    }
+
+    @Override
+    public void refreshData() {
+        fetchLenders();
     }
 
     private void closeDetailScreen() {

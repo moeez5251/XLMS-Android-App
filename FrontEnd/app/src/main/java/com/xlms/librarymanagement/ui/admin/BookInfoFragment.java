@@ -37,7 +37,7 @@ public class BookInfoFragment extends Fragment {
     private EditText editTitle, editAuthor, editPrice, editTotal, editPages;
     private TextView textViewBookId;
     private Spinner spinnerCategory, spinnerLanguage, spinnerStatus;
-    private Button buttonSave, buttonDelete;
+    private Button buttonSave, buttonDelete, buttonLend;
     private android.widget.ProgressBar progressBar;
     private String bookId;
     private ImageButton buttonBack;
@@ -111,6 +111,7 @@ public class BookInfoFragment extends Fragment {
         textViewBookId = view.findViewById(R.id.textViewBookId);
         buttonSave = view.findViewById(R.id.buttonSave);
         buttonDelete = view.findViewById(R.id.buttonDelete);
+        buttonLend = view.findViewById(R.id.buttonLend);
         progressBar = view.findViewById(R.id.progressBar);
         contentLayout = view.findViewById(R.id.contentLayout);
         shimmerLayout = view.findViewById(R.id.shimmerLayout);
@@ -187,6 +188,45 @@ public class BookInfoFragment extends Fragment {
         buttonSave.setOnClickListener(v -> saveChanges());
         buttonBack.setOnClickListener(v -> requireActivity().onBackPressed());
         buttonDelete.setOnClickListener(v -> deleteBook());
+        buttonLend.setOnClickListener(v -> lendBook());
+    }
+
+    private void lendBook() {
+        // Create a Book object from current fields to pass to the next fragment
+        // We use Book here because LendBookFragment works with Book list
+        Book selectedBook = new Book(
+                bookId,
+                editTitle.getText().toString(),
+                editAuthor.getText().toString(),
+                spinnerCategory.getSelectedItem().toString(),
+                spinnerLanguage.getSelectedItem().toString(),
+                Double.parseDouble(editPrice.getText().toString()),
+                Integer.parseInt(editTotal.getText().toString()),
+                0,
+                spinnerStatus.getSelectedItem().toString()
+        );
+
+        LendBookFragment fragment = LendBookFragment.newInstance(selectedBook);
+        fragment.setOnLendBookActionListener(new LendBookFragment.OnLendBookActionListener() {
+            @Override
+            public void onBookLended() {
+                if (getActivity() instanceof AdminDashboardActivity) {
+                    ((AdminDashboardActivity) getActivity()).closeDetailScreen();
+                }
+                if (listener != null) listener.onBookChanged();
+            }
+
+            @Override
+            public void onBack() {
+                if (getActivity() instanceof AdminDashboardActivity) {
+                    ((AdminDashboardActivity) getActivity()).closeDetailScreen();
+                }
+            }
+        });
+
+        if (getActivity() instanceof AdminDashboardActivity) {
+            ((AdminDashboardActivity) getActivity()).openDetailScreen(fragment);
+        }
     }
 
     private void saveChanges() {

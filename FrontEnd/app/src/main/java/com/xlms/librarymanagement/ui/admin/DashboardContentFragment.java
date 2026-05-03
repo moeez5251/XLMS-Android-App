@@ -25,7 +25,7 @@ import com.xlms.librarymanagement.ui.components.MonthData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardContentFragment extends Fragment {
+public class DashboardContentFragment extends Fragment implements AdminDashboardActivity.Refreshable {
 
     private LinearLayout statsContainer, activityListContainer;
     private Button buttonAddBook;
@@ -266,6 +266,11 @@ public class DashboardContentFragment extends Fragment {
             
             activityListContainer.addView(activityItem);
         }
+    }
+
+    @Override
+    public void refreshData() {
+        fetchDashboardData();
     }
 
     private void setupActivityList() {

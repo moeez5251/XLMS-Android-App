@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MembersFragment extends Fragment {
+public class MembersFragment extends Fragment implements AdminDashboardActivity.Refreshable {
 
     private RecyclerView recyclerViewMembers;
     private MemberAdapter memberAdapter;
@@ -270,6 +270,11 @@ public class MembersFragment extends Fragment {
         });
 
         openDetailFragment(fragment);
+    }
+
+    @Override
+    public void refreshData() {
+        fetchMembers();
     }
 
     private void openDetailFragment(Fragment fragment) {

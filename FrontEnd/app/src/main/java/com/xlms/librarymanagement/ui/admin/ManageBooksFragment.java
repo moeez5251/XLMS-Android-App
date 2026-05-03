@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ManageBooksFragment extends Fragment {
+public class ManageBooksFragment extends Fragment implements AdminDashboardActivity.Refreshable {
 
     private RecyclerView recyclerViewBooks;
     private BookAdapter bookAdapter;
@@ -362,6 +362,11 @@ public class ManageBooksFragment extends Fragment {
             })
             .setNegativeButton("Cancel", null)
             .show();
+    }
+
+    @Override
+    public void refreshData() {
+        fetchBooks();
     }
 
     private void resetAllFilters() {

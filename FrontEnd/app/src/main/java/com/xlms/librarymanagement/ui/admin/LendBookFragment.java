@@ -3,13 +3,14 @@ package com.xlms.librarymanagement.ui.admin;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,206 +19,278 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.xlms.librarymanagement.R;
-import com.xlms.librarymanagement.model.BookInfo;
-import com.xlms.librarymanagement.model.BookLending;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.MessageResponse;
+import com.xlms.librarymanagement.model.Book;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LendBookFragment extends Fragment {
 
-    private static final String ARG_BOOK_INFO = "book_info";
+    private Spinner spinnerTitle, spinnerAuthor, spinnerCategory;
+    private EditText editLenderName, editEmail, editPhone, editCopies, editFine;
+    private TextView textViewIssuedDate, textViewDueDate;
+    private Button buttonSubmit;
 
-    private EditText editTextLenderName, editTextEmail, editTextDueDate, editTextCopies, editTextFine;
-    private Spinner spinnerBookTitle, spinnerCategory, spinnerAuthor;
-    private TextView textViewCurrentDate;
-    private ImageButton buttonBack;
-    private Button buttonCancel, buttonLendBook;
-
-    private BookInfo bookInfo;
-    private OnLendBookActionListener listener;
+    private List<Book> allBooks = new ArrayList<>();
+    private final Calendar dueDateCalendar = Calendar.getInstance();
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     public interface OnLendBookActionListener {
-        void onBookLended(BookLending lending);
+        void onBookLended();
         void onBack();
     }
 
-    public static LendBookFragment newInstance(BookInfo book) {
-        LendBookFragment fragment = new LendBookFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_BOOK_INFO, book);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private OnLendBookActionListener listener;
 
     public void setOnLendBookActionListener(OnLendBookActionListener listener) {
         this.listener = listener;
     }
 
+    private String preSelectedTitle;
+
+    public static LendBookFragment newInstance(Book book) {
+        LendBookFragment fragment = new LendBookFragment();
+        if (book != null) {
+            Bundle args = new Bundle();
+            args.putString("pre_title", book.getTitle());
+            fragment.setArguments(args);
+        }
+        return fragment;
+    }
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                            @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            preSelectedTitle = getArguments().getString("pre_title");
+        }
         return inflater.inflate(R.layout.fragment_lend_book, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (getArguments() != null) {
-            bookInfo = (BookInfo) getArguments().getSerializable(ARG_BOOK_INFO);
-        }
-
         initViews(view);
-        setupSpinners();
-        populateFields();
-        setupClickListeners();
+        fetchBooks();
     }
 
     private void initViews(View view) {
-        editTextLenderName = view.findViewById(R.id.editTextLenderName);
-        editTextEmail = view.findViewById(R.id.editTextEmail);
-        editTextDueDate = view.findViewById(R.id.editTextDueDate);
-        editTextCopies = view.findViewById(R.id.editTextCopies);
-        editTextFine = view.findViewById(R.id.editTextFine);
-        spinnerBookTitle = view.findViewById(R.id.spinnerBookTitle);
-        spinnerCategory = view.findViewById(R.id.spinnerCategory);
+        spinnerTitle = view.findViewById(R.id.spinnerBookTitle);
         spinnerAuthor = view.findViewById(R.id.spinnerAuthor);
-        textViewCurrentDate = view.findViewById(R.id.textViewCurrentDate);
-        buttonBack = view.findViewById(R.id.buttonBack);
-        buttonCancel = view.findViewById(R.id.buttonCancel);
-        buttonLendBook = view.findViewById(R.id.buttonLendBook);
-    }
+        spinnerCategory = view.findViewById(R.id.spinnerCategory);
+        editLenderName = view.findViewById(R.id.editTextLenderName);
+        editEmail = view.findViewById(R.id.editTextEmail);
+        editPhone = view.findViewById(R.id.editTextPhone);
+        editCopies = view.findViewById(R.id.editTextCopies);
+        editFine = view.findViewById(R.id.editTextFine);
+        textViewIssuedDate = view.findViewById(R.id.textViewCurrentDate);
+        textViewDueDate = view.findViewById(R.id.editTextDueDate);
+        buttonSubmit = view.findViewById(R.id.buttonLendBook);
 
-    private void setupSpinners() {
-        // Book Title Spinner
-        List<String> bookTitles = Arrays.asList("Choose from the list", bookInfo != null ? bookInfo.getTitle() : "", "Modern Architecture", "The Republic");
-        ArrayAdapter<String> titleAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, bookTitles);
-        titleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerBookTitle.setAdapter(titleAdapter);
-        if (bookInfo != null) {
-            spinnerBookTitle.setSelection(1); // Select the passed book
-        }
+        // Set initial issued date
+        textViewIssuedDate.setText(dateFormat.format(Calendar.getInstance().getTime()));
 
-        // Category Spinner
-        List<String> categories = Arrays.asList("Choose from the list", "History", "Philosophy", "Social Sciences", "Business", "Productivity", "Self-Help");
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, categories);
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setAdapter(categoryAdapter);
-        if (bookInfo != null) {
-            int index = categories.indexOf(bookInfo.getCategory());
-            if (index > 0) spinnerCategory.setSelection(index);
-        }
+        textViewDueDate.setOnClickListener(v -> showDatePicker());
+        buttonSubmit.setOnClickListener(v -> submitLending());
 
-        // Author Spinner
-        List<String> authors = Arrays.asList("Choose from the list", "Prof. Elena Moretti", "David H. Stern", "A. G. Wright", bookInfo != null ? bookInfo.getAuthor() : "");
-        ArrayAdapter<String> authorAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, authors);
-        authorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAuthor.setAdapter(authorAdapter);
-        if (bookInfo != null) {
-            int index = authors.indexOf(bookInfo.getAuthor());
-            if (index > 0) spinnerAuthor.setSelection(index);
-        }
-    }
-
-    private void populateFields() {
-        // Set current date
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String currentDate = sdf.format(Calendar.getInstance().getTime());
-        textViewCurrentDate.setText(currentDate);
-    }
-
-    private void setupClickListeners() {
-        buttonBack.setOnClickListener(v -> {
+        view.findViewById(R.id.buttonBack).setOnClickListener(v -> {
             if (listener != null) listener.onBack();
         });
 
-        buttonCancel.setOnClickListener(v -> {
+        view.findViewById(R.id.buttonCancel).setOnClickListener(v -> {
             if (listener != null) listener.onBack();
         });
+    }
 
-        // Due Date Picker
-        editTextDueDate.setOnClickListener(v -> showDatePicker());
+    private void fetchBooks() {
+        ApiClient.getApiService(requireContext()).getBooks().enqueue(new Callback<List<Book>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Book>> call, @NonNull Response<List<Book>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allBooks = response.body();
+                    setupBookSpinners();
+                }
+            }
 
-        buttonLendBook.setOnClickListener(v -> {
-            if (validateAndSubmit()) {
-                Toast.makeText(requireContext(), "Book lended successfully!", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onFailure(@NonNull Call<List<Book>> call, @NonNull Throwable t) {
+                if (isAdded()) {
+                    Toast.makeText(requireContext(), "Failed to load books: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-            requireContext(),
-            (view, year, month, dayOfMonth) -> {
-                calendar.set(year, month, dayOfMonth);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                editTextDueDate.setText(sdf.format(calendar.getTime()));
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        );
-        datePickerDialog.show();
+    private void setupBookSpinners() {
+        if (allBooks == null || allBooks.isEmpty()) return;
+
+        List<String> titles = new ArrayList<>();
+        for (Book b : allBooks) {
+            if (b.getTitle() != null && !titles.contains(b.getTitle())) {
+                titles.add(b.getTitle());
+            }
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, titles);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTitle.setAdapter(adapter);
+
+        if (preSelectedTitle != null) {
+            int pos = titles.indexOf(preSelectedTitle);
+            if (pos >= 0) {
+                spinnerTitle.setSelection(pos);
+            }
+        }
+
+        spinnerTitle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedTitle = titles.get(position);
+                updateLinkedSpinners(selectedTitle);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
-    private boolean validateAndSubmit() {
-        String lenderName = editTextLenderName.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
-        String dueDate = editTextDueDate.getText().toString().trim();
-        String copiesStr = editTextCopies.getText().toString().trim();
-        String fineStr = editTextFine.getText().toString().trim();
+    private void updateLinkedSpinners(String title) {
+        List<String> authors = new ArrayList<>();
+        List<String> categories = new ArrayList<>();
+        for (Book b : allBooks) {
+            if (title.equals(b.getTitle())) {
+                if (b.getAuthor() != null && !authors.contains(b.getAuthor())) {
+                    authors.add(b.getAuthor());
+                }
+                if (b.getCategory() != null && !categories.contains(b.getCategory())) {
+                    categories.add(b.getCategory());
+                }
+            }
+        }
+
+        ArrayAdapter<String> authorAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, authors);
+        authorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAuthor.setAdapter(authorAdapter);
+
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, categories);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategory.setAdapter(categoryAdapter);
+    }
+
+    private void showDatePicker() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dialog = new DatePickerDialog(requireContext(), (view, year, month, day) -> {
+            dueDateCalendar.set(year, month, day);
+            textViewDueDate.setText(dateFormat.format(dueDateCalendar.getTime()));
+        }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
+        
+        // Due date must be after today
+        dialog.getDatePicker().setMinDate(now.getTimeInMillis() + 86400000); // 24 hours later
+        dialog.show();
+    }
+
+    private void submitLending() {
+        String name = editLenderName.getText().toString().trim();
+        String email = editEmail.getText().toString().trim();
+        String phone = editPhone.getText().toString().trim();
+        String copiesStr = editCopies.getText().toString().trim();
+        String fineStr = editFine.getText().toString().trim();
+        String dueDateStr = textViewDueDate.getText().toString().trim();
+        String issuedDateStr = textViewIssuedDate.getText().toString().trim();
 
         // Validation
-        if (TextUtils.isEmpty(lenderName)) {
-            editTextLenderName.setError("Lender name is required");
-            editTextLenderName.requestFocus();
-            return false;
+        if (TextUtils.isEmpty(name)) {
+            editLenderName.setError("Lender name required");
+            editLenderName.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editEmail.setError("Valid email required");
+            editEmail.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(phone)) {
+            editPhone.setError("Phone number required");
+            editPhone.requestFocus();
+            return;
+        }
+        if (spinnerTitle.getSelectedItem() == null) {
+            Toast.makeText(requireContext(), "Please select a book", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(dueDateStr) || dueDateStr.equalsIgnoreCase("Select due date")) {
+            Toast.makeText(requireContext(), "Please select a due date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(copiesStr)) {
+            editCopies.setError("Copies required");
+            editCopies.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(fineStr)) {
+            editFine.setError("Fine per day required");
+            editFine.requestFocus();
+            return;
         }
 
-        if (TextUtils.isEmpty(email)) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-            return false;
-        }
+        // Prepare request body matching API expectations
+        JsonObject body = new JsonObject();
+        body.addProperty("Lendername", name);
+        body.addProperty("Email", email);
+        body.addProperty("PhoneNumber", phone);
+        body.addProperty("BookTitle", spinnerTitle.getSelectedItem().toString());
+        body.addProperty("Author", spinnerAuthor.getSelectedItem().toString());
+        body.addProperty("Category", spinnerCategory.getSelectedItem().toString());
+        body.addProperty("IssuedDate", issuedDateStr);
+        body.addProperty("DueDate", dueDateStr);
+        body.addProperty("CopiesLent", Integer.parseInt(copiesStr));
+        body.addProperty("Fine", Double.parseDouble(fineStr));
+        body.addProperty("Role", "User"); // Default role as required by API for user creation
 
-        if (TextUtils.isEmpty(dueDate)) {
-            editTextDueDate.setError("Due date is required");
-            editTextDueDate.requestFocus();
-            return false;
-        }
+        buttonSubmit.setEnabled(false);
+        ApiClient.getApiService(requireContext()).insertLender(body).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
+                buttonSubmit.setEnabled(true);
+                if (response.isSuccessful()) {
+                    Toast.makeText(requireContext(), "Book issued successfully", Toast.LENGTH_SHORT).show();
+                    if (listener != null) listener.onBookLended();
+                } else {
+                    String errorMsg = "Failed to issue book";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorStr = response.errorBody().string();
+                            JsonObject errorJson = JsonParser.parseString(errorStr).getAsJsonObject();
+                            if (errorJson.has("error")) {
+                                errorMsg = errorJson.get("error").getAsString();
+                            } else if (errorJson.has("message")) {
+                                errorMsg = errorJson.get("message").getAsString();
+                            }
+                        }
+                    } catch (Exception ignored) {
+                    }
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show();
+                }
+            }
 
-        if (TextUtils.isEmpty(copiesStr) || Integer.parseInt(copiesStr) < 1) {
-            editTextCopies.setError("Valid copies count is required");
-            editTextCopies.requestFocus();
-            return false;
-        }
-
-        // Create BookLending object
-        BookLending lending = new BookLending();
-        lending.setLenderName(lenderName);
-        lending.setLenderEmail(email);
-        lending.setBookTitle(bookInfo != null ? bookInfo.getTitle() : spinnerBookTitle.getSelectedItem().toString());
-        lending.setBookCategory(spinnerCategory.getSelectedItem().toString());
-        lending.setBookAuthor(bookInfo != null ? bookInfo.getAuthor() : spinnerAuthor.getSelectedItem().toString());
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        lending.setIssuedDate(sdf.format(Calendar.getInstance().getTime()));
-        lending.setDueDate(dueDate);
-        lending.setCopiesLent(Integer.parseInt(copiesStr));
-        lending.setPerDayFine(TextUtils.isEmpty(fineStr) ? 0.0 : Double.parseDouble(fineStr));
-
-        // Pass to listener
-        if (listener != null) {
-            listener.onBookLended(lending);
-        }
-
-        return true;
+            @Override
+            public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
+                buttonSubmit.setEnabled(true);
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

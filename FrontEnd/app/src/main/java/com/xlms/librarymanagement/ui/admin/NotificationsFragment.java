@@ -27,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NotificationsFragment extends Fragment {
+public class NotificationsFragment extends Fragment implements AdminDashboardActivity.Refreshable {
 
     private RecyclerView recyclerViewNotifications;
     private NotificationAdapter notificationAdapter;
@@ -51,6 +51,11 @@ public class NotificationsFragment extends Fragment {
         setupRecyclerView();
         fetchNotifications();
         setupClickListeners();
+    }
+
+    @Override
+    public void refreshData() {
+        fetchNotifications();
     }
 
     private void initViews(View view) {

@@ -361,6 +361,17 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/buttonLend"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="@color/secondary"
+                android:text="Lend this Book"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <Button
                 android:id="@+id/buttonDelete"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"

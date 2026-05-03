@@ -49,7 +49,7 @@ public class SessionManager {
     }
 
     public String getUserName() {
-        return sharedPreferences.getString(KEY_USER_NAME, "User");
+        return sharedPreferences.getString(KEY_USER_NAME, "XLMS");
     }
 
     public String getUserRole() {

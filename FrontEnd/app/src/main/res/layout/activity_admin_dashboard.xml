@@ -32,6 +32,7 @@
                 app:tint="@color/primary" />
 
             <TextView
+                android:id="@+id/textViewToolbarTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -52,14 +53,25 @@
                 android:contentDescription="@string/notifications"
                 app:tint="@color/on_surface_variant" />
 
-            <!-- Profile Button with X Logo (Light Blue Background) -->
-            <ImageButton
+            <!-- Profile Button with Initial (Light Blue Background) -->
+            <FrameLayout
                 android:id="@+id/buttonOpenDrawer"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/profile_x_background"
-                android:src="@drawable/ic_x_logo"
-                android:contentDescription="Profile menu" />
+                android:clickable="true"
+                android:focusable="true">
+                <TextView
+                    android:id="@+id/textViewNavbarInitial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="U"
+                    android:textColor="@color/primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/manrope_bold" />
+            </FrameLayout>
         </LinearLayout>
 
         <!-- FrameLayout Container for ViewPager and Detail Screens -->
@@ -133,16 +145,22 @@
                 android:paddingEnd="24dp"
                 android:layout_marginBottom="16dp">
 
-                <ImageView
+                <FrameLayout
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:src="@drawable/ic_x_logo"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/profile_image_circle"
-                    android:padding="10dp"
-                    android:contentDescription="Profile"
-                    android:layout_marginEnd="14dp"
-                    app:tint="@color/primary" />
+                    android:background="@drawable/user_avatar_background"
+                    android:layout_marginEnd="14dp">
+
+                    <TextView
+                        android:id="@+id/textViewUserInitial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="U"
+                        android:textColor="@color/primary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -151,38 +169,39 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/textViewUserName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="The Scholarly Atelier"
+                        android:text="User Name"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
                         android:fontFamily="@font/manrope_extrabold" />
 
                     <TextView
+                        android:id="@+id/textViewUserId"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Institutional Access"
+                        android:text="ID: 000"
                         android:textSize="10sp"
                         android:textColor="@color/on_surface_variant"
                         android:letterSpacing="0.1"
-                        android:textAllCaps="true"
                         android:fontFamily="@font/inter_semibold" />
 
                     <TextView
                         android:id="@+id/textViewUserRole"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Premium Member"
+                        android:text="Admin"
                         android:textSize="10sp"
                         android:textStyle="bold"
-                        android:textColor="@color/primary"
+                        android:textColor="@color/on_secondary_container"
                         android:background="@drawable/role_badge_background"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        android:paddingTop="3dp"
-                        android:paddingBottom="3dp"
-                        android:layout_marginTop="6dp" />
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:layout_marginTop="4dp" />
                 </LinearLayout>
             </LinearLayout>
 
