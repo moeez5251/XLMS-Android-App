@@ -78,3 +78,33 @@ exports.markasread = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+// ==================== HELPER FUNCTIONS ====================
+
+// Helper function to add notification internally (from other controllers)
+exports.addNotificationHelper = async (userId, message) => {
+    try {
+        const pool = await poolPromise;
+        const CreatedAt = new Date();
+        const created = CreatedAt.toLocaleString("en-PK", {
+            timeZone: "Asia/Karachi",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        });
+
+        await pool
+            .request()
+            .input('UserId', userId)
+            .input('Message', message)
+            .input('CreatedAt', created)
+            .input('IsRead', false)
+            .query('INSERT INTO Notifications (UserId, Message, CreatedAt, IsRead) VALUES (@UserId, @Message, @CreatedAt, @IsRead)');
+    } catch (err) {
+        console.error('Error adding notification:', err);
+    }
+};

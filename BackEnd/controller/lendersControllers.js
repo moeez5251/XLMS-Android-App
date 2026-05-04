@@ -304,3 +304,172 @@ exports.addbook = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: e });
     }
 }
+
+// ==================== CLIENT APIs ====================
+
+// Get all lendings for a user
+exports.getlendings = async (req, res) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            return res.status(401).json({ error: 'User ID is required' });
+        }
+
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('user_id', userId)
+            .query('SELECT Borrower_ID, user_id, Name, BookTitle, Category, Author, IssuedDate, DueDate, CopiesLent, FinePerDay, Price, Book_ID, Status FROM borrower WHERE user_id = @user_id');
+
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('Error fetching lendings:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+// Return a book
+exports.returnbook = async (req, res) => {
+    try {
+        const { book_id, borrower_id } = req.body;
+        const userId = req.user?.id;
+        const { addNotificationHelper } = require('./notificationscontroller');
+
+        if (!book_id || !borrower_id || !userId) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        const pool = await poolPromise;
+
+        // Update borrower status to 'Returned'
+        const borrowerResult = await pool.request()
+            .input('user_id', userId)
+            .input('book_id', book_id)
+            .input('borrower_id', borrower_id)
+            .query("UPDATE borrower SET Status = 'Returned' OUTPUT INSERTED.CopiesLent WHERE user_id = @user_id AND Book_ID = @book_id AND Borrower_ID = @borrower_id");
+
+        if (borrowerResult.recordset.length === 0) {
+            return res.status(404).json({ error: 'Borrower record not found' });
+        }
+
+        const copiesLent = borrowerResult.recordset[0].CopiesLent;
+
+        // Get user cost
+        const userResult = await pool.request()
+            .input('user_id', userId)
+            .query('SELECT Cost FROM users WHERE User_id = @user_id');
+
+        if (userResult.recordset.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const userCost = userResult.recordset[0].Cost;
+
+        // Get book details
+        const bookDetailsResult = await pool.request()
+            .input('borrower_id', borrower_id)
+            .query('SELECT IssuedDate, DueDate, Price, CopiesLent FROM borrower WHERE Borrower_ID = @borrower_id');
+
+        if (bookDetailsResult.recordset.length === 0) {
+            return res.status(404).json({ error: 'Book details not found' });
+        }
+
+        const bookDetails = bookDetailsResult.recordset[0];
+        const issued = new Date(bookDetails.IssuedDate);
+        const due = new Date(bookDetails.DueDate);
+        const days = Math.floor((due - issued) / (1000 * 60 * 60 * 24));
+
+        // Update user cost
+        const newCost = parseInt(userCost) - (parseInt(bookDetails.CopiesLent) * parseInt(bookDetails.Price) * days);
+        await pool.request()
+            .input('user_id', userId)
+            .input('cost', newCost)
+            .query('UPDATE users SET Cost = @cost WHERE User_id = @user_id');
+
+        // Check if there are reservations
+        const reservationResult = await pool.request()
+            .input('book_id', book_id)
+            .query("SELECT TOP 1 * FROM reserved WHERE Book_ID = @book_id ORDER BY Reservation_ID ASC");
+
+        if (reservationResult.recordset.length === 0) {
+            // No reservations, update book availability
+            const bookAvailResult = await pool.request()
+                .input('book_id', book_id)
+                .query('SELECT Available FROM books WHERE Book_ID = @book_id');
+
+            if (bookAvailResult.recordset.length > 0) {
+                const currentAvailable = bookAvailResult.recordset[0].Available;
+                const newAvailable = parseInt(currentAvailable) + parseInt(copiesLent);
+
+                await pool.request()
+                    .input('book_id', book_id)
+                    .input('available', newAvailable)
+                    .input('status', 'Available')
+                    .query("UPDATE books SET Status = @status, Available = @available WHERE Book_ID = @book_id");
+
+                // Get book title for notification
+                const bookTitleResult = await pool.request()
+                    .input('book_id', book_id)
+                    .query('SELECT Book_Title FROM books WHERE Book_ID = @book_id');
+
+                if (bookTitleResult.recordset.length > 0) {
+                    const bookTitle = bookTitleResult.recordset[0].Book_Title;
+                    const returnDate = new Date().toLocaleDateString('en-PK');
+                    addNotificationHelper(userId, `Book ${bookTitle} returned on ${returnDate}`);
+                }
+            }
+        } else {
+            // Reservation exists - issue to reserved user
+            const reservation = reservationResult.recordset[0];
+            const reservedUserId = reservation.User_ID;
+
+            // Get book details for reserved user
+            const bookInfoResult = await pool.request()
+                .input('book_id', book_id)
+                .query('SELECT Book_Title, Category, Author, Price FROM books WHERE Book_ID = @book_id');
+
+            if (bookInfoResult.recordset.length > 0) {
+                const bookInfo = bookInfoResult.recordset[0];
+
+                // Get reserved user name
+                const reservedUserResult = await pool.request()
+                    .input('user_id', reservedUserId)
+                    .query('SELECT User_Name FROM users WHERE User_id = @user_id');
+
+                if (reservedUserResult.recordset.length > 0) {
+                    const reservedUserName = reservedUserResult.recordset[0].User_Name;
+
+                    // Insert new borrower record for reserved user
+                    const today = new Date();
+                    const dueDate = new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000);
+                    
+                    await pool.request()
+                        .input('book_id', book_id)
+                        .input('user_id', reservedUserId)
+                        .input('name', reservedUserName)
+                        .input('booktitle', bookInfo.Book_Title)
+                        .input('author', bookInfo.Author)
+                        .input('issueddate', today.toISOString().split('T')[0])
+                        .input('duedate', dueDate.toISOString().split('T')[0])
+                        .input('copieslent', 1)
+                        .input('fineperday', 100)
+                        .input('price', bookInfo.Price)
+                        .input('category', bookInfo.Category)
+                        .query(`INSERT INTO borrower (Book_ID, user_id, Name, BookTitle, Author, IssuedDate, DueDate, CopiesLent, FinePerDay, Price, Category)
+                                VALUES (@book_id, @user_id, @name, @booktitle, @author, @issueddate, @duedate, @copieslent, @fineperday, @price, @category)`);
+
+                    // Delete reservation
+                    await pool.request()
+                        .input('reservation_id', reservation.Reservation_ID)
+                        .query('DELETE FROM reserved WHERE Reservation_ID = @reservation_id');
+
+                    addNotificationHelper(reservedUserId, `Your reserved book ${bookInfo.Book_Title} is now available for issue`);
+                }
+            }
+        }
+
+        res.json({ message: 'Book returned successfully' });
+    } catch (err) {
+        console.error('Error returning book:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}

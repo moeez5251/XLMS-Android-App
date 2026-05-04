@@ -2,6 +2,7 @@ const express = require('express');
 const   router = express.Router();
 const userController = require('../controller/userController');
 
+// Admin Routes
 router.post('/register', userController.createUser);
 router.post('/all', userController.getAllUsers);
 router.get('/getbyid',userController.getuserbyid)
@@ -12,4 +13,11 @@ router.post('/activate', userController.activateUser);
 router.delete('/delete', userController.deleteaccount);
 router.put('/changepassword', userController.changepassword);
 router.post('/forgotpassword', userController.forgotpassword);
+
+// ==================== CLIENT APIs ====================
+// These are unprotected routes (public)
+router.post('/login', userController.loginUser);
+router.post('/signup', userController.signupUser);
+router.post('/exist', userController.checkEmailExists);
+
 module.exports = router;

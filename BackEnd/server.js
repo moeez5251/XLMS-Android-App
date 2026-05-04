@@ -26,6 +26,14 @@ const unprotectedRoutes = [
   '/',
   '/api/token/verify',
   '/api/token/update',
+  // ==================== CLIENT APIs (unprotected) ====================
+  '/api/users/login',
+  '/api/users/signup',
+  '/api/users/exist',
+  '/api/mail/otp',
+  '/api/mail/verify',
+  '/api/mail/resend',
+  '/api/mail/reset',
 ]; 
 app.use((req, res, next) => {
   if (unprotectedRoutes.includes(req.path)) return next();
@@ -55,6 +63,10 @@ const resourceRoutes = require('./routes/resource')
 app.use('/api/resource', resourceRoutes)
 const otherController = require('./routes/other');
 app.use('/api/other', otherController);
+const changepasswordRoutes = require('./routes/changepassword');
+app.use('/api/changepassword', changepasswordRoutes);
+const reservationRoutes = require('./routes/reservation');
+app.use('/api/reservations', reservationRoutes);
 app.get('/', (req, res) => {
   res.send('✅ App is alive!');
 });

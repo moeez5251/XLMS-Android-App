@@ -405,3 +405,17 @@ exports.resetpassword = async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+// ==================== HELPER FUNCTIONS ====================
+
+// Helper function to remove OTP from database
+exports.otpremove = async (email) => {
+    try {
+        const pool = await poolPromise;
+        await pool.request()
+            .input('email', email)
+            .query('DELETE FROM OTPS WHERE Email = @email');
+    } catch (err) {
+        console.error('Error removing OTP:', err);
+    }
+};

@@ -233,3 +233,127 @@ exports.forgotpassword = async (req, res) => {
   sendEmail(Email, 'Password Reset Request', `Hello user, Click the link to reset your password: ${link}`, `<table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);"> <tr> <td style="background:#2563eb; padding:25px; text-align:center; color:#ffffff; font-size:26px; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Password Reset Request </td> </tr> <tr> <td style="padding:35px; color:#333333; font-size:16px; line-height:1.7; font-family:Arial, Helvetica, sans-serif;"> <p style="margin-top:0;">Hello User,</p> <p> We received a request to reset your password. Click the button below to create a new password. </p> <p style="text-align:center; margin:35px 0;"> <a href="${link}" style="background:#2563eb; color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:6px; display:inline-block; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Reset Password </a> </p> <p> If the button doesn't work, copy and paste this link into your browser: </p> <p style="word-break:break-all; color:#2563eb; font-weight:bold;"> ${link} </p> <p> If you did not request a password reset, you can ignore this email. </p> <p style="margin-bottom:0;"> Regards,<br /> Support Team </p> </td> </tr> <tr> <td style="background:#f9fafb; padding:18px; text-align:center; font-size:13px; color:#777777; font-family:Arial, Helvetica, sans-serif;"> © 2026 XLMS. All rights reserved. </td> </tr> </table> </td>`);
   res.status(200).json({ message: 'Password reset link sent to email' });
 }
+
+// ==================== CLIENT APIs ====================
+
+// Login user by email and password
+exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password)
+      return res.status(400).json({ error: 'Email and password are required' });
+
+    const pool = await poolPromise;
+    
+    const userResult = await pool.request()
+      .input('email', email)
+      .query("SELECT * FROM users WHERE Email = @email AND Role = 'Standard-User'");
+
+    if (userResult.recordset.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const user = userResult.recordset[0];
+    const isMatch = await bcrypt.compare(password, user.Password);
+
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const token = require('jsonwebtoken').sign(
+      { user_id: user.User_id, email: user.Email },
+      process.env.JWT,
+      { expiresIn: '1d' }
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 1000 // 1 day
+    });
+
+    res.json({ user_id: user.User_id, message: 'Login successful' });
+  } catch (err) {
+    console.error('Error logging in user:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Signup user (client registration)
+exports.signupUser = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password)
+      return res.status(400).json({ error: 'All fields are required' });
+
+    const pool = await poolPromise;
+
+    const existingUser = await pool.request()
+      .input('email', email)
+      .query('SELECT COUNT(*) AS count FROM users WHERE Email = @email');
+
+    if (existingUser.recordset[0].count > 0) {
+      return res.status(400).json({ error: 'User with this email already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const uid = uuidv4();
+    const userId = `${name[0].toUpperCase()}${uid.slice(0, 7)}`;
+
+    await pool.request()
+      .input('User_id', userId)
+      .input('User_Name', name)
+      .input('Email', email)
+      .input('Password', hashedPassword)
+      .input('Role', 'Standard-User')
+      .input('Membership_Type', 'English')
+      .input('Cost', 0)
+      .input('Status', 'Active')
+      .query('INSERT INTO users (User_id, User_Name, Email, Password, Role, Membership_Type, Cost, Status) VALUES (@User_id, @User_Name, @Email, @Password, @Role, @Membership_Type, @Cost, @Status)');
+
+    const token = require('jsonwebtoken').sign(
+      { user_id: userId, email: email },
+      process.env.JWT,
+      { expiresIn: '1d' }
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 1000 // 1 day
+    });
+
+    res.status(201).json({ 
+      message: 'User created successfully',
+      user_id: userId
+    });
+  } catch (err) {
+    console.error('Error creating user:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Check if email exists
+exports.checkEmailExists = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email)
+      return res.status(400).json({ error: 'Email is required' });
+
+    const pool = await poolPromise;
+    
+    const result = await pool.request()
+      .input('email', email)
+      .query('SELECT COUNT(*) AS count FROM users WHERE Email = @email');
+
+    res.json({ exist: result.recordset[0].count > 0 });
+  } catch (err) {
+    console.error('Error checking email:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
