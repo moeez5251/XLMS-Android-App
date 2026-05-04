@@ -113,14 +113,16 @@
                             app:tint="@color/primary_container"
                             android:layout_marginEnd="8dp" />
 
-                        <TextView
+                        <EditText
+                            android:id="@+id/editName"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="XLMS Central Athenaeum"
+                            android:hint="Name"
                             android:textSize="14sp"
                             android:textColor="@color/on_surface"
-                            android:textStyle="bold" />
+                            android:background="@null"
+                            android:inputType="text" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -134,7 +136,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Institutional Email"
+                        android:text="Library Email"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_variant"
                         android:textStyle="bold"
@@ -158,14 +160,16 @@
                             app:tint="@color/primary_container"
                             android:layout_marginEnd="8dp" />
 
-                        <TextView
+                        <EditText
+                            android:id="@+id/editEmail"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="curator@xlms-library.org"
+                            android:hint="curator@xlms-library.org"
                             android:textSize="14sp"
                             android:textColor="@color/on_surface"
-                            android:textStyle="bold" />
+                            android:background="@null"
+                            android:inputType="textEmailAddress" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -178,7 +182,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Official Repository URL"
+                        android:text="Official Website URL"
                         android:textSize="11sp"
                         android:textColor="@color/on_surface_variant"
                         android:textStyle="bold"
@@ -202,14 +206,16 @@
                             app:tint="@color/primary_container"
                             android:layout_marginEnd="8dp" />
 
-                        <TextView
+                        <EditText
+                            android:id="@+id/editWebsite"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="www.xlms-library.org"
+                            android:hint="www.xlms-library.org"
                             android:textSize="14sp"
                             android:textColor="@color/on_surface"
-                            android:textStyle="bold" />
+                            android:background="@null"
+                            android:inputType="textUri" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -222,6 +228,13 @@
             android:orientation="vertical"
             android:gravity="center"
             android:padding="32dp">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/buttonAddResource"

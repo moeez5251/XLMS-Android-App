@@ -80,4 +80,6 @@ public interface ApiService {
 
     @PUT("users/changepassword")
     Call<MessageResponse> changePassword(@Body com.google.gson.JsonObject body);
-    }
+        @POST("resource/add")
+    Call<MessageResponse> addResource(@Body com.google.gson.JsonObject body);
+}
