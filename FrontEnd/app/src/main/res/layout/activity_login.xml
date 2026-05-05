@@ -60,7 +60,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_auto_stories"
+                        android:src="@drawable/ic_menu_book"
                         android:contentDescription="@string/logo_desc"
                         app:tint="@color/white" />
                 </FrameLayout>
@@ -273,48 +273,6 @@
                 android:layout_marginBottom="32dp">
 
                 <!-- Toggle Switch -->
-                <LinearLayout
-                    android:id="@+id/toggleRememberMe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <FrameLayout
-                        android:layout_width="44dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center_vertical">
-
-                        <!-- Switch Background Track -->
-                        <View
-                            android:id="@+id/switchBackground"
-                            android:layout_width="44dp"
-                            android:layout_height="24dp"
-                            android:background="@drawable/switch_track_background" />
-
-                        <!-- Switch Thumb (Circle) -->
-                        <View
-                            android:id="@+id/switchThumb"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="2dp"
-                            android:background="@drawable/switch_thumb_circle"
-                            android:elevation="2dp" />
-                    </FrameLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="@string/remember_me"
-                        android:textSize="12sp"
-                        android:textColor="@color/on_secondary_fixed_variant"
-                        android:fontFamily="@font/inter"
-                        android:textStyle="bold" />
-                </LinearLayout>
 
                 <View
                     android:layout_width="0dp"
@@ -378,47 +336,6 @@
                     android:focusable="true" />
             </LinearLayout>
 
-            <!-- Demo Credentials Box -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="32dp"
-                android:padding="16dp"
-                android:background="@drawable/demo_credentials_background">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/demo_credentials_title"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/on_surface"
-                    android:fontFamily="@font/inter_semibold"
-                    android:layout_gravity="center_horizontal" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/demo_admin_credentials"
-                    android:textSize="11sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:fontFamily="@font/inter_regular"
-                    android:gravity="center"
-                    android:layout_gravity="center_horizontal" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/demo_client_credentials"
-                    android:textSize="11sp"
-                    android:textColor="@color/on_surface_variant"
-                    android:fontFamily="@font/inter_regular"
-                    android:gravity="center"
-                    android:layout_gravity="center_horizontal" />
-            </LinearLayout>
         </LinearLayout>
 
         <!-- Decorative Background Elements -->

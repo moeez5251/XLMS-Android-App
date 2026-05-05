@@ -53,8 +53,8 @@ public class ResourcesFragment extends Fragment implements AdminDashboardActivit
         String email = editEmail.getText().toString().trim();
         String web = editWebsite.getText().toString().trim();
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email)) {
-            Toast.makeText(requireContext(), "Name and Email required", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(web)) {
+            Toast.makeText(requireContext(), "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
