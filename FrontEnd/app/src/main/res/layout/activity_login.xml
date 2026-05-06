@@ -272,8 +272,6 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="32dp">
 
-                <!-- Toggle Switch -->
-
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"

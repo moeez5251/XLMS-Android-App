@@ -30,6 +30,10 @@ public class SignUpActivity extends AppCompatActivity
     private String email;
     private String password;
 
+    public String getFullName() { return fullName; }
+    public String getEmail() { return email; }
+    public String getPassword() { return password; }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,51 +82,13 @@ public class SignUpActivity extends AppCompatActivity
     
     @Override
     public void onSignUpComplete(String fullName, String email, String password) {
-        // Save user data
+        // Save user data for later steps
         this.fullName = fullName;
         this.email = email;
         this.password = password;
         
-        // Call register API
-        registerUser();
-    }
-
-    private void registerUser() {
-        // Show a progress dialog or some loading indicator
-        // For simplicity, we can use the activity's state or a dedicated fragment
-        
-        com.xlms.librarymanagement.api.RegisterRequest request = new com.xlms.librarymanagement.api.RegisterRequest(
-                fullName, email, "Client", "Basic", password
-        );
-
-        com.xlms.librarymanagement.api.ApiClient.getApiService(this).register(request).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
-            @Override
-            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
-                if (response.isSuccessful()) {
-                    // Navigate to verification (Backend sends OTP automatically if implemented)
-                    loadVerificationFragment();
-                } else {
-                    String error = "Registration failed";
-                    try {
-                        if (response.errorBody() != null) {
-                            String errorJson = response.errorBody().string();
-                            com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
-                            if (errorObj.has("error")) {
-                                error = errorObj.get("error").getAsString();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    android.widget.Toast.makeText(SignUpActivity.this, error, android.widget.Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
-                android.widget.Toast.makeText(SignUpActivity.this, "Network error: " + t.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Move to verification
+        loadVerificationFragment();
     }
 
     @Override
@@ -135,35 +101,8 @@ public class SignUpActivity extends AppCompatActivity
     
     @Override
     public void onVerificationComplete(String otp) {
-        com.xlms.librarymanagement.api.VerifyOtpRequest request = new com.xlms.librarymanagement.api.VerifyOtpRequest(email, otp);
-        
-        com.xlms.librarymanagement.api.ApiClient.getApiService(this).verifyOtp(request).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
-            @Override
-            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
-                if (response.isSuccessful()) {
-                    loadSuccessFragment();
-                } else {
-                    String error = "Verification failed";
-                    try {
-                        if (response.errorBody() != null) {
-                            String errorJson = response.errorBody().string();
-                            com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
-                            if (errorObj.has("message")) {
-                                error = errorObj.get("message").getAsString();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    android.widget.Toast.makeText(SignUpActivity.this, error, android.widget.Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
-                android.widget.Toast.makeText(SignUpActivity.this, "Network error: " + t.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Sign up was already completed in the fragment
+        loadSuccessFragment();
     }
 
     @Override
@@ -175,7 +114,7 @@ public class SignUpActivity extends AppCompatActivity
     public void onResendCode() {
         com.xlms.librarymanagement.api.OtpRequest request = new com.xlms.librarymanagement.api.OtpRequest(fullName, email);
         
-        com.xlms.librarymanagement.api.ApiClient.getApiService(this).resendOtp(request).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
+        com.xlms.librarymanagement.api.ApiClient.getApiService(this).sendOtp(request).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
             @Override
             public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
                 if (response.isSuccessful()) {
@@ -196,9 +135,8 @@ public class SignUpActivity extends AppCompatActivity
     
     @Override
     public void onContinueToDashboard() {
-        // Save session for new user
-        SessionManager sessionManager = new SessionManager(this);
-        sessionManager.saveSession(email, "CLIENT", fullName);
+        // Session was already saved in EmailVerificationFragment.performSignUp().
+        // No need to save again here, just navigate.
 
         // Navigate to dashboard
         android.content.Intent intent = new android.content.Intent(SignUpActivity.this, com.xlms.librarymanagement.ui.client.ClientDashboardActivity.class);

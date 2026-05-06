@@ -236,51 +236,6 @@ exports.forgotpassword = async (req, res) => {
 
 // ==================== CLIENT APIs ====================
 
-// Login user by email and password
-exports.loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password)
-      return res.status(400).json({ error: 'Email and password are required' });
-
-    const pool = await poolPromise;
-    
-    const userResult = await pool.request()
-      .input('email', email)
-      .query("SELECT * FROM users WHERE Email = @email AND Role = 'Standard-User'");
-
-    if (userResult.recordset.length === 0) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const user = userResult.recordset[0];
-    const isMatch = await bcrypt.compare(password, user.Password);
-
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const token = require('jsonwebtoken').sign(
-      { user_id: user.User_id, email: user.Email },
-      process.env.JWT,
-      { expiresIn: '1d' }
-    );
-
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 1000 // 1 day
-    });
-
-    res.json({ user_id: user.User_id, message: 'Login successful' });
-  } catch (err) {
-    console.error('Error logging in user:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
 // Signup user (client registration)
 exports.signupUser = async (req, res) => {
   try {
@@ -329,7 +284,9 @@ exports.signupUser = async (req, res) => {
 
     res.status(201).json({ 
       message: 'User created successfully',
-      user_id: userId
+      user_id: userId,
+      token: token,
+      role: 'Standard-User'
     });
   } catch (err) {
     console.error('Error creating user:', err);

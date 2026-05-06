@@ -16,11 +16,29 @@ public interface ApiService {
     @POST("users/register")
     Call<MessageResponse> register(@Body RegisterRequest registerRequest);
 
+    @POST("users/signup")
+    Call<RegisterResponse> signup(@Body SignUpRequest signUpRequest);
+
+    @POST("users/exist")
+    Call<com.google.gson.JsonObject> checkEmailExists(@Body EmailCheckRequest emailCheckRequest);
+
+    @POST("mail/otp")
+    Call<MessageResponse> sendOtp(@Body OtpRequest otpRequest);
+
     @POST("mail/verify")
     Call<MessageResponse> verifyOtp(@Body VerifyOtpRequest verifyOtpRequest);
 
     @POST("mail/resend")
     Call<MessageResponse> resendOtp(@Body OtpRequest otpRequest);
+
+    @retrofit2.http.GET("other/mystats")
+    Call<MyStatsResponse> getMyStats();
+
+    @retrofit2.http.GET("other/chartdetails")
+    Call<ChartDetailsResponse> getChartDetails();
+
+    @retrofit2.http.GET("other/lendingactivity")
+    Call<java.util.Map<String, Integer>> getLendingActivity();
 
     @retrofit2.http.GET("other/getbookdata")
     Call<DashboardDataResponse> getDashboardData();

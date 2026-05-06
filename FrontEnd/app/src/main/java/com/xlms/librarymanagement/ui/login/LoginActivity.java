@@ -37,12 +37,10 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonLogin;
     private TextView textViewRegister, textViewForgotPassword;
     private ImageButton buttonTogglePassword;
-    private View toggleRememberMe, switchThumb, switchBackground;
     private View emailAccentLine, passwordAccentLine;
 
     // State
     private boolean isPasswordVisible = false;
-    private boolean isRememberMeChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +67,6 @@ public class LoginActivity extends AppCompatActivity {
         textViewRegister = findViewById(R.id.textViewRegister);
         textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
         buttonTogglePassword = findViewById(R.id.buttonTogglePassword);
-        toggleRememberMe = findViewById(R.id.toggleRememberMe);
-        switchThumb = findViewById(R.id.switchThumb);
-        switchBackground = findViewById(R.id.switchBackground);
         emailAccentLine = findViewById(R.id.emailAccentLine);
         passwordAccentLine = findViewById(R.id.passwordAccentLine);
     }
@@ -103,9 +98,6 @@ public class LoginActivity extends AppCompatActivity {
         // Toggle password visibility
         buttonTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
 
-        // Remember me toggle
-        toggleRememberMe.setOnClickListener(v -> toggleRememberMe());
-
         // Forgot password
         textViewForgotPassword.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
@@ -136,32 +128,6 @@ public class LoginActivity extends AppCompatActivity {
         }
         // Move cursor to end
         editTextPassword.setSelection(editTextPassword.getText().length());
-    }
-
-    private void toggleRememberMe() {
-        isRememberMeChecked = !isRememberMeChecked;
-        updateSwitchAppearance();
-    }
-
-    private void updateSwitchAppearance() {
-        int dp2 = (int) (2 * getResources().getDisplayMetrics().density);
-        int dp22 = (int) (22 * getResources().getDisplayMetrics().density);
-        
-        if (isRememberMeChecked) {
-            // Move thumb to right and set ON state (blue track)
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) switchThumb.getLayoutParams();
-            params.leftMargin = dp22;
-            params.gravity = android.view.Gravity.CENTER_VERTICAL;
-            switchThumb.setLayoutParams(params);
-            switchBackground.setBackgroundResource(R.drawable.switch_track_checked);
-        } else {
-            // Move thumb to left and set OFF state (gray track)
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) switchThumb.getLayoutParams();
-            params.leftMargin = dp2;
-            params.gravity = android.view.Gravity.CENTER_VERTICAL;
-            switchThumb.setLayoutParams(params);
-            switchBackground.setBackgroundResource(R.drawable.switch_track_background);
-        }
     }
 
     private void handleLogin() {

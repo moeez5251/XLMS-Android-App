@@ -149,10 +149,99 @@ public class EmailVerificationFragment extends Fragment {
             return;
         }
 
-        // Proceed to success screen
-        if (mListener != null) {
-            mListener.onVerificationComplete(otp.toString());
+        buttonVerify.setEnabled(false);
+        buttonVerify.setText("Verifying...");
+
+        // Step 1: Verify OTP
+        String email = "";
+        if (getActivity() instanceof SignUpActivity) {
+            email = ((SignUpActivity) getActivity()).getEmail();
         }
+        
+        com.xlms.librarymanagement.api.VerifyOtpRequest verifyRequest = new com.xlms.librarymanagement.api.VerifyOtpRequest(email, otp.toString());
+        com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext()).verifyOtp(verifyRequest).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    // Step 2: Perform Final Sign Up
+                    performSignUp();
+                } else {
+                    buttonVerify.setEnabled(true);
+                    buttonVerify.setText("Verify Access");
+                    String error = "Verification failed";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                            if (errorObj.has("message")) error = errorObj.get("message").getAsString();
+                        }
+                    } catch (Exception e) { e.printStackTrace(); }
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
+                buttonVerify.setEnabled(true);
+                buttonVerify.setText("Verify Access");
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void performSignUp() {
+        buttonVerify.setText("Creating Account...");
+        
+        String fullName = "", email = "", password = "";
+        if (getActivity() instanceof SignUpActivity) {
+            SignUpActivity activity = (SignUpActivity) getActivity();
+            fullName = activity.getFullName();
+            email = activity.getEmail();
+            password = activity.getPassword();
+        }
+
+        final String finalFullName = fullName;
+        final String finalEmail = email;
+
+        com.xlms.librarymanagement.api.SignUpRequest signUpRequest = new com.xlms.librarymanagement.api.SignUpRequest(fullName, email, password);
+        com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext()).signup(signUpRequest).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.RegisterResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.RegisterResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.RegisterResponse> response) {
+                buttonVerify.setEnabled(true);
+                buttonVerify.setText("Verify Access");
+                if (response.isSuccessful() && response.body() != null) {
+                    // Save session data
+                    com.xlms.librarymanagement.api.RegisterResponse regResp = response.body();
+                    com.xlms.librarymanagement.utils.SessionManager sessionManager = new com.xlms.librarymanagement.utils.SessionManager(requireContext());
+                    sessionManager.saveSession(finalEmail, regResp.getRole(), finalFullName, regResp.getUserId(), regResp.getToken());
+                    
+                    // Reset ApiClient to pick up the new token
+                    com.xlms.librarymanagement.api.ApiClient.resetClient();
+
+                    if (mListener != null) {
+                        mListener.onVerificationComplete(null);
+                    }
+                } else {
+                    String error = "Registration failed";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                            if (errorObj.has("message")) error = errorObj.get("message").getAsString();
+                            else if (errorObj.has("error")) error = errorObj.get("error").getAsString();
+                        }
+                    } catch (Exception e) { e.printStackTrace(); }
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.RegisterResponse> call, Throwable t) {
+                buttonVerify.setEnabled(true);
+                buttonVerify.setText("Verify Access");
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void handleResendCode() {

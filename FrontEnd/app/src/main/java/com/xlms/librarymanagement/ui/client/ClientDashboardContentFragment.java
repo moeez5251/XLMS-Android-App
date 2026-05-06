@@ -26,15 +26,17 @@ public class ClientDashboardContentFragment extends Fragment {
     private TextView textReturnedCount;
     private CircularProgressIndicator progressCircleBorrowed;
     private LinearLayout barChartContainer;
+    private View contentLayout;
+    private com.facebook.shimmer.ShimmerFrameLayout shimmerLayout;
 
-    // Dummy data
+    // Live data
     private int lendedBooks = 0;
     private int overdueBooks = 0;
     private int reservedBooks = 0;
-    private int returnedBooks = 9;
-    private int totalBorrowed = 9;
+    private int returnedBooks = 0;
+    private int totalBorrowed = 0;
 
-    private final int[] monthlyActivity = {40, 80, 53, 100, 67, 93, 47, 33, 73, 60, 87, 100};
+    private int[] monthlyActivity = new int[12];
     private final String[] monthLabels = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN",
                                           "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"};
 
@@ -50,9 +52,97 @@ public class ClientDashboardContentFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initViews(view);
-        setupMetricCards();
-        setupCircularChart();
-        setupBarChart();
+        fetchDashboardData();
+    }
+
+    private void fetchDashboardData() {
+        showLoading(true);
+        com.xlms.librarymanagement.api.ApiService apiService = com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext());
+
+        // Counter to track completion of all 3 API calls
+        final int[] completedCalls = {0};
+        Runnable checkAllDone = () -> {
+            completedCalls[0]++;
+            if (completedCalls[0] == 3) {
+                showLoading(false);
+            }
+        };
+
+        // 1. Fetch Stats (3 boxes)
+        apiService.getMyStats().enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MyStatsResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MyStatsResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MyStatsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    lendedBooks = response.body().getLended();
+                    overdueBooks = response.body().getOverdue();
+                    reservedBooks = response.body().getReserved();
+                    setupMetricCards();
+                }
+                checkAllDone.run();
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MyStatsResponse> call, Throwable t) {
+                checkAllDone.run();
+            }
+        });
+
+        // 2. Fetch Chart Details (Circular Progress)
+        apiService.getChartDetails().enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.ChartDetailsResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.ChartDetailsResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.ChartDetailsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    returnedBooks = response.body().getReturned();
+                    int overdue = response.body().getOverdue();
+                    totalBorrowed = returnedBooks + overdue;
+                    setupCircularChart();
+                }
+                checkAllDone.run();
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.ChartDetailsResponse> call, Throwable t) {
+                checkAllDone.run();
+            }
+        });
+
+        // 3. Fetch Lending Activity (Bar Chart)
+        apiService.getLendingActivity().enqueue(new retrofit2.Callback<java.util.Map<String, Integer>>() {
+            @Override
+            public void onResponse(retrofit2.Call<java.util.Map<String, Integer>> call, retrofit2.Response<java.util.Map<String, Integer>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    java.util.Map<String, Integer> data = response.body();
+                    String[] fullMonthNames = {"January", "February", "March", "April", "May", "June", 
+                                              "July", "August", "September", "October", "November", "December"};
+                    
+                    for (int i = 0; i < 12; i++) {
+                        Integer count = data.get(fullMonthNames[i]);
+                        monthlyActivity[i] = (count != null) ? count : 0;
+                    }
+                    setupBarChart();
+                }
+                checkAllDone.run();
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<java.util.Map<String, Integer>> call, Throwable t) {
+                checkAllDone.run();
+            }
+        });
+    }
+
+    private void showLoading(boolean show) {
+        if (shimmerLayout == null || contentLayout == null) return;
+        
+        if (show) {
+            shimmerLayout.setVisibility(View.VISIBLE);
+            shimmerLayout.startShimmer();
+            contentLayout.setVisibility(View.GONE);
+        } else {
+            shimmerLayout.stopShimmer();
+            shimmerLayout.setVisibility(View.GONE);
+            contentLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initViews(View view) {
@@ -62,6 +152,8 @@ public class ClientDashboardContentFragment extends Fragment {
         textReturnedCount = view.findViewById(R.id.textReturnedCount);
         progressCircleBorrowed = view.findViewById(R.id.progressCircleBorrowed);
         barChartContainer = view.findViewById(R.id.barChartContainer);
+        contentLayout = view.findViewById(R.id.contentLayout);
+        shimmerLayout = view.findViewById(R.id.shimmerLayout);
 
         if (getArguments() != null) {
             String userName = getArguments().getString("USER_NAME", "User");

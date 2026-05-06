@@ -205,10 +205,65 @@ public class SignUpFragment extends Fragment {
             return;
         }
 
-        // Proceed to email verification
-        if (mListener != null) {
-            mListener.onSignUpComplete(fullName, email, password);
-        }
+        // Disable button to prevent multiple clicks
+        buttonCreateAccount.setEnabled(false);
+        buttonCreateAccount.setText("Checking...");
+
+        // Step 1: Check if email exists
+        com.xlms.librarymanagement.api.EmailCheckRequest checkRequest = new com.xlms.librarymanagement.api.EmailCheckRequest(email);
+        com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext()).checkEmailExists(checkRequest).enqueue(new retrofit2.Callback<com.google.gson.JsonObject>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.google.gson.JsonObject> call, retrofit2.Response<com.google.gson.JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    boolean exists = response.body().get("exist").getAsBoolean();
+                    if (exists) {
+                        buttonCreateAccount.setEnabled(true);
+                        buttonCreateAccount.setText("Create Account");
+                        Toast.makeText(requireContext(), "Email already registered", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Step 2: Send OTP
+                        sendOtp(fullName, email, password);
+                    }
+                } else {
+                    buttonCreateAccount.setEnabled(true);
+                    buttonCreateAccount.setText("Create Account");
+                    Toast.makeText(requireContext(), "Error checking email", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.google.gson.JsonObject> call, Throwable t) {
+                buttonCreateAccount.setEnabled(true);
+                buttonCreateAccount.setText("Create Account");
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void sendOtp(String fullName, String email, String password) {
+        buttonCreateAccount.setText("Sending Code...");
+        com.xlms.librarymanagement.api.OtpRequest otpRequest = new com.xlms.librarymanagement.api.OtpRequest(fullName, email);
+        com.xlms.librarymanagement.api.ApiClient.getApiService(requireContext()).sendOtp(otpRequest).enqueue(new retrofit2.Callback<com.xlms.librarymanagement.api.MessageResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, retrofit2.Response<com.xlms.librarymanagement.api.MessageResponse> response) {
+                buttonCreateAccount.setEnabled(true);
+                buttonCreateAccount.setText("Create Account");
+                if (response.isSuccessful()) {
+                    if (mListener != null) {
+                        mListener.onSignUpComplete(fullName, email, password);
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Failed to send verification code", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.xlms.librarymanagement.api.MessageResponse> call, Throwable t) {
+                buttonCreateAccount.setEnabled(true);
+                buttonCreateAccount.setText("Create Account");
+                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

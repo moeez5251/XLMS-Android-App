@@ -16,7 +16,6 @@ router.post('/forgotpassword', userController.forgotpassword);
 
 // ==================== CLIENT APIs ====================
 // These are unprotected routes (public)
-router.post('/login', userController.loginUser);
 router.post('/signup', userController.signupUser);
 router.post('/exist', userController.checkEmailExists);
 

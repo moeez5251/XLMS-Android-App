@@ -37,7 +37,7 @@
     <!-- Sign Up Screen -->
     <string name="new_members">New Member</string>
     <string name="signup_title_line1">Begin Your</string>
-    <string name="signup_title_line2">Curated Journey</string>
+    <string name="signup_title_line2">Book Management</string>
     <string name="signup_subtitle">Enter your credentials to access our prestigious digital archives and private collections.</string>
     <string name="label_full_name">Full Name</string>
     <string name="hint_full_name">Theodore Vance</string>
