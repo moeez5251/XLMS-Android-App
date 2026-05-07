@@ -24,19 +24,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.ApiService;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ClientCatalogFragment extends Fragment {
 
     private RecyclerView recyclerViewBooks;
     private BookCatalogAdapter bookAdapter;
-    private List<Book> masterBookList;
+    private List<Book> masterBookList = new ArrayList<>();
     private EditText editTextSearch;
+    private ShimmerFrameLayout shimmerViewContainer;
 
     private String currentLanguage = "All";
     private String currentAuthor = "All";
     private String currentAvailability = "All";
 
+    private List<String> dynamicLanguages = new ArrayList<>();
+    private List<String> dynamicAuthors = new ArrayList<>();
+    private List<String> dynamicAvailabilities = new ArrayList<>();
+
     private int currentPage = 1;
-    private final int PAGE_SIZE = 6; // 3 rows of 2 columns
+    private final int PAGE_SIZE = 6;
     private boolean isLoading = false;
     private boolean isLastPage = false;
     private List<Book> filteredBookList = new ArrayList<>();
@@ -54,7 +71,7 @@ public class ClientCatalogFragment extends Fragment {
 
         initViews(view);
         setupRecyclerView();
-        loadDummyData();
+        fetchBooks();
         setupSearch();
         setupFilterChips();
     }
@@ -62,10 +79,10 @@ public class ClientCatalogFragment extends Fragment {
     private void initViews(View view) {
         recyclerViewBooks = view.findViewById(R.id.recyclerViewBooks);
         editTextSearch = view.findViewById(R.id.editTextSearch);
+        shimmerViewContainer = view.findViewById(R.id.shimmerViewContainer);
     }
 
     private void setupRecyclerView() {
-        masterBookList = new ArrayList<>();
         bookAdapter = new BookCatalogAdapter(requireContext(), book -> {
             ClientBookInfoFragment infoFragment = ClientBookInfoFragment.newInstance(book);
             getParentFragmentManager().beginTransaction()
@@ -110,41 +127,95 @@ public class ClientCatalogFragment extends Fragment {
         });
     }
 
-    private void loadNextPage() {
-        isLoading = true;
-        // Simulate a small delay for loading effect
-        recyclerViewBooks.postDelayed(() -> {
-            int start = (currentPage - 1) * PAGE_SIZE;
-            int end = Math.min(start + PAGE_SIZE, filteredBookList.size());
+    private void fetchBooks() {
+        shimmerViewContainer.startShimmer();
+        shimmerViewContainer.setVisibility(View.VISIBLE);
+        recyclerViewBooks.setVisibility(View.GONE);
 
-            if (start < filteredBookList.size()) {
-                List<Book> nextItems = filteredBookList.subList(0, end);
-                bookAdapter.submitList(new ArrayList<>(nextItems));
-                currentPage++;
-                if (end >= filteredBookList.size()) {
-                    isLastPage = true;
+        ApiService apiService = ApiClient.getApiService(requireContext());
+        apiService.getBooks().enqueue(new Callback<List<Book>>() {
+            @Override
+            public void onResponse(Call<List<Book>> call, Response<List<Book>> response) {
+                if (isAdded()) {
+                    shimmerViewContainer.stopShimmer();
+                    shimmerViewContainer.setVisibility(View.GONE);
+                    recyclerViewBooks.setVisibility(View.VISIBLE);
+
+                    if (response.isSuccessful() && response.body() != null) {
+                        masterBookList = response.body();
+                        extractDynamicFilters();
+                        applyFilters();
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to load books", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            } else {
-                isLastPage = true;
             }
-            isLoading = false;
-        }, 500);
+
+            @Override
+            public void onFailure(Call<List<Book>> call, Throwable t) {
+                if (isAdded()) {
+                    shimmerViewContainer.stopShimmer();
+                    shimmerViewContainer.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
-    private void loadDummyData() {
-        masterBookList.clear();
-        masterBookList.add(new Book("14-88219-X", "Rework", "Jason Fried", "Business", "English", 15.00, 8, 8, "Available"));
-        masterBookList.add(new Book("07-43203-1", "The Great Gatsby", "F. Scott Fitzgerald", "Classic", "English", 12.50, 12, 4, "Limited"));
-        masterBookList.add(new Book("99-10293-A", "Thinking, Fast and Slow", "Daniel Kahneman", "Science", "English", 22.00, 5, 0, "Out of Stock"));
-        masterBookList.add(new Book("42-11882-X", "Sapiens", "Yuval Noah Harari", "History", "Hebrew", 18.99, 15, 11, "Available"));
-        masterBookList.add(new Book("21-33490-C", "The Alchemist", "Paulo Coelho", "Fiction", "Portuguese", 10.00, 20, 20, "Available"));
-        masterBookList.add(new Book("55-11223-B", "Atomic Habits", "James Clear", "Self-Help", "English", 16.00, 10, 2, "Limited"));
-        masterBookList.add(new Book("88-99001-Z", "1984", "George Orwell", "Classic", "English", 9.99, 15, 15, "Available"));
-        masterBookList.add(new Book("77-66554-D", "To Kill a Mockingbird", "Harper Lee", "Classic", "English", 14.99, 10, 10, "Available"));
-        masterBookList.add(new Book("33-44771-E", "Pride and Prejudice", "Jane Austen", "Romance", "English", 13.50, 8, 6, "Available"));
-        masterBookList.add(new Book("11-22334-F", "The Hobbit", "J.R.R. Tolkien", "Fantasy", "English", 17.99, 12, 3, "Limited"));
+    private void extractDynamicFilters() {
+        Set<String> languages = new HashSet<>();
+        Set<String> authors = new HashSet<>();
+        Set<String> availabilities = new HashSet<>();
 
-        applyFilters();
+        for (Book book : masterBookList) {
+            if (book.getLanguage() != null && !book.getLanguage().isEmpty()) {
+                languages.add(book.getLanguage());
+            }
+            if (book.getAuthor() != null && !book.getAuthor().isEmpty()) {
+                authors.add(book.getAuthor());
+            }
+            if (book.getStatus() != null && !book.getStatus().isEmpty()) {
+                availabilities.add(book.getStatus());
+            }
+        }
+
+        dynamicLanguages.clear();
+        dynamicLanguages.add("All");
+        dynamicLanguages.addAll(languages);
+        Collections.sort(dynamicLanguages.subList(1, dynamicLanguages.size()));
+
+        dynamicAuthors.clear();
+        dynamicAuthors.add("All");
+        dynamicAuthors.addAll(authors);
+        Collections.sort(dynamicAuthors.subList(1, dynamicAuthors.size()));
+
+        dynamicAvailabilities.clear();
+        dynamicAvailabilities.add("All");
+        dynamicAvailabilities.addAll(availabilities);
+        Collections.sort(dynamicAvailabilities.subList(1, dynamicAvailabilities.size()));
+    }
+
+    private void loadNextPage() {
+        if (filteredBookList.isEmpty()) {
+            bookAdapter.submitList(new ArrayList<>());
+            return;
+        }
+
+        isLoading = true;
+        int start = (currentPage - 1) * PAGE_SIZE;
+        int end = Math.min(start + PAGE_SIZE, filteredBookList.size());
+
+        if (start < filteredBookList.size()) {
+            List<Book> nextItems = new ArrayList<>(filteredBookList.subList(0, end));
+            bookAdapter.submitList(nextItems);
+            currentPage++;
+            if (end >= filteredBookList.size()) {
+                isLastPage = true;
+            }
+        } else {
+            isLastPage = true;
+        }
+        isLoading = false;
     }
 
     private void setupSearch() {
@@ -182,14 +253,21 @@ public class ClientCatalogFragment extends Fragment {
         }
 
         // Reset filters
-        TextView resetFilters = requireView().findViewById(R.id.textViewResetFilters);
-        if (resetFilters != null) {
-            resetFilters.setOnClickListener(v -> resetAllFilters());
+        View resetFiltersBtn = requireView().findViewById(R.id.resetFilters);
+        if (resetFiltersBtn != null) {
+            resetFiltersBtn.setOnClickListener(v -> resetAllFilters());
+        }
+        
+        TextView resetFiltersText = requireView().findViewById(R.id.textViewResetFilters);
+        if (resetFiltersText != null) {
+            resetFiltersText.setOnClickListener(v -> resetAllFilters());
         }
     }
 
     private void showLanguageDialog() {
-        String[] languages = {"All", "English", "Hebrew", "Portuguese", "Spanish", "French", "German"};
+        if (dynamicLanguages.isEmpty()) return;
+        
+        String[] languages = dynamicLanguages.toArray(new String[0]);
         new android.app.AlertDialog.Builder(requireContext())
                 .setTitle("Select Language")
                 .setItems(languages, (dialog, which) -> {
@@ -202,9 +280,9 @@ public class ClientCatalogFragment extends Fragment {
     }
 
     private void showAuthorDialog() {
-        String[] authors = {"All", "Jason Fried", "F. Scott Fitzgerald", "Daniel Kahneman",
-                           "Yuval Noah Harari", "Paulo Coelho", "James Clear", "George Orwell",
-                           "Harper Lee", "Jane Austen", "J.R.R. Tolkien"};
+        if (dynamicAuthors.isEmpty()) return;
+
+        String[] authors = dynamicAuthors.toArray(new String[0]);
         new android.app.AlertDialog.Builder(requireContext())
                 .setTitle("Select Author")
                 .setItems(authors, (dialog, which) -> {
@@ -217,7 +295,9 @@ public class ClientCatalogFragment extends Fragment {
     }
 
     private void showAvailabilityDialog() {
-        String[] availabilities = {"All", "Available", "Limited", "Out of Stock"};
+        if (dynamicAvailabilities.isEmpty()) return;
+
+        String[] availabilities = dynamicAvailabilities.toArray(new String[0]);
         new android.app.AlertDialog.Builder(requireContext())
                 .setTitle("Select Availability")
                 .setItems(availabilities, (dialog, which) -> {
@@ -228,25 +308,18 @@ public class ClientCatalogFragment extends Fragment {
                     View availabilityChip = requireView().findViewById(R.id.chipAvailability);
                     if (availabilityChip != null) {
                         int bgColor;
-                        switch (currentAvailability) {
-                            case "Available":
-                                bgColor = R.color.primary;
-                                break;
-                            case "Limited":
-                                bgColor = R.color.status_limited_bg;
-                                break;
-                            case "Out of Stock":
-                                bgColor = R.color.status_out_of_stock_bg;
-                                break;
-                            default:
-                                bgColor = R.color.surface_container_lowest;
-                                break;
+                        if (currentAvailability.equalsIgnoreCase("Available")) {
+                            bgColor = R.color.primary;
+                        } else if (currentAvailability.equalsIgnoreCase("All")) {
+                            bgColor = R.color.surface_container_lowest;
+                        } else {
+                            bgColor = R.color.status_limited_bg;
                         }
+
                         availabilityChip.setBackgroundTintList(
                                 android.content.res.ColorStateList.valueOf(
                                         ContextCompat.getColor(requireContext(), bgColor)));
 
-                        // Update text color and icon
                         TextView availabilityLabel = requireView().findViewById(R.id.textViewAvailabilityLabel);
                         if (availabilityLabel != null) {
                             availabilityLabel.setTextColor(
@@ -254,9 +327,6 @@ public class ClientCatalogFragment extends Fragment {
                                                     ? ContextCompat.getColor(requireContext(), R.color.on_surface_variant)
                                                     : android.graphics.Color.WHITE);
                         }
-
-                        android.widget.ImageView icon = requireView().findViewById(android.R.id.icon); // This won't work, we need to find the actual image view
-                        // For simplicity, we'll just update the text and background
                     }
 
                     applyFilters();
@@ -277,31 +347,29 @@ public class ClientCatalogFragment extends Fragment {
         currentAuthor = "All";
         currentAvailability = "All";
 
-        // Reset chip appearances
         updateFilterChip(R.id.textViewLanguageLabel, "Language: All");
         updateFilterChip(R.id.textViewAuthorLabel, "Author: All");
         updateFilterChip(R.id.textViewAvailabilityLabel, "Availability: All");
 
-        // Reset availability chip to primary
         View availabilityChip = requireView().findViewById(R.id.chipAvailability);
         if (availabilityChip != null) {
             availabilityChip.setBackgroundTintList(
                     android.content.res.ColorStateList.valueOf(
-                            ContextCompat.getColor(requireContext(), R.color.primary)));
+                            ContextCompat.getColor(requireContext(), R.color.surface_container_lowest)));
 
             TextView availabilityLabel = requireView().findViewById(R.id.textViewAvailabilityLabel);
             if (availabilityLabel != null) {
-                availabilityLabel.setTextColor(android.graphics.Color.WHITE);
+                availabilityLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_surface_variant));
             }
         }
 
         editTextSearch.setText("");
         applyFilters();
-        Toast.makeText(requireContext(), "Filters reset", Toast.LENGTH_SHORT).show();
     }
 
     private void applyFilters() {
         filteredBookList.clear();
+        String searchTerm = editTextSearch.getText().toString().trim().toLowerCase(Locale.ROOT);
 
         for (Book book : masterBookList) {
             boolean matchSearch = true;
@@ -310,33 +378,27 @@ public class ClientCatalogFragment extends Fragment {
             boolean matchAvailability = true;
 
             // Search filter
-            if (!editTextSearch.getText().toString().trim().isEmpty()) {
-                String searchTerm = editTextSearch.getText().toString().trim().toLowerCase(Locale.ROOT);
-                String title = book.getTitle().toLowerCase(Locale.ROOT);
-                String author = book.getAuthor().toLowerCase(Locale.ROOT);
-                String id = book.getBookId().toLowerCase(Locale.ROOT);
-                String category = book.getCategory().toLowerCase(Locale.ROOT);
-                String language = book.getLanguage().toLowerCase(Locale.ROOT);
-                String status = book.getStatus().toLowerCase(Locale.ROOT);
+            if (!searchTerm.isEmpty()) {
+                String title = book.getTitle() != null ? book.getTitle().toLowerCase(Locale.ROOT) : "";
+                String author = book.getAuthor() != null ? book.getAuthor().toLowerCase(Locale.ROOT) : "";
+                String category = book.getCategory() != null ? book.getCategory().toLowerCase(Locale.ROOT) : "";
 
-                matchSearch = title.contains(searchTerm) || author.contains(searchTerm) ||
-                              id.contains(searchTerm) || category.contains(searchTerm) ||
-                              language.contains(searchTerm) || status.contains(searchTerm);
+                matchSearch = title.contains(searchTerm) || author.contains(searchTerm) || category.contains(searchTerm);
             }
 
             // Language filter
             if (!currentLanguage.equals("All")) {
-                matchLanguage = book.getLanguage().equalsIgnoreCase(currentLanguage);
+                matchLanguage = book.getLanguage() != null && book.getLanguage().equalsIgnoreCase(currentLanguage);
             }
 
             // Author filter
             if (!currentAuthor.equals("All")) {
-                matchAuthor = book.getAuthor().equalsIgnoreCase(currentAuthor);
+                matchAuthor = book.getAuthor() != null && book.getAuthor().equalsIgnoreCase(currentAuthor);
             }
 
             // Availability filter
             if (!currentAvailability.equals("All")) {
-                matchAvailability = book.getStatus().equalsIgnoreCase(currentAvailability);
+                matchAvailability = book.getStatus() != null && book.getStatus().equalsIgnoreCase(currentAvailability);
             }
 
             if (matchSearch && matchLanguage && matchAuthor && matchAvailability) {
@@ -344,7 +406,6 @@ public class ClientCatalogFragment extends Fragment {
             }
         }
 
-        // Reset pagination for new filter results
         currentPage = 1;
         isLastPage = false;
         loadNextPage();

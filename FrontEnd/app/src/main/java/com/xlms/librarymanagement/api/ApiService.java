@@ -100,4 +100,16 @@ public interface ApiService {
     Call<MessageResponse> changePassword(@Body com.google.gson.JsonObject body);
         @POST("resource/add")
     Call<MessageResponse> addResource(@Body com.google.gson.JsonObject body);
+
+    @POST("books/lend")
+    Call<MessageResponse> lendBook(@Body com.google.gson.JsonObject body);
+
+    @POST("reservations/reserve")
+    Call<MessageResponse> reserveBook(@Body com.google.gson.JsonObject body);
+
+    @retrofit2.http.GET("lenders/mylendings")
+    Call<java.util.List<com.xlms.librarymanagement.model.LendedBook>> getLendings();
+
+    @POST("lenders/return")
+    Call<MessageResponse> returnBook(@Body com.google.gson.JsonObject body);
 }

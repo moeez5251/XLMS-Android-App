@@ -76,6 +76,15 @@
             android:text="Due: 2024-01-15"
             android:textColor="@color/on_surface_variant"
             android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/buttonReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:text="Return Book"
+            android:textSize="12sp"
+            android:backgroundTint="@color/primary" />
     </LinearLayout>
 
     <View

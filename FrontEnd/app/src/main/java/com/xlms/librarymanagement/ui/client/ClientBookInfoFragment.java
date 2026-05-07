@@ -10,13 +10,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.model.Book;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 public class ClientBookInfoFragment extends Fragment {
@@ -69,7 +66,6 @@ public class ClientBookInfoFragment extends Fragment {
             buttonLend.setVisibility(View.GONE);
             
             buttonSave.setOnClickListener(v -> {
-                // Admin save logic could be implemented here or redirected to Admin BookInfoFragment
                 Toast.makeText(requireContext(), "Admin Save functionality coming soon", Toast.LENGTH_SHORT).show();
             });
             
@@ -79,16 +75,38 @@ public class ClientBookInfoFragment extends Fragment {
         } else {
             buttonSave.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
-            buttonLend.setVisibility(View.VISIBLE);
             
-            buttonLend.setOnClickListener(v -> {
-                Fragment checkoutFragment = CheckoutFragment.newInstance(book);
-                getParentFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
-                        .replace(R.id.fragment_container, checkoutFragment)
-                        .addToBackStack(null)
-                        .commit();
-            });
+            android.widget.Button btnLend = (android.widget.Button) buttonLend;
+            if (book.getStatus() != null && book.getStatus().equalsIgnoreCase("Reserved")) {
+                buttonLend.setVisibility(View.GONE);
+            } else if (book.getAvailable() <= 0) {
+                btnLend.setText("Reserve this Book");
+                btnLend.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                        androidx.core.content.ContextCompat.getColor(requireContext(), R.color.secondary)));
+                
+                btnLend.setOnClickListener(v -> {
+                    Fragment reservationFragment = ReservationFragment.newInstance(book);
+                    getParentFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
+                            .replace(R.id.fragment_container, reservationFragment)
+                            .addToBackStack(null)
+                            .commit();
+                });
+                buttonLend.setVisibility(View.VISIBLE);
+            } else {
+                btnLend.setText("Lend this Book");
+                btnLend.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                        androidx.core.content.ContextCompat.getColor(requireContext(), R.color.primary)));
+                btnLend.setOnClickListener(v -> {
+                    Fragment checkoutFragment = CheckoutFragment.newInstance(book);
+                    getParentFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
+                            .replace(R.id.fragment_container, checkoutFragment)
+                            .addToBackStack(null)
+                            .commit();
+                });
+                buttonLend.setVisibility(View.VISIBLE);
+            }
         }
 
         return view;
@@ -102,12 +120,13 @@ public class ClientBookInfoFragment extends Fragment {
         android.widget.EditText editPages = view.findViewById(R.id.editPages);
         TextView textViewBookId = view.findViewById(R.id.textViewBookId);
         
-        // Since textViewStatus is missing in the layout, we'll use spinnerStatus if we want to show it,
-        // but for a quick fix that also supports Admin, we'll just check if it exists or use a toast.
-        // Better: let's use the spinnerStatus selection if it's there.
         android.widget.Spinner spinnerStatus = view.findViewById(R.id.spinnerStatus);
         android.widget.Spinner spinnerCategory = view.findViewById(R.id.spinnerCategory);
         android.widget.Spinner spinnerLanguage = view.findViewById(R.id.spinnerLanguage);
+
+        TextView textViewCategory = view.findViewById(R.id.textViewCategory);
+        TextView textViewLanguage = view.findViewById(R.id.textViewLanguage);
+        TextView textViewStatus = view.findViewById(R.id.textViewStatus);
 
         if (editTitle != null) {
             editTitle.setText(book.getTitle());
@@ -133,19 +152,82 @@ public class ClientBookInfoFragment extends Fragment {
             textViewBookId.setText("BK_" + book.getBookId());
         }
 
-        // Handle spinners for Admin, disable for Client
-        if (spinnerCategory != null) spinnerCategory.setEnabled(isAdmin);
-        if (spinnerLanguage != null) spinnerLanguage.setEnabled(isAdmin);
-        
-        if (spinnerStatus != null) {
-            spinnerStatus.setVisibility(isAdmin ? View.VISIBLE : View.GONE);
-            spinnerStatus.setEnabled(isAdmin);
+        // --- Handle Category ---
+        if (isAdmin) {
+            if (spinnerCategory != null) {
+                spinnerCategory.setVisibility(View.VISIBLE);
+                if (textViewCategory != null) textViewCategory.setVisibility(View.GONE);
+                
+                String[] categories = {"Fiction", "Non-Fiction", "Science", "History", "Business", "Biography", "Fantasy", "Classic", "Self-Help", "Romance"};
+                android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, categories);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerCategory.setAdapter(adapter);
+                
+                for (int i = 0; i < categories.length; i++) {
+                    if (categories[i].equalsIgnoreCase(book.getCategory())) {
+                        spinnerCategory.setSelection(i);
+                        break;
+                    }
+                }
+            }
+        } else {
+            if (spinnerCategory != null) spinnerCategory.setVisibility(View.GONE);
+            if (textViewCategory != null) {
+                textViewCategory.setVisibility(View.VISIBLE);
+                textViewCategory.setText(book.getCategory());
+            }
+        }
+
+        // --- Handle Language ---
+        if (isAdmin) {
+            if (spinnerLanguage != null) {
+                spinnerLanguage.setVisibility(View.VISIBLE);
+                if (textViewLanguage != null) textViewLanguage.setVisibility(View.GONE);
+                
+                String[] languages = {"English", "Urdu", "Spanish", "French", "German", "Chinese", "Arabic", "Portuguese"};
+                android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, languages);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerLanguage.setAdapter(adapter);
+                
+                for (int i = 0; i < languages.length; i++) {
+                    if (languages[i].equalsIgnoreCase(book.getLanguage())) {
+                        spinnerLanguage.setSelection(i);
+                        break;
+                    }
+                }
+            }
+        } else {
+            if (spinnerLanguage != null) spinnerLanguage.setVisibility(View.GONE);
+            if (textViewLanguage != null) {
+                textViewLanguage.setVisibility(View.VISIBLE);
+                textViewLanguage.setText(book.getLanguage());
+            }
         }
         
-        TextView textViewStatus = view.findViewById(R.id.textViewStatus);
-        if (textViewStatus != null) {
-            textViewStatus.setVisibility(isAdmin ? View.GONE : View.VISIBLE);
-            textViewStatus.setText(book.getStatus());
+        // --- Handle Status ---
+        if (isAdmin) {
+            if (spinnerStatus != null) {
+                spinnerStatus.setVisibility(View.VISIBLE);
+                if (textViewStatus != null) textViewStatus.setVisibility(View.GONE);
+                
+                String[] statuses = {"Available", "Reserved", "Out of Stock", "Borrowed"};
+                android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, statuses);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerStatus.setAdapter(adapter);
+                
+                for (int i = 0; i < statuses.length; i++) {
+                    if (statuses[i].equalsIgnoreCase(book.getStatus())) {
+                        spinnerStatus.setSelection(i);
+                        break;
+                    }
+                }
+            }
+        } else {
+            if (spinnerStatus != null) spinnerStatus.setVisibility(View.GONE);
+            if (textViewStatus != null) {
+                textViewStatus.setVisibility(View.VISIBLE);
+                textViewStatus.setText(book.getStatus());
+            }
         }
     }
 }

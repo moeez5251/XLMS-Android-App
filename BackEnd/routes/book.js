@@ -11,7 +11,6 @@ router.delete("/delete", booksController.deletebook)
 router.post('/col', booksController.getbycolumnname)
 
 // ==================== CLIENT APIs ====================
-router.get('/getbooks', booksController.getbooks);
 router.post('/lend', booksController.lendbook);
 
 module.exports = router;

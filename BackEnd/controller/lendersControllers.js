@@ -421,11 +421,10 @@ exports.returnbook = async (req, res) => {
             // Reservation exists - issue to reserved user
             const reservation = reservationResult.recordset[0];
             const reservedUserId = reservation.User_ID;
-
             // Get book details for reserved user
             const bookInfoResult = await pool.request()
                 .input('book_id', book_id)
-                .query('SELECT Book_Title, Category, Author, Price FROM books WHERE Book_ID = @book_id');
+                .query('SELECT Book_Title, Category, Author, Price,Available FROM books WHERE Book_ID = @book_id');
 
             if (bookInfoResult.recordset.length > 0) {
                 const bookInfo = bookInfoResult.recordset[0];
@@ -461,7 +460,11 @@ exports.returnbook = async (req, res) => {
                     await pool.request()
                         .input('reservation_id', reservation.Reservation_ID)
                         .query('DELETE FROM reserved WHERE Reservation_ID = @reservation_id');
-
+                    await pool.request()
+                        .input('book_id', book_id)
+                        .input('available', bookInfo.Available + copiesLent - 1)
+                        .input('status', 'Available')
+                        .query("UPDATE books SET Status = @status, Available = @available WHERE Book_ID = @book_id");
                     addNotificationHelper(reservedUserId, `Your reserved book ${bookInfo.Book_Title} is now available for issue`);
                 }
             }

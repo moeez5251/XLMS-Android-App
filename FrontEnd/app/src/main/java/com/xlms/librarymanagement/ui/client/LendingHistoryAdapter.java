@@ -12,12 +12,20 @@ import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.model.LendedBook;
 import java.util.List;
 
+import android.widget.Button;
+
 public class LendingHistoryAdapter extends RecyclerView.Adapter<LendingHistoryAdapter.ViewHolder> {
 
     private List<LendedBook> lendingList;
+    private OnReturnClickListener returnListener;
 
-    public LendingHistoryAdapter(List<LendedBook> lendingList) {
+    public interface OnReturnClickListener {
+        void onReturnClick(LendedBook lending);
+    }
+
+    public LendingHistoryAdapter(List<LendedBook> lendingList, OnReturnClickListener listener) {
         this.lendingList = lendingList;
+        this.returnListener = listener;
     }
 
     @NonNull
@@ -38,9 +46,14 @@ public class LendingHistoryAdapter extends RecyclerView.Adapter<LendingHistoryAd
         if ("Returned".equalsIgnoreCase(lending.getStatus())) {
             holder.statusIndicator.setBackgroundResource(R.drawable.bg_status_returned);
             holder.textViewStatus.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.status_returned_text));
+            holder.buttonReturn.setVisibility(View.GONE);
         } else {
             holder.statusIndicator.setBackgroundResource(R.drawable.bg_status_not_returned);
             holder.textViewStatus.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.status_not_returned_text));
+            holder.buttonReturn.setVisibility(View.VISIBLE);
+            holder.buttonReturn.setOnClickListener(v -> {
+                if (returnListener != null) returnListener.onReturnClick(lending);
+            });
         }
 
         holder.itemView.setOnClickListener(v -> {
@@ -60,6 +73,7 @@ public class LendingHistoryAdapter extends RecyclerView.Adapter<LendingHistoryAd
         LinearLayout detailsLayout;
         ImageView imageViewExpand;
         View statusIndicator;
+        Button buttonReturn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,6 +84,7 @@ public class LendingHistoryAdapter extends RecyclerView.Adapter<LendingHistoryAd
             detailsLayout = itemView.findViewById(R.id.detailsLayout);
             imageViewExpand = itemView.findViewById(R.id.imageViewExpand);
             statusIndicator = itemView.findViewById(R.id.statusIndicator);
+            buttonReturn = itemView.findViewById(R.id.buttonReturn);
         }
     }
 }

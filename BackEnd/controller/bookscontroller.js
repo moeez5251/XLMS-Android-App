@@ -141,18 +141,6 @@ exports.getbycolumnname = async (req, res) => {
 
 // ==================== CLIENT APIs ====================
 
-// Get all books for client
-exports.getbooks = async (req, res) => {
-    try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .query('SELECT Book_ID AS id, Book_Title AS name, Author, Category, Language, Status, Pages, Price AS price, Available AS Available_Copies FROM books');
-        res.json(result.recordset);
-    } catch (err) {
-        console.error('Error fetching books:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
 
 // Lend book to user
 exports.lendbook = async (req, res) => {

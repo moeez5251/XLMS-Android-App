@@ -27,7 +27,7 @@
                 android:layout_height="64dp"
                 android:layout_gravity="center"
                 android:alpha="0.6"
-                android:src="@drawable/ic_auto_stories"
+                android:src="@drawable/ic_menu_book"
                 app:tint="@color/primary_fixed_dim" />
 
             <TextView

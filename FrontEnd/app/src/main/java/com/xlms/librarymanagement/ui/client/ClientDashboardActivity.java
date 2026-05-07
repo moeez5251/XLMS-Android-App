@@ -264,6 +264,13 @@ public class ClientDashboardActivity extends AppCompatActivity {
             return;
         }
 
+        // Check if the main fragment has any back stack entries (e.g., BookInfo -> Catalog)
+        Fragment mainFrag = getSupportFragmentManager().findFragmentByTag("MAIN_FRAGMENT");
+        if (mainFrag != null && mainFrag.getChildFragmentManager().getBackStackEntryCount() > 0) {
+            mainFrag.getChildFragmentManager().popBackStack();
+            return;
+        }
+
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
             return;
