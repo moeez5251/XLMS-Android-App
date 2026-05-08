@@ -36,11 +36,11 @@ public class ReservationRepository {
         return gson.fromJson(json, type);
     }
 
-    public List<Reservation> getReservationsByUser(String email) {
+    public List<Reservation> getReservationsByUser(String userId) {
         List<Reservation> allReservations = getAllReservations();
         List<Reservation> userReservations = new ArrayList<>();
         for (Reservation reservation : allReservations) {
-            if (reservation.getUserEmail() != null && reservation.getUserEmail().equals(email)) {
+            if (reservation.getUserId() != null && reservation.getUserId().equals(userId)) {
                 userReservations.add(reservation);
             }
         }

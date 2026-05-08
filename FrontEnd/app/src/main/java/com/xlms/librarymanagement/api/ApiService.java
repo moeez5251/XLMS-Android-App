@@ -107,6 +107,9 @@ public interface ApiService {
     @POST("reservations/reserve")
     Call<MessageResponse> reserveBook(@Body com.google.gson.JsonObject body);
 
+    @retrofit2.http.GET("reservations/myreservations")
+    Call<java.util.List<com.xlms.librarymanagement.model.Reservation>> getReservations();
+
     @retrofit2.http.GET("lenders/mylendings")
     Call<java.util.List<com.xlms.librarymanagement.model.LendedBook>> getLendings();
 

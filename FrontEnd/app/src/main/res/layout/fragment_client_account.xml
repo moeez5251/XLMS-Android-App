@@ -133,6 +133,22 @@
                 </HorizontalScrollView>
 
                 <!-- Lendings Content -->
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmerLendings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <include layout="@layout/shimmer_lending_item" />
+                        <include layout="@layout/shimmer_lending_item" />
+                        <include layout="@layout/shimmer_lending_item" />
+                    </LinearLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewLendingHistory"
                     android:layout_width="match_parent"
@@ -183,6 +199,21 @@
                         android:textColor="@color/primary"
                         android:textSize="18sp" />
                 </LinearLayout>
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmerReservations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <include layout="@layout/shimmer_reservation_item" />
+                        <include layout="@layout/shimmer_reservation_item" />
+                    </LinearLayout>
+                </com.facebook.shimmer.ShimmerFrameLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewReservations"
@@ -239,7 +270,17 @@
                     android:drawablePadding="12dp"
                     android:drawableTint="@color/primary" />
 
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmerAccountInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:visibility="gone">
+                    <include layout="@layout/shimmer_account_info" />
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
                 <LinearLayout
+                    android:id="@+id/layoutAccountInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
@@ -264,17 +305,11 @@
                         android:text="Julian Vane"
                         android:textColor="@color/on_surface"
                         android:fontFamily="@font/inter_semibold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:text="@string/label_email_caps"
                         android:textSize="10sp"
                         android:textColor="@color/on_surface_variant"
@@ -291,17 +326,11 @@
                         android:text="j.vane@curator.edu"
                         android:textColor="@color/on_surface"
                         android:fontFamily="@font/inter_semibold" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:text="@string/label_membership"
                         android:textSize="10sp"
                         android:textColor="@color/on_surface_variant"
@@ -309,6 +338,7 @@
                         android:letterSpacing="0.1" />
 
                     <TextView
+                        android:id="@+id/textViewMembership"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -354,6 +384,7 @@
                         android:drawableTint="@color/primary" />
 
                     <TextView
+                        android:id="@+id/textViewForgetPassword"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
@@ -420,6 +451,33 @@
                         android:textSize="14sp" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CONFIRM NEW PASSWORD"
+                        android:textSize="10sp"
+                        android:textColor="@color/on_surface_variant"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.1" />
+
+                    <EditText
+                        android:id="@+id/editTextConfirmNewPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_filter_container"
+                        android:padding="12dp"
+                        android:hint="••••••••"
+                        android:inputType="textPassword"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonUpdateCredentials"
                     android:layout_width="match_parent"
@@ -432,57 +490,6 @@
                     app:cornerRadius="12dp"
                     android:backgroundTint="@color/primary" />
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Danger Zone Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:cardBackgroundColor="#0Aba1a1a"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/error"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/manrope_bold"
-                    android:text="@string/danger_zone"
-                    android:textColor="@color/error"
-                    android:textSize="18sp"
-                    android:drawableStart="@drawable/ic_warning"
-                    android:drawablePadding="12dp"
-                    android:drawableTint="@color/error" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/inter_medium"
-                    android:text="@string/danger_zone_msg"
-                    android:textColor="#93000a"
-                    android:textSize="14sp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonDeleteAccount"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/button_delete_account"
-                    android:fontFamily="@font/manrope_bold"
-                    android:textSize="12sp"
-                    android:letterSpacing="0.1"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="@color/error" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

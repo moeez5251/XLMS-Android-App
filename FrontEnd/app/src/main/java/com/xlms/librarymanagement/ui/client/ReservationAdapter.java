@@ -10,6 +10,10 @@ import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.model.Reservation;
 import java.util.List;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.ViewHolder> {
 
     private List<Reservation> reservationList;
@@ -30,9 +34,35 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         Reservation reservation = reservationList.get(position);
         holder.textViewBookTitle.setText(reservation.getBookTitle());
         holder.textViewAuthor.setText(reservation.getAuthor());
-        holder.textViewStatus.setText(reservation.getStatus().toUpperCase());
-        holder.textViewReservationDate.setText(holder.itemView.getContext().getString(R.string.label_reserved_at, reservation.getReservationDate()));
-        holder.textViewExpiryDate.setText(holder.itemView.getContext().getString(R.string.label_expires_at, reservation.getExpiryDate()));
+        
+        // Default status since it's not in DB
+        holder.textViewStatus.setText("RESERVED");
+        
+        String formattedDate = formatDate(reservation.getReservationDate());
+        holder.textViewReservationDate.setText("Reserved on: " + formattedDate);
+        
+        // Hide expiry if not available
+        holder.textViewExpiryDate.setVisibility(View.GONE);
+    }
+
+    private String formatDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) return "N/A";
+        try {
+            String cleanDate = dateStr.replace("Z", "+0000");
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+            Date date = inputFormat.parse(cleanDate);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            try {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date = inputFormat.parse(dateStr.split("T")[0]);
+                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                return outputFormat.format(date);
+            } catch (Exception e2) {
+                return dateStr;
+            }
+        }
     }
 
     @Override

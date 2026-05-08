@@ -82,7 +82,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private void handleSendReset() {
         String email = editTextEmail.getText().toString().trim();
-
+        editTextEmail.setEnabled(false);
         // Validation
         if (email.isEmpty()) {
             editTextEmail.setError("Please enter your email address");

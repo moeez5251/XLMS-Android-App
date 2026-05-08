@@ -1,34 +1,40 @@
 package com.xlms.librarymanagement.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Reservation implements Serializable {
+    @SerializedName("Reservation_ID")
     private int id;
-    private int bookId;
+    
+    @SerializedName("User_ID")
+    private String userId;
+    
+    @SerializedName("Book_ID")
+    private String bookId;
+    
+    @SerializedName("Reserved_Date")
+    private String reservationDate;
+    
+    // Virtual fields populated via frontend join
     private String bookTitle;
     private String author;
-    private String userEmail;
-    private String reservationDate;
-    private String expiryDate;
-    private String status; // "Pending", "Fulfilled", "Cancelled", "Expired"
 
-    public Reservation(int id, int bookId, String bookTitle, String author, String userEmail, String reservationDate, String expiryDate, String status) {
+    public Reservation(int id, String userId, String bookId, String reservationDate) {
         this.id = id;
+        this.userId = userId;
         this.bookId = bookId;
-        this.bookTitle = bookTitle;
-        this.author = author;
-        this.userEmail = userEmail;
         this.reservationDate = reservationDate;
-        this.expiryDate = expiryDate;
-        this.status = status;
     }
 
     public int getId() { return id; }
-    public int getBookId() { return bookId; }
-    public String getBookTitle() { return bookTitle; }
-    public String getAuthor() { return author; }
-    public String getUserEmail() { return userEmail; }
+    public String getUserId() { return userId; }
+    public String getBookId() { return bookId; }
     public String getReservationDate() { return reservationDate; }
-    public String getExpiryDate() { return expiryDate; }
-    public String getStatus() { return status; }
+    
+    public String getBookTitle() { return bookTitle; }
+    public void setBookTitle(String bookTitle) { this.bookTitle = bookTitle; }
+    
+    public String getAuthor() { return author; }
+    public void setAuthor(String author) { this.author = author; }
 }

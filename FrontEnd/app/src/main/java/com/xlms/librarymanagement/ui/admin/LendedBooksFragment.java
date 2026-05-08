@@ -140,7 +140,8 @@ public class LendedBooksFragment extends Fragment implements AdminDashboardActiv
                 apiItem.getCopiesLent(),
                 formatIsoDate(apiItem.getIssuedDate()),
                 formatIsoDate(apiItem.getDueDate()),
-                apiItem.getStatus()
+                apiItem.getStatus(),
+                (int) apiItem.getPerDayFine()
             ));
         }
         applyFilters();

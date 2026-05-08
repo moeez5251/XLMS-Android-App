@@ -40,6 +40,16 @@ public class SessionManager {
         saveSession(email, role, name, null, null);
     }
 
+    public void saveUserName(String name) {
+        editor.putString(KEY_USER_NAME, name);
+        editor.apply();
+    }
+
+    public void saveUserEmail(String email) {
+        editor.putString(KEY_USER_EMAIL, email);
+        editor.apply();
+    }
+
     public boolean isLoggedIn() {
         return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false) && getAuthToken() != null;
     }

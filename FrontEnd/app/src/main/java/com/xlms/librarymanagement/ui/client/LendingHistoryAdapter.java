@@ -14,6 +14,10 @@ import java.util.List;
 
 import android.widget.Button;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class LendingHistoryAdapter extends RecyclerView.Adapter<LendingHistoryAdapter.ViewHolder> {
 
     private List<LendedBook> lendingList;
@@ -39,8 +43,8 @@ public class LendingHistoryAdapter extends RecyclerView.Adapter<LendingHistoryAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LendedBook lending = lendingList.get(position);
         holder.textViewBookTitle.setText(lending.getBookTitle() + " (" + lending.getCopies() + ")");
-        holder.textViewIssuedDate.setText("Issued: " + lending.getIssuedDate());
-        holder.textViewDueDate.setText("Due: " + lending.getDueDate());
+        holder.textViewIssuedDate.setText("Issued: " + formatDate(lending.getIssuedDate()));
+        holder.textViewDueDate.setText("Due: " + formatDate(lending.getDueDate()));
         holder.textViewStatus.setText(lending.getStatus());
 
         if ("Returned".equalsIgnoreCase(lending.getStatus())) {
@@ -61,6 +65,26 @@ public class LendingHistoryAdapter extends RecyclerView.Adapter<LendingHistoryAd
             holder.detailsLayout.setVisibility(expanded ? View.GONE : View.VISIBLE);
             holder.imageViewExpand.setRotation(expanded ? -90 : 0);
         });
+    }
+
+    private String formatDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) return "N/A";
+        try {
+            String cleanDate = dateStr.replace("Z", "+0000");
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+            Date date = inputFormat.parse(cleanDate);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            try {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date = inputFormat.parse(dateStr.split("T")[0]);
+                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                return outputFormat.format(date);
+            } catch (Exception e2) {
+                return dateStr;
+            }
+        }
     }
 
     @Override

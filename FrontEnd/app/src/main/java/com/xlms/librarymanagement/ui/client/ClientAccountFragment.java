@@ -1,6 +1,7 @@
 package com.xlms.librarymanagement.ui.client;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,7 @@ import com.xlms.librarymanagement.api.ApiService;
 import com.xlms.librarymanagement.api.MessageResponse;
 import com.xlms.librarymanagement.model.LendedBook;
 import com.xlms.librarymanagement.model.Reservation;
-import com.xlms.librarymanagement.utils.ReservationRepository;
+import com.xlms.librarymanagement.ui.auth.ForgotPasswordActivity;
 import com.xlms.librarymanagement.utils.SessionManager;
 
 import java.text.ParseException;
@@ -38,6 +39,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
+
 public class ClientAccountFragment extends Fragment implements LendingHistoryAdapter.OnReturnClickListener {
 
     private SessionManager sessionManager;
@@ -47,10 +50,13 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
     private ReservationAdapter reservationAdapter;
     private List<LendedBook> masterLendingList = new ArrayList<>();
     private List<LendedBook> displayLendingList = new ArrayList<>();
-    private List<Reservation> reservationList;
+    private List<Reservation> reservationList = new ArrayList<>();
     private TextView chipAll, chipNotReturned, chipReturned;
     private View layoutNoReservations;
     private View loadingOverlay;
+    private ShimmerFrameLayout shimmerLendings, shimmerReservations, shimmerAccountInfo;
+    private View layoutAccountInfo;
+    private TextView textViewMembership;
 
     @Nullable
     @Override
@@ -60,6 +66,7 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
         sessionManager = new SessionManager(requireContext());
         textViewUserName = view.findViewById(R.id.textViewUserName);
         textViewUserEmail = view.findViewById(R.id.textViewUserEmail);
+        textViewMembership = view.findViewById(R.id.textViewMembership);
         recyclerViewLendingHistory = view.findViewById(R.id.recyclerViewLendingHistory);
         chipAll = view.findViewById(R.id.chipAll);
         chipNotReturned = view.findViewById(R.id.chipNotReturned);
@@ -67,29 +74,29 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
         recyclerViewReservations = view.findViewById(R.id.recyclerViewReservations);
         layoutNoReservations = view.findViewById(R.id.layoutNoReservations);
         loadingOverlay = view.findViewById(R.id.loadingOverlay);
+        shimmerLendings = view.findViewById(R.id.shimmerLendings);
+        shimmerReservations = view.findViewById(R.id.shimmerReservations);
+        shimmerAccountInfo = view.findViewById(R.id.shimmerAccountInfo);
+        layoutAccountInfo = view.findViewById(R.id.layoutAccountInfo);
 
         recyclerViewLendingHistory.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerViewReservations.setLayoutManager(new LinearLayoutManager(requireContext()));
         
         setupLendingHistory();
         setupReservations();
+        setupUserProfile();
         setupFilters();
         setupSecurityActions(view);
         
-        String email = sessionManager.getUserEmail();
-        String name = sessionManager.getUserName();
-        
-        if (email != null) textViewUserEmail.setText(email);
-        if (name != null) textViewUserName.setText(name);
-
         return view;
     }
 
     private void setupLendingHistory() {
-        showLoading(true);
+        showLendingLoading(true);
         ApiClient.getApiService(requireContext()).getLendings().enqueue(new Callback<List<LendedBook>>() {
             @Override
             public void onResponse(Call<List<LendedBook>> call, Response<List<LendedBook>> response) {
-                showLoading(false);
+                showLendingLoading(false);
                 if (response.isSuccessful() && response.body() != null) {
                     masterLendingList = response.body();
                     displayLendingList = new ArrayList<>(masterLendingList);
@@ -99,7 +106,102 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
             }
             @Override
             public void onFailure(Call<List<LendedBook>> call, Throwable t) {
-                showLoading(false);
+                showLendingLoading(false);
+                Toast.makeText(getContext(), "Failed to load lendings", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setupReservations() {
+        showReservationLoading(true);
+        ApiService apiService = ApiClient.getApiService(requireContext());
+        apiService.getReservations().enqueue(new Callback<List<Reservation>>() {
+            @Override
+            public void onResponse(Call<List<Reservation>> call, Response<List<Reservation>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Reservation> rawReservations = response.body();
+                    if (rawReservations.isEmpty()) {
+                        showReservationLoading(false);
+                        layoutNoReservations.setVisibility(View.VISIBLE);
+                        recyclerViewReservations.setVisibility(View.GONE);
+                    } else {
+                        // Enrich reservations with book details
+                        enrichReservations(rawReservations);
+                    }
+                } else {
+                    showReservationLoading(false);
+                    Toast.makeText(getContext(), "Failed to load reservations", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Reservation>> call, Throwable t) {
+                showReservationLoading(false);
+                Toast.makeText(getContext(), "Failed to load reservations", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void enrichReservations(List<Reservation> list) {
+        reservationList = list;
+        final int[] enrichedCount = {0};
+        ApiService apiService = ApiClient.getApiService(requireContext());
+
+        for (Reservation res : reservationList) {
+            com.xlms.librarymanagement.api.GetByIdRequest req = new com.xlms.librarymanagement.api.GetByIdRequest(res.getBookId());
+            apiService.getBookById(req).enqueue(new Callback<List<com.xlms.librarymanagement.model.Book>>() {
+                @Override
+                public void onResponse(Call<List<com.xlms.librarymanagement.model.Book>> call, Response<List<com.xlms.librarymanagement.model.Book>> response) {
+                    enrichedCount[0]++;
+                    if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        com.xlms.librarymanagement.model.Book book = response.body().get(0);
+                        res.setBookTitle(book.getTitle());
+                        res.setAuthor(book.getAuthor());
+                    }
+                    checkAllEnriched(enrichedCount[0], reservationList.size());
+                }
+
+                @Override
+                public void onFailure(Call<List<com.xlms.librarymanagement.model.Book>> call, Throwable t) {
+                    enrichedCount[0]++;
+                    checkAllEnriched(enrichedCount[0], reservationList.size());
+                }
+            });
+        }
+    }
+
+    private void checkAllEnriched(int current, int total) {
+        if (current >= total) {
+            showReservationLoading(false);
+            layoutNoReservations.setVisibility(View.GONE);
+            recyclerViewReservations.setVisibility(View.VISIBLE);
+            reservationAdapter = new ReservationAdapter(reservationList);
+            recyclerViewReservations.setAdapter(reservationAdapter);
+        }
+    }
+
+    private void setupUserProfile() {
+        showAccountLoading(true);
+        ApiClient.getApiService(requireContext()).getUserProfile().enqueue(new Callback<com.xlms.librarymanagement.model.Member>() {
+            @Override
+            public void onResponse(Call<com.xlms.librarymanagement.model.Member> call, Response<com.xlms.librarymanagement.model.Member> response) {
+                showAccountLoading(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    com.xlms.librarymanagement.model.Member user = response.body();
+                    textViewUserName.setText(user.getName());
+                    textViewUserEmail.setText(user.getEmail());
+                    textViewMembership.setText(user.getMembershipType());
+                    
+                    // Update session if needed
+                    sessionManager.saveUserEmail(user.getEmail());
+                    sessionManager.saveUserName(user.getName());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<com.xlms.librarymanagement.model.Member> call, Throwable t) {
+                showAccountLoading(false);
+                Toast.makeText(getContext(), "Failed to load profile", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -107,29 +209,39 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
     @Override
     public void onReturnClick(LendedBook lending) {
         long diffInMillis = new Date().getTime() - parseDate(lending.getDueDate()).getTime();
-        long daysOverdue = Math.max(0, TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS));
-        long fine = daysOverdue * 100;
+        long daysOverdue = Math.max(0, diffInMillis / (1000 * 60 * 60 * 24));
+        long fine = daysOverdue * lending.getFinePerDay();
 
-        String message = "Book Title: " + lending.getBookTitle() + "\n" +
-                         "Book Author: " + lending.getAuthor() + "\n" +
-                         "Book Category: " + lending.getCategory() + "\n" +
-                         "Issue Date: " + lending.getIssuedDate() + "\n" +
-                         "Due Date: " + lending.getDueDate() + "\n" +
-                         "Copies Lent: " + lending.getCopies() + "\n" +
-                         "Per Day Fine: 100\n\n" +
-                         "Fine Details\n" +
-                         "Your Fine will be: Rs. " + fine;
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_return_book, null);
+        AlertDialog dialog = new AlertDialog.Builder(requireContext(), R.style.CustomDialogTheme)
+                .setView(dialogView)
+                .create();
 
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Confirm Return")
-                .setMessage(message)
-                .setPositiveButton("Return Book", (dialog, which) -> performReturn(lending))
-                .setNegativeButton("Cancel", null)
-                .show();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        // Bind data
+        ((TextView) dialogView.findViewById(R.id.dialogBookTitle)).setText(lending.getBookTitle());
+        ((TextView) dialogView.findViewById(R.id.dialogBookAuthor)).setText(lending.getAuthor());
+        ((TextView) dialogView.findViewById(R.id.dialogBookCategory)).setText(lending.getCategory());
+        ((TextView) dialogView.findViewById(R.id.dialogIssuedDate)).setText(formatDate(lending.getIssuedDate()));
+        ((TextView) dialogView.findViewById(R.id.dialogDueDate)).setText(formatDate(lending.getDueDate()));
+        ((TextView) dialogView.findViewById(R.id.dialogCopiesLent)).setText(String.valueOf(lending.getCopies()));
+        ((TextView) dialogView.findViewById(R.id.dialogPerDayFine)).setText("Rs. " + lending.getFinePerDay());
+        ((TextView) dialogView.findViewById(R.id.dialogTotalFine)).setText("Rs. " + fine);
+
+        dialogView.findViewById(R.id.btnDialogCancel).setOnClickListener(v -> dialog.dismiss());
+        dialogView.findViewById(R.id.btnDialogReturn).setOnClickListener(v -> {
+            dialog.dismiss();
+            performReturn(lending);
+        });
+
+        dialog.show();
     }
 
     private void performReturn(LendedBook lending) {
-        showLoading(true);
+        showLoadingOverlay(true);
         JsonObject body = new JsonObject();
         body.addProperty("book_id", lending.getBookId());
         body.addProperty("borrower_id", lending.getBorrowerId());
@@ -137,7 +249,7 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
         ApiClient.getApiService(requireContext()).returnBook(body).enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
-                showLoading(false);
+                showLoadingOverlay(false);
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Returned successfully", Toast.LENGTH_SHORT).show();
                     setupLendingHistory();
@@ -148,35 +260,94 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
 
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
-                showLoading(false);
+                showLoadingOverlay(false);
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private String formatDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) return "N/A";
+        try {
+            // Handle ISO format from backend
+            String cleanDate = dateStr.replace("Z", "+0000");
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+            Date date = inputFormat.parse(cleanDate);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            try {
+                // Fallback for simple yyyy-MM-dd
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                Date date = inputFormat.parse(dateStr.split("T")[0]);
+                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                return outputFormat.format(date);
+            } catch (Exception e2) {
+                return dateStr;
+            }
+        }
+    }
+
     private Date parseDate(String dateStr) {
-        try { return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dateStr); } 
-        catch (ParseException e) { return new Date(); }
+        if (dateStr == null) return new Date();
+        try {
+            String cleanDate = dateStr.replace("Z", "+0000");
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+            return inputFormat.parse(cleanDate);
+        } catch (ParseException e) {
+            try {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                return inputFormat.parse(dateStr.split("T")[0]);
+            } catch (ParseException e2) {
+                return new Date();
+            }
+        }
     }
     
-    private void showLoading(boolean loading) {
-        if (loadingOverlay != null) loadingOverlay.setVisibility(loading ? View.VISIBLE : View.GONE);
+    private void showLendingLoading(boolean loading) {
+        if (shimmerLendings != null) {
+            if (loading) {
+                shimmerLendings.setVisibility(View.VISIBLE);
+                shimmerLendings.startShimmer();
+                recyclerViewLendingHistory.setVisibility(View.GONE);
+            } else {
+                shimmerLendings.stopShimmer();
+                shimmerLendings.setVisibility(View.GONE);
+                recyclerViewLendingHistory.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
-    private void setupReservations() {
-        ReservationRepository repository = new ReservationRepository(requireContext());
-        reservationList = repository.getReservationsByUser(sessionManager.getUserEmail());
-
-        if (reservationList.isEmpty()) {
-            layoutNoReservations.setVisibility(View.VISIBLE);
-            recyclerViewReservations.setVisibility(View.GONE);
-        } else {
-            layoutNoReservations.setVisibility(View.GONE);
-            recyclerViewReservations.setVisibility(View.VISIBLE);
-            reservationAdapter = new ReservationAdapter(reservationList);
-            recyclerViewReservations.setLayoutManager(new LinearLayoutManager(requireContext()));
-            recyclerViewReservations.setAdapter(reservationAdapter);
+    private void showReservationLoading(boolean loading) {
+        if (shimmerReservations != null) {
+            if (loading) {
+                shimmerReservations.setVisibility(View.VISIBLE);
+                shimmerReservations.startShimmer();
+                recyclerViewReservations.setVisibility(View.GONE);
+            } else {
+                shimmerReservations.stopShimmer();
+                shimmerReservations.setVisibility(View.GONE);
+                recyclerViewReservations.setVisibility(View.VISIBLE);
+            }
         }
+    }
+
+    private void showAccountLoading(boolean loading) {
+        if (shimmerAccountInfo != null) {
+            if (loading) {
+                shimmerAccountInfo.setVisibility(View.VISIBLE);
+                shimmerAccountInfo.startShimmer();
+                layoutAccountInfo.setVisibility(View.GONE);
+            } else {
+                shimmerAccountInfo.stopShimmer();
+                shimmerAccountInfo.setVisibility(View.GONE);
+                layoutAccountInfo.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void showLoadingOverlay(boolean loading) {
+        if (loadingOverlay != null) loadingOverlay.setVisibility(loading ? View.VISIBLE : View.GONE);
     }
 
     private void setupFilters() {
@@ -218,37 +389,83 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
     }
 
     private void setupSecurityActions(View view) {
+        TextView textViewForgetPassword = view.findViewById(R.id.textViewForgetPassword);
+        if (textViewForgetPassword != null) {
+            textViewForgetPassword.setOnClickListener(v -> {
+                ForgotPasswordFragment fragment = ForgotPasswordFragment.newInstance(sessionManager.getUserEmail());
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
+                        .replace(R.id.mainContentFrame, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            });
+        }
+
         EditText editTextOldPassword = view.findViewById(R.id.editTextOldPassword);
         EditText editTextNewPassword = view.findViewById(R.id.editTextNewPassword);
+        EditText editTextConfirmNewPassword = view.findViewById(R.id.editTextConfirmNewPassword);
 
         view.findViewById(R.id.buttonUpdateCredentials).setOnClickListener(v -> {
             String oldPass = editTextOldPassword != null ? editTextOldPassword.getText().toString().trim() : "";
             String newPass = editTextNewPassword != null ? editTextNewPassword.getText().toString().trim() : "";
+            String confirmPass = editTextConfirmNewPassword != null ? editTextConfirmNewPassword.getText().toString().trim() : "";
 
             if (oldPass.isEmpty()) {
-                if (editTextOldPassword != null) editTextOldPassword.setError("Required");
+                if (editTextOldPassword != null) editTextOldPassword.setError("Old password required");
                 return;
             }
             if (newPass.length() < 6) {
                 if (editTextNewPassword != null) editTextNewPassword.setError("Minimum 6 characters");
                 return;
             }
-
-            Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
-            if (editTextOldPassword != null) editTextOldPassword.setText("");
-            if (editTextNewPassword != null) editTextNewPassword.setText("");
+            if (!newPass.equals(confirmPass)) {
+                if (editTextConfirmNewPassword != null) editTextConfirmNewPassword.setError("Passwords do not match");
+                return;
+            }
+            if(oldPass.equals(newPass)){
+                if (editTextNewPassword != null) editTextNewPassword.setError("New password must be different than old one");
+                return;
+            }
+            performChangePassword(oldPass, newPass, editTextOldPassword, editTextNewPassword, editTextConfirmNewPassword);
         });
+    }
 
-        view.findViewById(R.id.buttonDeleteAccount).setOnClickListener(v -> {
-            new android.app.AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Account")
-                    .setMessage("Are you sure you want to delete your account? This action cannot be undone.")
-                    .setPositiveButton("Delete", (dialog, which) -> {
-                        sessionManager.clearSession();
-                        requireActivity().finish();
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+    private void performChangePassword(String oldPass, String newPass, EditText oldEt, EditText newEt, EditText confirmEt) {
+        showLoadingOverlay(true);
+        JsonObject body = new JsonObject();
+        body.addProperty("OldPassword", oldPass);
+        body.addProperty("NewPassword", newPass);
+
+        ApiClient.getApiService(requireContext()).changePassword(body).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                showLoadingOverlay(false);
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                    if (oldEt != null) oldEt.setText("");
+                    if (newEt != null) newEt.setText("");
+                    if (confirmEt != null) confirmEt.setText("");
+                } else {
+                    String errorMsg = "Failed to update password";
+                    try {
+                        if (response.errorBody() != null) {
+                            JsonObject errorJson = new com.google.gson.JsonParser().parse(response.errorBody().string()).getAsJsonObject();
+                            if (errorJson.has("error")) {
+                                errorMsg = errorJson.get("error").getAsString();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(getContext(), errorMsg, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                showLoadingOverlay(false);
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
