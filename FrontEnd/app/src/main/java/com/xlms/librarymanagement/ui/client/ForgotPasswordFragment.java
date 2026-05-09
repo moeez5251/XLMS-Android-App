@@ -1,12 +1,16 @@
 package com.xlms.librarymanagement.ui.client;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,16 +28,23 @@ import retrofit2.Response;
 
 public class ForgotPasswordFragment extends Fragment {
 
+    private static final String ARG_EMAIL = "email";
+    private static final String ARG_USER_ID = "userId";
+    
     private EditText editTextEmail;
     private Button buttonSendReset;
     private ImageButton buttonBack;
-    private View loadingOverlay;
+    private TextView textViewBackToProfile;
+    private View emailAccentLine;
+    private ProgressBar progressBar;
     private String prefilledEmail = "";
+    private String userId = "";
 
-    public static ForgotPasswordFragment newInstance(String email) {
+    public static ForgotPasswordFragment newInstance(String email, String userId) {
         ForgotPasswordFragment fragment = new ForgotPasswordFragment();
         Bundle args = new Bundle();
-        args.putString("email", email);
+        args.putString(ARG_EMAIL, email);
+        args.putString(ARG_USER_ID, userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,48 +53,90 @@ public class ForgotPasswordFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            prefilledEmail = getArguments().getString("email", "");
+            prefilledEmail = getArguments().getString(ARG_EMAIL, "");
+            userId = getArguments().getString(ARG_USER_ID, "");
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
+        return inflater.inflate(R.layout.fragment_forgot_password, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         editTextEmail = view.findViewById(R.id.editTextEmail);
         buttonSendReset = view.findViewById(R.id.buttonSendReset);
         buttonBack = view.findViewById(R.id.buttonBack);
-        loadingOverlay = view.findViewById(R.id.loadingOverlay);
+        textViewBackToProfile = view.findViewById(R.id.textViewBackToProfile);
+        emailAccentLine = view.findViewById(R.id.emailAccentLine);
+        progressBar = view.findViewById(R.id.progressBar);
 
         if (!prefilledEmail.isEmpty()) {
             editTextEmail.setText(prefilledEmail);
+            editTextEmail.setEnabled(false);
         }
 
+        setupFocusListeners();
+        setupClickListeners();
+    }
+
+    private void setupFocusListeners() {
+        editTextEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            if (emailAccentLine == null) return;
+            if (hasFocus) {
+                emailAccentLine.getLayoutParams().width = getResources().getDisplayMetrics().widthPixels;
+                emailAccentLine.requestLayout();
+            } else {
+                emailAccentLine.getLayoutParams().width = 0;
+                emailAccentLine.requestLayout();
+            }
+        });
+
+        editTextEmail.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                editTextEmail.setError(null);
+            }
+        });
+    }
+
+    private void setupClickListeners() {
         buttonBack.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
         buttonSendReset.setOnClickListener(v -> handleForgotPassword());
-
-        return view;
+        if (textViewBackToProfile != null) {
+            textViewBackToProfile.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
+        }
     }
 
     private void handleForgotPassword() {
         String email = editTextEmail.getText().toString().trim();
-        editTextEmail.setEnabled(false);
 
         if (email.isEmpty()) {
             editTextEmail.setError("Email is required");
             return;
         }
 
-        if (loadingOverlay != null) loadingOverlay.setVisibility(View.VISIBLE);
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        buttonSendReset.setEnabled(false);
 
         JsonObject body = new JsonObject();
-        body.addProperty("Email", email);
+        body.addProperty("email", email);
+        if (!userId.isEmpty()) {
+            body.addProperty("ID", userId);
+        }
 
         ApiClient.getApiService(requireContext()).forgotPassword(body).enqueue(new Callback<MessageResponse>() {
             @Override
             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
-                if (loadingOverlay != null) loadingOverlay.setVisibility(View.GONE);
+                if (!isAdded()) return;
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                buttonSendReset.setEnabled(true);
+
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), "Reset instructions sent to your email", Toast.LENGTH_LONG).show();
                     requireActivity().getSupportFragmentManager().popBackStack();
@@ -91,7 +144,7 @@ public class ForgotPasswordFragment extends Fragment {
                     String errorMsg = "Failed to send reset email";
                     try {
                         if (response.errorBody() != null) {
-                            JsonObject errorJson = new com.google.gson.JsonParser().parse(response.errorBody().string()).getAsJsonObject();
+                            JsonObject errorJson = com.google.gson.JsonParser.parseString(response.errorBody().string()).getAsJsonObject();
                             if (errorJson.has("error")) errorMsg = errorJson.get("error").getAsString();
                         }
                     } catch (Exception e) {}
@@ -101,7 +154,9 @@ public class ForgotPasswordFragment extends Fragment {
 
             @Override
             public void onFailure(Call<MessageResponse> call, Throwable t) {
-                if (loadingOverlay != null) loadingOverlay.setVisibility(View.GONE);
+                if (!isAdded()) return;
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                buttonSendReset.setEnabled(true);
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

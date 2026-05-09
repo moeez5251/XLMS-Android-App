@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,14 +14,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonObject;
 import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.adapter.NotificationAdapter;
+import com.xlms.librarymanagement.api.MessageResponse;
+import com.xlms.librarymanagement.model.Notification;
+import com.xlms.librarymanagement.api.ApiClient;
 import com.xlms.librarymanagement.ui.login.LoginActivity;
 import com.xlms.librarymanagement.utils.SessionManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Client Dashboard - Main screen for library users/clients
@@ -30,9 +43,13 @@ public class ClientDashboardActivity extends AppCompatActivity {
 
     private View backdropOverlay;
     private View bottomSheetContent;
-    private ImageView imageViewProfile;
+    private View buttonOpenDrawer;
+    private TextView textViewNavbarInitial;
+    private TextView textViewUserInitial;
     private BottomNavigationView bottomNavigation;
     private ImageButton buttonNotifications;
+    private View notificationDot;
+    private List<Notification> notificationList = new ArrayList<>();
 
     private String userName = "User";
     private String userEmail = "";
@@ -56,24 +73,60 @@ public class ClientDashboardActivity extends AppCompatActivity {
         setupBottomSheet();
         loadMainFragment();
         setupClickListeners();
+        fetchNotifications();
     }
 
     private void initViews() {
         backdropOverlay = findViewById(R.id.backdropOverlay);
         bottomSheetContent = findViewById(R.id.bottomSheetContent);
-        imageViewProfile = findViewById(R.id.imageViewProfile);
+        buttonOpenDrawer = findViewById(R.id.buttonOpenDrawer);
+        textViewNavbarInitial = findViewById(R.id.textViewNavbarInitial);
+        textViewUserInitial = findViewById(R.id.textViewUserInitial);
         bottomNavigation = findViewById(R.id.bottomNavigation);
         buttonNotifications = findViewById(R.id.buttonNotifications);
+        notificationDot = findViewById(R.id.notificationDot);
 
         // Set user info in sheet
         android.widget.TextView textUserName = findViewById(R.id.textViewUserName);
         android.widget.TextView textUserEmail = findViewById(R.id.textViewUserEmail);
+        android.widget.TextView textUserRole = findViewById(R.id.textViewUserRole);
+
         if (textUserName != null) {
             textUserName.setText(userName);
         }
         if (textUserEmail != null) {
             textUserEmail.setText(userEmail);
         }
+
+        SessionManager session = new SessionManager(this);
+        if (textUserRole != null) {
+            textUserRole.setText(session.getUserRole());
+        }
+
+        // Set initials
+        if (userName != null && !userName.isEmpty()) {
+            String initial = userName.substring(0, 1).toUpperCase();
+            if (textViewNavbarInitial != null) textViewNavbarInitial.setText(initial);
+            if (textViewUserInitial != null) textViewUserInitial.setText(initial);
+        }
+    }
+
+    private void fetchNotifications() {
+        ApiClient.getApiService(this).getNotifications().enqueue(new Callback<List<Notification>>() {
+            @Override
+            public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    notificationList.clear();
+                    notificationList.addAll(response.body());
+                    if (notificationDot != null) {
+                        notificationDot.setVisibility(notificationList.isEmpty() ? View.GONE : View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Notification>> call, Throwable t) {}
+        });
     }
 
     private void setupBottomSheet() {
@@ -202,12 +255,37 @@ public class ClientDashboardActivity extends AppCompatActivity {
     }
 
     private void setupClickListeners() {
-        imageViewProfile.setOnClickListener(v -> openBottomSheet());
-        buttonNotifications.setOnClickListener(v -> showNotificationsPopup(v));
+        if (buttonOpenDrawer != null) {
+            buttonOpenDrawer.setOnClickListener(v -> openBottomSheet());
+        }
+        buttonNotifications.setOnClickListener(v -> {
+            fetchNotifications();
+            showNotificationsPopup(v);
+        });
     }
 
     private void showNotificationsPopup(View anchorView) {
         View popupView = getLayoutInflater().inflate(R.layout.popup_notifications, null);
+        
+        RecyclerView recyclerView = popupView.findViewById(R.id.recyclerViewPopupNotifications);
+        android.widget.LinearLayout layoutEmpty = popupView.findViewById(R.id.layoutPopupEmpty);
+        
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        NotificationAdapter adapter = new NotificationAdapter();
+        adapter.submitList(notificationList);
+        adapter.setOnNotificationClickListener(notification -> {
+            markAsRead(notification);
+        });
+        recyclerView.setAdapter(adapter);
+
+        if (notificationList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            layoutEmpty.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            layoutEmpty.setVisibility(View.GONE);
+        }
+
         android.widget.PopupWindow popupWindow = new android.widget.PopupWindow(
                 popupView,
                 android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -216,14 +294,30 @@ public class ClientDashboardActivity extends AppCompatActivity {
         );
 
         popupWindow.setElevation(20);
-        popupWindow.showAsDropDown(anchorView, 0, 10);
-
+        popupWindow.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        
         popupView.findViewById(R.id.buttonViewAll).setOnClickListener(v -> {
-            Fragment mainFrag = getSupportFragmentManager().findFragmentByTag("MAIN_FRAGMENT");
-            if (mainFrag instanceof ClientDashboardMainFragment) {
-                ((ClientDashboardMainFragment) mainFrag).setCurrentItem(4);
-            }
+            navigateToTab(4);
             popupWindow.dismiss();
+        });
+
+        popupWindow.showAsDropDown(anchorView, -250, 10);
+    }
+
+    private void markAsRead(Notification notification) {
+        JsonObject body = new JsonObject();
+        body.addProperty("NotificationId", notification.getId());
+        
+        ApiClient.getApiService(this).markAsReadAll(body).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (response.isSuccessful()) {
+                    fetchNotifications(); // Refresh both badge and popup data
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {}
         });
     }
 
@@ -266,9 +360,16 @@ public class ClientDashboardActivity extends AppCompatActivity {
 
         // Check if the main fragment has any back stack entries (e.g., BookInfo -> Catalog)
         Fragment mainFrag = getSupportFragmentManager().findFragmentByTag("MAIN_FRAGMENT");
-        if (mainFrag != null && mainFrag.getChildFragmentManager().getBackStackEntryCount() > 0) {
-            mainFrag.getChildFragmentManager().popBackStack();
-            return;
+        if (mainFrag instanceof ClientDashboardMainFragment) {
+            ClientDashboardMainFragment cdmf = (ClientDashboardMainFragment) mainFrag;
+            if (cdmf.getChildFragmentManager().getBackStackEntryCount() > 0) {
+                cdmf.getChildFragmentManager().popBackStack();
+                return;
+            }
+            if (cdmf.getCurrentItem() != 0) {
+                cdmf.setCurrentItem(0);
+                return;
+            }
         }
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {

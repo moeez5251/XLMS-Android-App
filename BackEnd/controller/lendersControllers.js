@@ -414,7 +414,7 @@ exports.returnbook = async (req, res) => {
                 if (bookTitleResult.recordset.length > 0) {
                     const bookTitle = bookTitleResult.recordset[0].Book_Title;
                     const returnDate = new Date().toLocaleDateString('en-PK');
-                    addNotificationHelper(userId, `Book ${bookTitle} returned on ${returnDate}`);
+                    await addNotificationHelper(userId, `Book ${bookTitle} returned on ${returnDate}`);
                 }
             }
         } else {
@@ -465,7 +465,7 @@ exports.returnbook = async (req, res) => {
                         .input('available', bookInfo.Available + copiesLent - 1)
                         .input('status', 'Available')
                         .query("UPDATE books SET Status = @status, Available = @available WHERE Book_ID = @book_id");
-                    addNotificationHelper(reservedUserId, `Your reserved book ${bookInfo.Book_Title} is now available for issue`);
+                    await addNotificationHelper(reservedUserId, `Your reserved book ${bookInfo.Book_Title} is now issued to you.`);
                 }
             }
         }

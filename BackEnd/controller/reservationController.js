@@ -111,7 +111,7 @@ exports.reservebook = async (req, res) => {
         }
 
         // Add notification
-        addNotificationHelper(userId, 'Your Book Reservation is Confirmed');
+        await addNotificationHelper(userId, 'Your Book Reservation is Confirmed');
 
         res.json({ message: 'Book reserved successfully' });
     } catch (err) {

@@ -384,27 +384,120 @@ exports.verifyotp = async (req, res) => {
     }
 }
 
-exports.resetpassword = async (req, res) => {
-    const { ID, Email, NewPassword } = req.body;
+exports.issue_mail = async (req, res) => {
+    const { name, sender, subject, issue } = req.body;
     try {
+        const admin_html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>New Support Ticket</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; background-color: #f6f7fb; padding: 30px; color: #333;">
+    <table style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding: 25px;">
+          <h2 style="color: #6941c5;">📩 New Support Ticket Received</h2>
+          <p style="font-size: 15px;">A new support ticket has been submitted with the following details:</p>
+
+          <table style="width: 100%; margin-top: 15px; border-collapse: collapse;">
+            <tr><td style="padding: 8px 0; font-weight: bold;">Name:</td><td style="padding: 8px 0;">${name}</td></tr>
+            <tr><td style="padding: 8px 0; font-weight: bold;">Email:</td><td style="padding: 8px 0;">${sender}</td></tr>
+            <tr><td style="padding: 8px 0; font-weight: bold;">Subject:</td><td style="padding: 8px 0;">${subject}</td></tr>
+          </table>
+
+          <div style="margin-top: 15px; background-color: #f4f4f4; padding: 15px; border-radius: 6px;">
+            <p style="margin: 0; font-size: 15px; white-space: pre-line;">${issue}</p>
+          </div>
+
+          <p style="margin-top: 20px; font-size: 14px; color: #777;">
+            Please respond to this ticket at your earliest convenience.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`;
+        const user_html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ticket Confirmation</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; background-color: #f6f7fb; padding: 30px; color: #333;">
+    <table style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding: 25px;">
+          <h2 style="color: #6941c5;">✅ Ticket Submitted Successfully</h2>
+          <p style="font-size: 15px;">Hi <strong>${name}</strong>,</p>
+          <p style="font-size: 15px;">Your support ticket has been received. Our team will review your issue and get back to you soon.</p>
+
+          <h4 style="margin-top: 20px; color: #6941c5;">Ticket Details:</h4>
+          <ul style="line-height: 1.7; font-size: 15px; padding-left: 20px;">
+            <li><strong>Subject:</strong> ${subject}</li>
+            <li><strong>Issue:</strong> ${issue}</li>
+          </ul>
+
+          <p style="margin-top: 25px; font-size: 14px; color: #777;">
+            Thank you for contacting support.<br/>
+            — The Support Team
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`;
+        const user_text = `
+✅ Ticket Submitted Successfully
+
+Hi ${name},
+
+Your support ticket has been received. Our team will review your issue and get back to you soon.
+
+Ticket Details:
+- Subject: ${subject}
+- Issue: ${issue}
+
+Thank you for contacting support.
+— The Support Team
+`;
+        const admin_text = `
+📩 New Support Ticket Submitted
+
+A new support ticket has been submitted.
+
+Ticket Details:
+- Name: ${name}
+- Sender Email: ${sender}
+- Subject: ${subject}
+- Issue: ${issue}
+
+Please review and respond to this ticket in the admin dashboard.
+— Automated Notification System
+`;
+
+        await sendEmail(sender, subject, user_text, user_html);
+        await sendEmail("moeez66656@gmail.com", subject, admin_text, admin_html);
+
+        // Add notification for the user if they exist in the database
         const pool = await poolPromise;
-        const hashedPassword = await bycrypt.hash(NewPassword, 10);
-        const request = await pool
-            .request()
-            .input('id', ID)
-            .input('Email', Email)
-            .input('NewPassword', hashedPassword)
-            .query('UPDATE Users SET password = @NewPassword WHERE User_id = @id AND Email = @Email');
-        if (request.rowsAffected[0] > 0) {
-            return res.status(200).json({ message: 'Password updated successfully' });
-        } else {
-            return res.status(400).json({ error: 'Failed to update password' });
+        const userResult = await pool.request()
+            .input('email', sender)
+            .query('SELECT User_id FROM users WHERE Email = @email');
+        
+        if (userResult.recordset.length > 0) {
+            await addNotificationHelper(userResult.recordset[0].User_id, `Your support ticket "${subject}" has been submitted successfully.`);
         }
+
+        return res.status(200).json({ message: "Email sent successfully" });
+    } catch (e) {
+        return res.status(500).json({ error: `Failed to send email: ${e.message}` });
     }
-    catch (e) {
-        return res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
+};
 
 // ==================== HELPER FUNCTIONS ====================
 

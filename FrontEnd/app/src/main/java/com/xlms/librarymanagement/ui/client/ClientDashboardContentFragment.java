@@ -62,6 +62,7 @@ public class ClientDashboardContentFragment extends Fragment {
         // Counter to track completion of all 3 API calls
         final int[] completedCalls = {0};
         Runnable checkAllDone = () -> {
+            if (!isAdded()) return;
             completedCalls[0]++;
             if (completedCalls[0] == 3) {
                 showLoading(false);
@@ -162,6 +163,7 @@ public class ClientDashboardContentFragment extends Fragment {
     }
 
     private void setupMetricCards() {
+        if (!isAdded()) return;
         // Lended Books Card
         View cardLended = getView().findViewById(R.id.cardLendedBooks);
         setupCard(cardLended,
@@ -233,6 +235,7 @@ public class ClientDashboardContentFragment extends Fragment {
     }
 
     private void setupCircularChart() {
+        if (!isAdded()) return;
         int percentage = totalBorrowed > 0
                 ? (returnedBooks * 100 / totalBorrowed) : 100;
         progressCircleBorrowed.setProgress(percentage);
@@ -243,6 +246,7 @@ public class ClientDashboardContentFragment extends Fragment {
     }
 
     private void setupBarChart() {
+        if (!isAdded()) return;
         barChartContainer.removeAllViews();
 
         int maxValue = 0;

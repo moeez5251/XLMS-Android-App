@@ -37,7 +37,6 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_filter_container"
             android:padding="12dp"
-            android:text="XLMS"
             android:enabled="false"
             android:textColor="@color/on_surface"
             android:textSize="14sp" />
@@ -59,7 +58,6 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_filter_container"
             android:padding="12dp"
-            android:text="ma16849u@gmail.com"
             android:enabled="false"
             android:textColor="@color/on_surface"
             android:textSize="14sp" />
@@ -124,15 +122,28 @@
                 app:strokeColor="@color/outline"
                 android:textColor="@color/outline" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonSubmit"
+            <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="56dp"
                 android:layout_weight="1"
-                android:text="Submit"
-                android:layout_marginStart="12dp"
-                app:cornerRadius="12dp"
-                android:backgroundTint="@color/primary" />
+                android:layout_marginStart="12dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSubmit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Submit"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="@color/primary" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:indeterminateTint="@color/white" />
+            </FrameLayout>
         </LinearLayout>
 
     </LinearLayout>

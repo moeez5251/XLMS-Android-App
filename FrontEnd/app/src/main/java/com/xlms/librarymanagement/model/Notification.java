@@ -8,6 +8,9 @@ public class Notification {
     public static final int TYPE_SUCCESS = 2;
     public static final int TYPE_SYSTEM = 3;
 
+    @SerializedName("Id")
+    private int id;
+
     @SerializedName("Message")
     private String description;
     
@@ -28,6 +31,7 @@ public class Notification {
     }
 
     public int getType() { return type; }
+    public int getId() { return id; }
     public String getTitle() { return title; }
     public String getDescription() { return description; }
     public String getTime() { return time; }

@@ -24,9 +24,18 @@ import java.util.TimeZone;
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
 
     private List<Notification> notificationList;
+    private OnNotificationClickListener listener;
+
+    public interface OnNotificationClickListener {
+        void onNotificationClick(Notification notification);
+    }
 
     public NotificationAdapter() {
         this.notificationList = new ArrayList<>();
+    }
+
+    public void setOnNotificationClickListener(OnNotificationClickListener listener) {
+        this.listener = listener;
     }
 
     public void submitList(List<Notification> newList) {
@@ -60,9 +69,23 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             iconRes = R.drawable.ic_alert_circle;
             bgColorRes = R.drawable.icon_background_error;
             iconColor = R.color.error;
-        } else if (message.contains("success") || message.contains("returned") || message.contains("added") || 
-                   message.contains("confirmed") || message.contains("approved") || message.contains("received") || 
-                   message.contains("completed")) {
+        } else if (message.contains("returned") || message.contains("return")) {
+            displayTitle = "Book Returned";
+            iconRes = R.drawable.ic_check_circle;
+            bgColorRes = R.drawable.icon_background_tertiary;
+            iconColor = R.color.primary;
+        } else if (message.contains("added") || message.contains("addition") || message.contains("insert")) {
+            displayTitle = "Book Added";
+            iconRes = R.drawable.ic_check_circle;
+            bgColorRes = R.drawable.icon_background_tertiary;
+            iconColor = R.color.primary;
+        } else if (message.contains("reserved") || message.contains("reservation")) {
+            displayTitle = "Book Reserved";
+            iconRes = R.drawable.ic_menu_book;
+            bgColorRes = R.drawable.icon_background_primary;
+            iconColor = R.color.white;
+        } else if (message.contains("success") || message.contains("confirmed") || message.contains("approved") || 
+                   message.contains("received") || message.contains("completed")) {
             displayTitle = "Task Completed";
             iconRes = R.drawable.ic_check_circle;
             bgColorRes = R.drawable.icon_background_tertiary;
@@ -88,6 +111,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.imageViewIcon.setImageResource(iconRes);
         holder.imageViewIcon.setColorFilter(ContextCompat.getColor(holder.imageViewIcon.getContext(), iconColor));
         holder.layoutIcon.setBackgroundResource(bgColorRes);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onNotificationClick(notification);
+            }
+        });
     }
 
     @Override
@@ -102,42 +131,54 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     public static String getRelativeTime(String timestamp) {
         if (timestamp == null || timestamp.isEmpty()) return "Just now";
-        
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = sdf.parse(timestamp);
-            if (date == null) return timestamp;
 
-            long time = date.getTime();
-            long now = System.currentTimeMillis();
-            long diff = now - time;
+        String[] formats = {
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                "yyyy-MM-dd HH:mm:ss",
+                "dd/MM/yyyy, HH:mm:ss",
+                "MM/dd/yyyy, HH:mm:ss",
+                "dd/MM/yyyy HH:mm:ss",
+                "MM/dd/yyyy HH:mm:ss"
+        };
 
-            if (diff < 60000) {
-                return "Just now";
-            } else if (diff < 3600000) {
-                long mins = diff / 60000;
-                return mins + (mins == 1 ? " min ago" : " mins ago");
-            } else if (diff < 86400000) {
-                long hours = diff / 3600000;
-                return hours + (hours == 1 ? " hour ago" : " hours ago");
-            } else {
-                long days = diff / 86400000;
-                return days + (days == 1 ? " day ago" : " days ago");
-            }
-        } catch (Exception e) {
+        Date date = null;
+        for (String format : formats) {
             try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                Date date = sdf.parse(timestamp);
-                if (date != null) {
-                    long diff = System.currentTimeMillis() - date.getTime();
-                    if (diff < 60000) return "Just now";
-                    if (diff < 3600000) return (diff/60000) + " mins ago";
-                    if (diff < 86400000) return (diff/3600000) + " hours ago";
-                    return (diff/86400000) + " days ago";
+                SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+                if (format.endsWith("'Z'")) {
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
                 }
-            } catch (Exception e2) {}
-            return timestamp;
+                date = sdf.parse(timestamp);
+                if (date != null) break;
+            } catch (Exception e) {
+                // Try next format
+            }
+        }
+
+        if (date == null) return timestamp;
+
+        long time = date.getTime();
+        long now = System.currentTimeMillis();
+        long diff = now - time;
+
+        if (diff < 0) {
+            return "Just now"; // Handle future dates gracefully
+        }
+
+        if (diff < 60000) {
+            return "Just now";
+        } else if (diff < 3600000) {
+            long mins = diff / 60000;
+            return mins + (mins == 1 ? " min ago" : " mins ago");
+        } else if (diff < 86400000) {
+            long hours = diff / 3600000;
+            return hours + (hours == 1 ? " hour ago" : " hours ago");
+        } else if (diff < 604800000) {
+            long days = diff / 86400000;
+            return days + (days == 1 ? " day ago" : " days ago");
+        } else {
+            // Over a week, show absolute date
+            return new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(date);
         }
     }
 

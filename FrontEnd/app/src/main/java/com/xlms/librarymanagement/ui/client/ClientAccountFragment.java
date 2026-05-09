@@ -91,6 +91,15 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh all data when fragment becomes visible
+        setupLendingHistory();
+        setupReservations();
+        setupUserProfile();
+    }
+
     private void setupLendingHistory() {
         showLendingLoading(true);
         ApiClient.getApiService(requireContext()).getLendings().enqueue(new Callback<List<LendedBook>>() {
@@ -392,10 +401,10 @@ public class ClientAccountFragment extends Fragment implements LendingHistoryAda
         TextView textViewForgetPassword = view.findViewById(R.id.textViewForgetPassword);
         if (textViewForgetPassword != null) {
             textViewForgetPassword.setOnClickListener(v -> {
-                ForgotPasswordFragment fragment = ForgotPasswordFragment.newInstance(sessionManager.getUserEmail());
+                ForgotPasswordFragment fragment = ForgotPasswordFragment.newInstance(sessionManager.getUserEmail(), sessionManager.getUserId());
                 requireActivity().getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out, R.anim.slide_left_in, R.anim.slide_right_out)
-                        .replace(R.id.mainContentFrame, fragment)
+                        .add(R.id.mainContentFrame, fragment)
                         .addToBackStack(null)
                         .commit();
             });

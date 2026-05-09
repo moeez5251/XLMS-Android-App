@@ -18,14 +18,23 @@ import com.xlms.librarymanagement.model.Notification;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.JsonObject;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.MessageResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import com.facebook.shimmer.ShimmerFrameLayout;
+
 public class ClientNotificationsFragment extends Fragment {
 
     private RecyclerView recyclerViewNotifications;
     private NotificationAdapter notificationAdapter;
-    private List<Notification> notificationList;
-    private LinearLayout layoutNotifications, layoutEmptyState, layoutSkeleton;
+    private List<Notification> notificationList = new ArrayList<>();
+    private LinearLayout layoutNotifications, layoutEmptyState;
+    private ShimmerFrameLayout shimmerLayout;
     private View layoutLoadingOverlay;
-    private Button buttonClearAll, buttonRefresh;
+    private Button buttonReadAll, buttonRefresh;
 
     @Nullable
     @Override
@@ -38,7 +47,7 @@ public class ClientNotificationsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         setupRecyclerView();
-        loadDummyData();
+        fetchNotifications();
         setupClickListeners();
     }
 
@@ -46,63 +55,126 @@ public class ClientNotificationsFragment extends Fragment {
         recyclerViewNotifications = view.findViewById(R.id.recyclerViewNotifications);
         layoutNotifications = view.findViewById(R.id.layoutNotifications);
         layoutEmptyState = view.findViewById(R.id.layoutEmptyState);
-        layoutSkeleton = view.findViewById(R.id.layoutSkeleton);
+        shimmerLayout = view.findViewById(R.id.shimmerLayout);
         layoutLoadingOverlay = view.findViewById(R.id.layoutLoadingOverlay);
-        buttonClearAll = view.findViewById(R.id.buttonClearAll);
+        buttonReadAll = view.findViewById(R.id.buttonClearAll);
+        if (buttonReadAll != null) {
+            buttonReadAll.setText("Read All");
+        }
         buttonRefresh = view.findViewById(R.id.buttonRefresh);
     }
 
     private void setupRecyclerView() {
-        notificationList = new ArrayList<>();
         notificationAdapter = new NotificationAdapter();
+        notificationAdapter.setOnNotificationClickListener(notification -> markAsRead(notification));
         recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerViewNotifications.setAdapter(notificationAdapter);
     }
 
-    private void loadDummyData() {
-        if (layoutSkeleton != null) {
-            layoutSkeleton.setVisibility(View.VISIBLE);
+    private void markAsRead(Notification notification) {
+        if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.VISIBLE);
+        
+        JsonObject body = new JsonObject();
+        body.addProperty("NotificationId", notification.getId());
+        
+        ApiClient.getApiService(requireContext()).markAsReadAll(body).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (!isAdded()) return;
+                if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.GONE);
+                
+                if (response.isSuccessful()) {
+                    fetchNotifications(); // Refresh list to remove read notification
+                } else {
+                    Toast.makeText(getContext(), "Failed to mark as read", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                if (!isAdded()) return;
+                if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchNotifications() {
+        if (shimmerLayout != null) {
+            shimmerLayout.setVisibility(View.VISIBLE);
+            shimmerLayout.startShimmer();
             recyclerViewNotifications.setVisibility(View.GONE);
             layoutEmptyState.setVisibility(View.GONE);
         }
 
-        // Simulate network delay
-        recyclerViewNotifications.postDelayed(() -> {
-            if (!isAdded()) return;
-            if (layoutSkeleton != null) layoutSkeleton.setVisibility(View.GONE);
-            recyclerViewNotifications.setVisibility(View.VISIBLE);
+        ApiClient.getApiService(requireContext()).getNotifications().enqueue(new Callback<List<Notification>>() {
+            @Override
+            public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
+                if (!isAdded()) return;
+                if (shimmerLayout != null) {
+                    shimmerLayout.stopShimmer();
+                    shimmerLayout.setVisibility(View.GONE);
+                }
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    notificationList.clear();
+                    notificationList.addAll(response.body());
+                    notificationAdapter.submitList(notificationList);
+                    recyclerViewNotifications.setVisibility(View.VISIBLE);
+                } else {
+                    Toast.makeText(getContext(), "Failed to fetch notifications", Toast.LENGTH_SHORT).show();
+                }
+                updateEmptyState();
+            }
 
-            notificationList.clear();
-            notificationList.add(new Notification(Notification.TYPE_WARNING, "Book Overdue", "The Republic of Plato is now 3 days overdue.", "2h ago"));
-            notificationList.add(new Notification(Notification.TYPE_INFO, "Reservation Ready", "Your reserved copy of Modern Architecture is ready.", "5h ago"));
-            notificationList.add(new Notification(Notification.TYPE_SUCCESS, "Renewal Successful", "You have successfully extended the loan period.", "Yesterday"));
-
-            notificationAdapter.submitList(notificationList);
-            updateEmptyState();
-        }, 1000);
+            @Override
+            public void onFailure(Call<List<Notification>> call, Throwable t) {
+                if (!isAdded()) return;
+                if (shimmerLayout != null) {
+                    shimmerLayout.stopShimmer();
+                    shimmerLayout.setVisibility(View.GONE);
+                }
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                updateEmptyState();
+            }
+        });
     }
 
     private void setupClickListeners() {
-        if (buttonClearAll != null) {
-            buttonClearAll.setOnClickListener(v -> {
-                if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.VISIBLE);
+        if (buttonReadAll != null) {
+            buttonReadAll.setOnClickListener(v -> markAllAsRead());
+        }
+        if (buttonRefresh != null) {
+            buttonRefresh.setOnClickListener(v -> fetchNotifications());
+        }
+    }
+
+    private void markAllAsRead() {
+        if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.VISIBLE);
+        
+        ApiClient.getApiService(requireContext()).markAsReadAll(new JsonObject()).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                if (!isAdded()) return;
+                if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.GONE);
                 
-                // Simulate API call
-                v.postDelayed(() -> {
-                    if (!isAdded()) return;
-                    if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.GONE);
+                if (response.isSuccessful()) {
                     notificationList.clear();
                     notificationAdapter.clear();
                     updateEmptyState();
-                    Toast.makeText(requireContext(), "All notifications cleared", Toast.LENGTH_SHORT).show();
-                }, 800);
-            });
-        }
-        if (buttonRefresh != null) {
-            buttonRefresh.setOnClickListener(v -> {
-                loadDummyData();
-            });
-        }
+                    Toast.makeText(requireContext(), "All notifications marked as read", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Failed to mark as read", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                if (!isAdded()) return;
+                if (layoutLoadingOverlay != null) layoutLoadingOverlay.setVisibility(View.GONE);
+                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateEmptyState() {

@@ -4,5 +4,5 @@ const mails = require('../controller/mails');
 router.post("/otp", mails.OTP);
 router.post("/verify", mails.verifyotp);
 router.post("/resend", mails.resendotp);
-router.post("/reset", mails.resetpassword);
+router.post("/issue-mail", mails.issue_mail);
 module.exports = router;

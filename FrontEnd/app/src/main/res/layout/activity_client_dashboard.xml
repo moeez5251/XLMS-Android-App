@@ -70,22 +70,35 @@
 
                     <!-- Red notification dot -->
                     <View
+                        android:id="@+id/notificationDot"
                         android:layout_width="8dp"
                         android:layout_height="8dp"
                         android:layout_gravity="top|end"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/notification_dot_background" />
+                        android:background="@drawable/notification_dot_background"
+                        android:visibility="gone" />
                 </FrameLayout>
 
-                <!-- Profile Button with X Logo (Light Blue Background) -->
-                <ImageButton
-                    android:id="@+id/imageViewProfile"
+                <!-- Profile Button with Initial (Light Blue Background) -->
+                <FrameLayout
+                    android:id="@+id/buttonOpenDrawer"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/profile_x_background"
-                    android:src="@drawable/ic_x_logo"
-                    android:contentDescription="Profile menu" />
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:id="@+id/textViewNavbarInitial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="U"
+                        android:textColor="@color/primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/manrope_bold" />
+                </FrameLayout>
             </LinearLayout>
 
             <!-- Subtle divider under app bar -->
@@ -166,17 +179,22 @@
                 android:paddingEnd="24dp"
                 android:layout_marginBottom="16dp">
 
-                <ImageView
-                    android:id="@+id/imageViewSheetProfile"
+                <FrameLayout
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:src="@drawable/ic_account_circle"
-                    android:scaleType="centerInside"
-                    android:background="@drawable/profile_image_circle"
-                    android:padding="10dp"
-                    android:contentDescription="Profile"
-                    android:layout_marginEnd="14dp"
-                    app:tint="@color/primary" />
+                    android:background="@drawable/user_avatar_background"
+                    android:layout_marginEnd="14dp">
+
+                    <TextView
+                        android:id="@+id/textViewUserInitial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="U"
+                        android:textColor="@color/primary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"

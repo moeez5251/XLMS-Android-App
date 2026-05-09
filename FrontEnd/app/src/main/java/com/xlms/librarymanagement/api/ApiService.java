@@ -115,4 +115,7 @@ public interface ApiService {
 
     @POST("lenders/return")
     Call<MessageResponse> returnBook(@Body com.google.gson.JsonObject body);
+
+    @POST("mail/issue-mail")
+    Call<MessageResponse> submitTicket(@Body com.google.gson.JsonObject body);
 }

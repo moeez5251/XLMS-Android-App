@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require('uuid');
 const { generatetoken } = require('./tokengenerator');
 const { sendEmail } = require('./mailer');
+const { addNotificationHelper } = require('./notificationscontroller');
 
 exports.createUser = async (req, res) => {
   try {
@@ -105,6 +106,7 @@ exports.updateuser = async (req, res) => {
 
     const query = `UPDATE users SET ${updates.join(', ')} WHERE User_id = @ID`;
     await request.query(query);
+    await addNotificationHelper(ID, 'Your profile information has been updated successfully.');
     res.json({ message: 'User updated successfully' });
   } catch (err) {
     console.error('Error updating user:', err);
@@ -155,6 +157,8 @@ exports.activateUser = async (req, res) => {
       .request()
       .input('ID', ID)
       .query("UPDATE users SET Status = 'Active' WHERE User_id = @ID");
+    
+    await addNotificationHelper(ID, 'Your account has been reactivated. You can now access all library services.');
     res.json({ message: 'User activated successfully' });
   } catch (err) {
     console.error('Error activating user:', err);
@@ -210,6 +214,7 @@ exports.changepassword = async (req, res) => {
       .input('NewPassword', hashedNewPassword)
       .query('UPDATE users SET Password = @NewPassword WHERE User_id = @ID');
 
+    await addNotificationHelper(req.user.id, 'Security Alert: Your password has been changed successfully.');
     res.json({ message: 'Password changed successfully' });
   } catch (err) {
     console.error('Error changing password:', err);
@@ -230,6 +235,7 @@ exports.forgotpassword = async (req, res) => {
       return result.recordset[0].Email;
     });
   const link = await generatetoken(ID);
+  await addNotificationHelper(ID, 'Security Alert: A password reset request was initiated for your account.');
   sendEmail(Email, 'Password Reset Request', `Hello user, Click the link to reset your password: ${link}`, `<table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);"> <tr> <td style="background:#2563eb; padding:25px; text-align:center; color:#ffffff; font-size:26px; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Password Reset Request </td> </tr> <tr> <td style="padding:35px; color:#333333; font-size:16px; line-height:1.7; font-family:Arial, Helvetica, sans-serif;"> <p style="margin-top:0;">Hello User,</p> <p> We received a request to reset your password. Click the button below to create a new password. </p> <p style="text-align:center; margin:35px 0;"> <a href="${link}" style="background:#2563eb; color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:6px; display:inline-block; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Reset Password </a> </p> <p> If the button doesn't work, copy and paste this link into your browser: </p> <p style="word-break:break-all; color:#2563eb; font-weight:bold;"> ${link} </p> <p> If you did not request a password reset, you can ignore this email. </p> <p style="margin-bottom:0;"> Regards,<br /> Support Team </p> </td> </tr> <tr> <td style="background:#f9fafb; padding:18px; text-align:center; font-size:13px; color:#777777; font-family:Arial, Helvetica, sans-serif;"> © 2026 XLMS. All rights reserved. </td> </tr> </table> </td>`);
   res.status(200).json({ message: 'Password reset link sent to email' });
 }
@@ -268,6 +274,8 @@ exports.signupUser = async (req, res) => {
       .input('Cost', 0)
       .input('Status', 'Active')
       .query('INSERT INTO users (User_id, User_Name, Email, Password, Role, Membership_Type, Cost, Status) VALUES (@User_id, @User_Name, @Email, @Password, @Role, @Membership_Type, @Cost, @Status)');
+
+    await addNotificationHelper(userId, 'Welcome to XLMS Library! Your account has been created successfully. Explore our catalog to find your next read.');
 
     const token = require('jsonwebtoken').sign(
       { user_id: userId, email: email },

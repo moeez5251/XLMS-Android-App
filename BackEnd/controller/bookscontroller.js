@@ -224,7 +224,7 @@ exports.lendbook = async (req, res) => {
         const { addNotificationHelper } = require('./notificationscontroller');
         const issuedDateFormatted = issued.toLocaleDateString('en-PK');
         const dueDateFormatted = due.toLocaleDateString('en-PK');
-        addNotificationHelper(userId, `You have borrowed ${book.Book_Title} from ${issuedDateFormatted} to ${dueDateFormatted}`);
+        await addNotificationHelper(userId, `You have borrowed ${book.Book_Title} (Due: ${dueDateFormatted}).`);
 
         res.json({ message: 'Book lent successfully' });
     } catch (err) {

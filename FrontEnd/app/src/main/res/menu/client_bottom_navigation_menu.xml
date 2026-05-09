@@ -8,12 +8,12 @@
 
     <item
         android:id="@+id/bottom_client_catalog"
-        android:icon="@drawable/ic_menu_book"
+        android:icon="@drawable/book"
         android:title="@string/client_menu_catalog" />
 
     <item
         android:id="@+id/bottom_client_account"
-        android:icon="@drawable/ic_user_circle"
+        android:icon="@drawable/account"
         android:title="@string/client_menu_account" />
 
     <item
