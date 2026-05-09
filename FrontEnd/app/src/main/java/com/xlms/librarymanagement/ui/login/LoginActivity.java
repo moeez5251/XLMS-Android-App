@@ -3,11 +3,9 @@ package com.xlms.librarymanagement.ui.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,8 +13,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.xlms.librarymanagement.R;
 import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.AuthUsersRequest;
+import com.xlms.librarymanagement.api.AuthUsersResponse;
 import com.xlms.librarymanagement.api.LoginRequest;
 import com.xlms.librarymanagement.api.LoginResponse;
 import com.xlms.librarymanagement.ui.admin.AdminDashboardActivity;
@@ -24,6 +30,8 @@ import com.xlms.librarymanagement.ui.auth.ForgotPasswordActivity;
 import com.xlms.librarymanagement.ui.client.ClientDashboardActivity;
 import com.xlms.librarymanagement.ui.signup.SignUpActivity;
 import com.xlms.librarymanagement.utils.SessionManager;
+
+import java.io.IOException;
 
 /**
  * Login Activity for XLMS Library Management System
@@ -34,13 +42,15 @@ public class LoginActivity extends AppCompatActivity {
 
     // UI Components
     private EditText editTextEmail, editTextPassword;
-    private Button buttonLogin;
+    private Button buttonLogin, buttonGoogleLogin;
     private TextView textViewRegister, textViewForgotPassword;
     private ImageButton buttonTogglePassword;
     private View emailAccentLine, passwordAccentLine;
 
     // State
     private boolean isPasswordVisible = false;
+    private GoogleSignInClient googleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +63,13 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        // Configure Google Sign-In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+
         setContentView(R.layout.activity_login);
 
         initViews();
@@ -64,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
+        buttonGoogleLogin = findViewById(R.id.buttonGoogleLogin);
         textViewRegister = findViewById(R.id.textViewRegister);
         textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
         buttonTogglePassword = findViewById(R.id.buttonTogglePassword);
@@ -95,6 +113,9 @@ public class LoginActivity extends AppCompatActivity {
         // Login button
         buttonLogin.setOnClickListener(v -> handleLogin());
 
+        // Google login
+        buttonGoogleLogin.setOnClickListener(v -> signInWithGoogle());
+
         // Toggle password visibility
         buttonTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
 
@@ -111,6 +132,89 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         });
+    }
+
+    private void signInWithGoogle() {
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            String name = account.getDisplayName();
+            String email = account.getEmail();
+
+            if (email != null && name != null) {
+                performGoogleLogin(name, email);
+            } else {
+                Toast.makeText(this, "Could not retrieve user info from Google", Toast.LENGTH_SHORT).show();
+            }
+        } catch (ApiException e) {
+            Toast.makeText(this, "Google Sign-In failed: " + e.getStatusCode(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void performGoogleLogin(String name, String email) {
+        buttonGoogleLogin.setEnabled(false);
+        Toast.makeText(this, "Authenticating with Google...", Toast.LENGTH_SHORT).show();
+
+        AuthUsersRequest request = new AuthUsersRequest(name, email);
+        ApiClient.getApiService(this).authUsers(request).enqueue(new retrofit2.Callback<AuthUsersResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<AuthUsersResponse> call, retrofit2.Response<AuthUsersResponse> response) {
+                buttonGoogleLogin.setEnabled(true);
+                if (response.isSuccessful() && response.body() != null) {
+                    AuthUsersResponse authResponse = response.body();
+                    saveGoogleSessionAndNavigate(email, authResponse.getUserId(), authResponse.getRole(), name, authResponse.getToken());
+                } else {
+                    String error = "Authentication failed";
+                    try {
+                        if (response.errorBody() != null) {
+                            error = response.errorBody().string();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<AuthUsersResponse> call, Throwable t) {
+                buttonGoogleLogin.setEnabled(true);
+                Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void saveGoogleSessionAndNavigate(String email, String userId, String role, String name, String token) {
+        SessionManager sessionManager = new SessionManager(this);
+        
+        // Map backend roles: "Admin" -> "ADMIN", "Standard-User" -> "CLIENT"
+        String appRole = "CLIENT";
+        if (role != null) {
+            if (role.equalsIgnoreCase("Admin")) {
+                appRole = "ADMIN";
+            } else if (role.equalsIgnoreCase("Standard-User")) {
+                appRole = "CLIENT";
+            }
+        }
+        
+        sessionManager.saveSession(email, appRole, name, userId, token);
+        
+        ApiClient.resetClient();
+        navigateBasedOnRole(appRole, email);
     }
 
     private void togglePasswordVisibility() {
@@ -182,14 +286,24 @@ public class LoginActivity extends AppCompatActivity {
 
     private void saveSessionAndNavigate(String email, LoginResponse response) {
         SessionManager sessionManager = new SessionManager(this);
-        String role = response.getRole() != null ? response.getRole().toUpperCase() : "CLIENT";
         
-        sessionManager.saveSession(email, role, null, response.getUserId(), response.getToken());
+        // Map backend roles: "Admin" -> "ADMIN", "Standard-User" -> "CLIENT"
+        String appRole = "CLIENT";
+        String backendRole = response.getRole();
+        if (backendRole != null) {
+            if (backendRole.equalsIgnoreCase("Admin")) {
+                appRole = "ADMIN";
+            } else if (backendRole.equalsIgnoreCase("Standard-User")) {
+                appRole = "CLIENT";
+            }
+        }
+        
+        sessionManager.saveSession(email, appRole, null, response.getUserId(), response.getToken());
         
         // Clear the static Retrofit instance so it picks up the NEW token
         ApiClient.resetClient();
         
-        navigateBasedOnRole(role, email);
+        navigateBasedOnRole(appRole, email);
     }
 
     private void navigateBasedOnRole(String role, String email) {
@@ -204,14 +318,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         finish();
-    }
-
-    private void navigateToAdminDashboard() {
-        // Deprecated, use navigateBasedOnRole
-    }
-
-    private void navigateToClientDashboard() {
-        // Deprecated, use navigateBasedOnRole
     }
 
     @Override

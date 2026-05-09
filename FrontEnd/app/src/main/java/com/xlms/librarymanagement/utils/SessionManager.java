@@ -51,7 +51,7 @@ public class SessionManager {
     }
 
     public boolean isLoggedIn() {
-        return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false) && getAuthToken() != null;
+        return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false) && (getAuthToken() != null || !getCookies().isEmpty());
     }
 
     public String getUserEmail() {

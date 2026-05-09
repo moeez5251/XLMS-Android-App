@@ -304,6 +304,21 @@
                 android:fontFamily="@font/manrope_bold"
                 android:elevation="4dp" />
 
+            <!-- Google Login -->
+            <Button
+                android:id="@+id/buttonGoogleLogin"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_secondary_background"
+                android:text="Continue with Google"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:fontFamily="@font/manrope_bold"
+                android:elevation="2dp" />
+
             <!-- Sign Up Link -->
             <LinearLayout
                 android:layout_width="match_parent"

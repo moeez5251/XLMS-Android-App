@@ -26,6 +26,8 @@ const unprotectedRoutes = [
   '/',
   '/api/users/signup',
   '/api/users/exist',
+  '/api/users/auth-users',
+  '/api/users/resetpassword',
   '/api/mail/otp',
   '/api/mail/verify',
   '/api/mail/resend',

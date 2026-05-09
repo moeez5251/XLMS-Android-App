@@ -1,8 +1,8 @@
 require('dotenv').config();
 const { poolPromise } = require('../models/db');
 const { v4: uuidv4 } = require('uuid');
-const token = uuidv4();
 const generatetoken = async (id) => {
+    const token = uuidv4();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
     const expiresAtInPKT = expiresAt.toLocaleString("en-PK", {
         timeZone: "Asia/Karachi",

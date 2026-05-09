@@ -1,5 +1,6 @@
 const { poolPromise } = require('../models/db');
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { generatetoken } = require('./tokengenerator');
 const { sendEmail } = require('./mailer');
@@ -157,7 +158,7 @@ exports.activateUser = async (req, res) => {
       .request()
       .input('ID', ID)
       .query("UPDATE users SET Status = 'Active' WHERE User_id = @ID");
-    
+
     await addNotificationHelper(ID, 'Your account has been reactivated. You can now access all library services.');
     res.json({ message: 'User activated successfully' });
   } catch (err) {
@@ -239,6 +240,124 @@ exports.forgotpassword = async (req, res) => {
   sendEmail(Email, 'Password Reset Request', `Hello user, Click the link to reset your password: ${link}`, `<table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);"> <tr> <td style="background:#2563eb; padding:25px; text-align:center; color:#ffffff; font-size:26px; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Password Reset Request </td> </tr> <tr> <td style="padding:35px; color:#333333; font-size:16px; line-height:1.7; font-family:Arial, Helvetica, sans-serif;"> <p style="margin-top:0;">Hello User,</p> <p> We received a request to reset your password. Click the button below to create a new password. </p> <p style="text-align:center; margin:35px 0;"> <a href="${link}" style="background:#2563eb; color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:6px; display:inline-block; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Reset Password </a> </p> <p> If the button doesn't work, copy and paste this link into your browser: </p> <p style="word-break:break-all; color:#2563eb; font-weight:bold;"> ${link} </p> <p> If you did not request a password reset, you can ignore this email. </p> <p style="margin-bottom:0;"> Regards,<br /> Support Team </p> </td> </tr> <tr> <td style="background:#f9fafb; padding:18px; text-align:center; font-size:13px; color:#777777; font-family:Arial, Helvetica, sans-serif;"> © 2026 XLMS. All rights reserved. </td> </tr> </table> </td>`);
   res.status(200).json({ message: 'Password reset link sent to email' });
 }
+exports.resetpassword = async (req, res) => {
+  const { Email } = req.body;
+  if (!Email) {
+    return res.status(400).json({ error: 'Email is required' });
+  }
+  const pool = await poolPromise;
+  const ID = await pool.request()
+    .input('Email', Email)
+    .query('SELECT User_id FROM users WHERE Email = @Email');
+  if (ID.recordset.length === 0) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  const link = await generatetoken(ID.recordset[0].User_id);
+  await addNotificationHelper(ID.recordset[0].User_id, 'Security Alert: A password reset request was initiated for your account.');
+  sendEmail(Email, 'Password Reset Request', `Hello user, Click the link to reset your password: ${link}`, `<table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);"> <tr> <td style="background:#2563eb; padding:25px; text-align:center; color:#ffffff; font-size:26px; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Password Reset Request </td> </tr> <tr> <td style="padding:35px; color:#333333; font-size:16px; line-height:1.7; font-family:Arial, Helvetica, sans-serif;"> <p style="margin-top:0;">Hello User,</p> <p> We received a request to reset your password. Click the button below to create a new password. </p> <p style="text-align:center; margin:35px 0;"> <a href="${link}" style="background:#2563eb; color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:6px; display:inline-block; font-weight:bold; font-family:Arial, Helvetica, sans-serif;"> Reset Password </a> </p> <p> If the button doesn't work, copy and paste this link into your browser: </p> <p style="word-break:break-all; color:#2563eb; font-weight:bold;"> ${link} </p> <p> If you did not request a password reset, you can ignore this email. </p> <p style="margin-bottom:0;"> Regards,<br /> Support Team </p> </td> </tr> <tr> <td style="background:#f9fafb; padding:18px; text-align:center; font-size:13px; color:#777777; font-family:Arial, Helvetica, sans-serif;"> © 2026 XLMS. All rights reserved. </td> </tr> </table> </td>`);
+  res.status(200).json({ message: 'Password reset link sent to email' });
+
+}
+
+exports.authUsers = async (req, res) => {
+  const { name, email } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Name and email are required' });
+  }
+
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input('email', email)
+      .query('SELECT User_id, Role,Status FROM users WHERE LOWER(Email) = LOWER(@email)');
+
+    if (result.recordset.length > 0) {
+      if (result.recordset[0].Status === 'Deactivated') {
+        return res.status(401).json({ message: 'Your account is Deactivated' });
+      }
+      const user = result.recordset[0];
+
+      const token = jwt.sign(
+        { id: user.User_id, email },
+        process.env.JWT,
+        { expiresIn: '1h' }
+      );
+
+      const refreshToken = jwt.sign(
+        { id: user.User_id, email, type: 'refresh' },
+        process.env.JWT_REFRESH || process.env.JWT + '_refresh',
+        { expiresIn: '7d' }
+      );
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+        maxAge: 3600000,
+        path: '/',
+      });
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+        maxAge: 604800000,
+        path: '/',
+      });
+
+      return res.json({ userID: user.User_id, token, refreshToken, role: user.Role });
+    }
+
+    const uid = uuidv4();
+    const userId = `${name[0].toUpperCase()}${uid.slice(0, 7)}`;
+    const dummyPassword = 'google_oauth_user';
+    const hashedPassword = await bcrypt.hash(dummyPassword, 10);
+
+    await pool.request()
+      .input('User_id', userId)
+      .input('User_Name', name)
+      .input('Email', email)
+      .input('Password', hashedPassword)
+      .input('Role', 'Standard-User')
+      .input('Membership_Type', 'English')
+      .input('Cost', 0)
+      .input('Status', 'Active')
+      .query('INSERT INTO users (User_id, User_Name, Email, Password, Role, Membership_Type, Cost, Status) VALUES (@User_id, @User_Name, @Email, @Password, @Role, @Membership_Type, @Cost, @Status)');
+
+    const token = jwt.sign(
+      { id: userId, email },
+      process.env.JWT,
+      { expiresIn: '1h' }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: userId, email, type: 'refresh' },
+      process.env.JWT_REFRESH || process.env.JWT + '_refresh',
+      { expiresIn: '7d' }
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'None',
+      secure: true,
+      maxAge: 3600000,
+      path: '/',
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      sameSite: 'None',
+      secure: true,
+      maxAge: 604800000,
+      path: '/',
+    });
+
+    return res.status(201).json({ userID: userId, token, refreshToken, role: 'Standard-User' });
+  } catch (err) {
+    console.error('Auth users error:', err);
+    return res.status(500).json({ error: `Database error ${err.message}` });
+  }
+};
 
 // ==================== CLIENT APIs ====================
 
@@ -290,7 +409,7 @@ exports.signupUser = async (req, res) => {
       maxAge: 60 * 60 * 24 * 1000 // 1 day
     });
 
-    res.status(201).json({ 
+    res.status(201).json({
       message: 'User created successfully',
       user_id: userId,
       token: token,
@@ -311,7 +430,7 @@ exports.checkEmailExists = async (req, res) => {
       return res.status(400).json({ error: 'Email is required' });
 
     const pool = await poolPromise;
-    
+
     const result = await pool.request()
       .input('email', email)
       .query('SELECT COUNT(*) AS count FROM users WHERE Email = @email');

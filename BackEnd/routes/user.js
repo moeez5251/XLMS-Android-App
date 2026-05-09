@@ -12,10 +12,11 @@ router.post('/activate', userController.activateUser);
 router.delete('/delete', userController.deleteaccount);
 router.put('/changepassword', userController.changepassword);
 router.post('/forgotpassword', userController.forgotpassword);
-
+router.post('/resetpassword', userController.resetpassword);
 // ==================== CLIENT APIs ====================
 // These are unprotected routes (public)
 router.post('/signup', userController.signupUser);
 router.post('/exist', userController.checkEmailExists);
+router.post('/auth-users', userController.authUsers);
 
 module.exports = router;

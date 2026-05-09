@@ -13,8 +13,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.JsonObject;
 import com.xlms.librarymanagement.R;
+import com.xlms.librarymanagement.api.ApiClient;
+import com.xlms.librarymanagement.api.MessageResponse;
 import com.xlms.librarymanagement.ui.login.LoginActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Forgot Password Activity - Account Recovery
@@ -26,6 +33,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private ImageButton buttonBack;
     private EditText editTextEmail;
     private Button buttonSendReset;
+    private android.widget.ProgressBar progressBar;
     private TextView textViewBackToLogin;
     private View emailAccentLine;
 
@@ -43,6 +51,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.buttonBack);
         editTextEmail = findViewById(R.id.editTextEmail);
         buttonSendReset = findViewById(R.id.buttonSendReset);
+        progressBar = findViewById(R.id.progressBar);
         textViewBackToLogin = findViewById(R.id.textViewBackToLogin);
         emailAccentLine = findViewById(R.id.emailAccentLine);
     }
@@ -82,8 +91,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private void handleSendReset() {
         String email = editTextEmail.getText().toString().trim();
-        editTextEmail.setEnabled(false);
-        // Validation
+        
         if (email.isEmpty()) {
             editTextEmail.setError("Please enter your email address");
             editTextEmail.requestFocus();
@@ -96,18 +104,48 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        // Show success message
-        Toast.makeText(
-            this, 
-            "Reset instructions sent to " + email, 
-            Toast.LENGTH_LONG
-        ).show();
+        buttonSendReset.setEnabled(false);
+        buttonSendReset.setText("");
+        progressBar.setVisibility(View.VISIBLE);
 
-        // Clear the field
-        editTextEmail.setText("");
+        JsonObject body = new JsonObject();
+        body.addProperty("Email", email);
 
-        // In production: Send reset email via backend API
-        // For now, just show confirmation
+        ApiClient.getApiService(this).resetPassword(body).enqueue(new Callback<MessageResponse>() {
+            @Override
+            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+                buttonSendReset.setEnabled(true);
+                buttonSendReset.setText("Send Reset Instructions");
+                progressBar.setVisibility(View.GONE);
+
+                if (response.isSuccessful()) {
+                    Toast.makeText(ForgotPasswordActivity.this, "Reset instructions sent to your email", Toast.LENGTH_LONG).show();
+                    editTextEmail.setText("");
+                } else {
+                    String errorMessage = "Failed to send reset instructions";
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                            if (errorObj.has("error")) {
+                                errorMessage = errorObj.get("error").getAsString();
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(ForgotPasswordActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageResponse> call, Throwable t) {
+                buttonSendReset.setEnabled(true);
+                buttonSendReset.setText("Send Reset Instructions");
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(ForgotPasswordActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void navigateToLogin() {

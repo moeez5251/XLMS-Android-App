@@ -13,6 +13,9 @@ public interface ApiService {
     @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
+    @POST("users/auth-users")
+    Call<AuthUsersResponse> authUsers(@Body AuthUsersRequest request);
+
     @POST("users/register")
     Call<MessageResponse> register(@Body RegisterRequest registerRequest);
 
@@ -95,6 +98,9 @@ public interface ApiService {
 
     @POST("users/forgotpassword")
     Call<MessageResponse> forgotPassword(@Body com.google.gson.JsonObject body);
+
+    @POST("users/resetpassword")
+    Call<MessageResponse> resetPassword(@Body com.google.gson.JsonObject body);
 
     @PUT("users/changepassword")
     Call<MessageResponse> changePassword(@Body com.google.gson.JsonObject body);
