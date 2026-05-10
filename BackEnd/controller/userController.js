@@ -2,11 +2,26 @@ const { poolPromise } = require('../models/db');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
-const { generatetoken } = require('./tokengenerator');
 const { sendEmail } = require('./mailer');
 const { addNotificationHelper } = require('./notificationscontroller');
-const { generateRefreshToken } = require('./authController');
 
+
+
+function generateToken(user) {
+  return jwt.sign(
+    { id: user.User_id, email: user.Email },
+    process.env.JWT,
+    { expiresIn: '1h' }
+  );
+}
+
+ function generateRefreshToken(user) {
+  return jwt.sign(
+    { id: user.User_id, email: user.Email, type: 'refresh' },
+    process.env.JWT_REFRESH || process.env.JWT + '_refresh',
+    { expiresIn: '7d' }
+  );
+}
 exports.createUser = async (req, res) => {
   try {
     const { User_Name, Email, Role, Membership_Type, Password } = req.body;

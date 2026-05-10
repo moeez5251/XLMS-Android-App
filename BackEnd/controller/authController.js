@@ -3,7 +3,7 @@ const { poolPromise } = require('../models/db');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 
-export function generateToken(user) {
+ function generateToken(user) {
   return jwt.sign(
     { id: user.User_id, email: user.Email },
     process.env.JWT,
@@ -11,7 +11,7 @@ export function generateToken(user) {
   );
 }
 
-export function generateRefreshToken(user) {
+ function generateRefreshToken(user) {
   return jwt.sign(
     { id: user.User_id, email: user.Email, type: 'refresh' },
     process.env.JWT_REFRESH || process.env.JWT + '_refresh',
