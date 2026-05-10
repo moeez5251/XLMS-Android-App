@@ -4,8 +4,7 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { sendEmail } = require('./mailer');
 const { addNotificationHelper } = require('./notificationscontroller');
-
-
+const { generatetoken } = require('./tokengenerator')
 
 function generateToken(user) {
   return jwt.sign(
