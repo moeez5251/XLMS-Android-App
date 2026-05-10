@@ -69,19 +69,19 @@ public class ClientDashboardMainFragment extends Fragment {
         bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.bottom_client_dashboard) {
-                viewPager.setCurrentItem(0);
+                setCurrentItem(0);
                 return true;
             } else if (id == R.id.bottom_client_catalog) {
-                viewPager.setCurrentItem(1);
+                setCurrentItem(1);
                 return true;
             } else if (id == R.id.bottom_client_account) {
-                viewPager.setCurrentItem(2);
+                setCurrentItem(2);
                 return true;
             } else if (id == R.id.bottom_client_help) {
-                viewPager.setCurrentItem(3);
+                setCurrentItem(3);
                 return true;
             } else if (id == R.id.bottom_client_notifications) {
-                viewPager.setCurrentItem(4);
+                setCurrentItem(4);
                 return true;
             }
             return false;
@@ -97,6 +97,11 @@ public class ClientDashboardMainFragment extends Fragment {
     }
 
     public void setCurrentItem(int item) {
+        // Clear backstack if any fragment is open over the ViewPager
+        if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+            getChildFragmentManager().popBackStackImmediate(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
         if (viewPager != null) {
             viewPager.setCurrentItem(item);
         }
