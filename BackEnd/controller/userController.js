@@ -412,8 +412,9 @@ exports.signupUser = async (req, res) => {
 
     await addNotificationHelper(userId, 'Welcome to XLMS Library! Your account has been created successfully. Explore our catalog to find your next read.');
 
-    const token = generateToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const newUser = { User_id: userId, Email: email };
+    const token = generateToken(newUser);
+    const refreshToken = generateRefreshToken(newUser);
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -431,7 +432,10 @@ exports.signupUser = async (req, res) => {
 
     res.status(201).json({
       message: 'User created successfully',
+      id: userId,
+      user_id: userId,
       userid: userId,
+      userID: userId,
       token: token,
       role: 'Standard-User'
     });
