@@ -7,7 +7,7 @@ Welcome to the **XLMS Library Management System**, a robust, full-stack solution
 ## 🎨 UI Design Preview
 
 Experience the design vision of XLMS directly in your browser:
-👉 **[Launch Interactive UI Design](./UI%20Design/index.html)**
+👉 **[Launch Interactive UI Design](https://xlms-ui.netlify.app)**
 
 *Note: The design folder contains high-fidelity HTML/CSS mockups representing the core application screens.*
 

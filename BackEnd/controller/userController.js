@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const { generatetoken } = require('./tokengenerator');
 const { sendEmail } = require('./mailer');
 const { addNotificationHelper } = require('./notificationscontroller');
+const { generateRefreshToken } = require('./authController');
 
 exports.createUser = async (req, res) => {
   try {
@@ -383,7 +384,7 @@ exports.signupUser = async (req, res) => {
     const uid = uuidv4();
     const userId = `${name[0].toUpperCase()}${uid.slice(0, 7)}`;
 
-    await pool.request()
+    const user = await pool.request()
       .input('User_id', userId)
       .input('User_Name', name)
       .input('Email', email)
@@ -396,22 +397,26 @@ exports.signupUser = async (req, res) => {
 
     await addNotificationHelper(userId, 'Welcome to XLMS Library! Your account has been created successfully. Explore our catalog to find your next read.');
 
-    const token = require('jsonwebtoken').sign(
-      { user_id: userId, email: email },
-      process.env.JWT,
-      { expiresIn: '1d' }
-    );
+    const token = generateToken(user);
+    const refreshToken = generateRefreshToken(user);
 
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
+      sameSite: "None",
       secure: true,
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 1000 // 1 day
+      maxAge: 3600000 // 1 hour
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 604800000 // 7 days
     });
 
     res.status(201).json({
       message: 'User created successfully',
-      user_id: userId,
+      userid: userId,
       token: token,
       role: 'Standard-User'
     });

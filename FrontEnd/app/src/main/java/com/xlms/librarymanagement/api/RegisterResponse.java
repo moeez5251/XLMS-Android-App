@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class RegisterResponse {
     @SerializedName("message")
     private String message;
-    @SerializedName("user_id")
+    @SerializedName(value = "userId", alternate = {"user_id", "userid", "userID"})
     private String userId;
     @SerializedName("token")
     private String token;

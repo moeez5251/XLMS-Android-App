@@ -212,8 +212,20 @@ public class EmailVerificationFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     // Save session data
                     com.xlms.librarymanagement.api.RegisterResponse regResp = response.body();
+                    
+                    // Map backend roles: "Admin" -> "ADMIN", "Standard-User" -> "CLIENT"
+                    String appRole = "CLIENT";
+                    String backendRole = regResp.getRole();
+                    if (backendRole != null) {
+                        if (backendRole.equalsIgnoreCase("Admin")) {
+                            appRole = "ADMIN";
+                        } else if (backendRole.equalsIgnoreCase("Standard-User")) {
+                            appRole = "CLIENT";
+                        }
+                    }
+
                     com.xlms.librarymanagement.utils.SessionManager sessionManager = new com.xlms.librarymanagement.utils.SessionManager(requireContext());
-                    sessionManager.saveSession(finalEmail, regResp.getRole(), finalFullName, regResp.getUserId(), regResp.getToken());
+                    sessionManager.saveSession(finalEmail, appRole, finalFullName, regResp.getUserId(), regResp.getToken());
                     
                     // Reset ApiClient to pick up the new token
                     com.xlms.librarymanagement.api.ApiClient.resetClient();
