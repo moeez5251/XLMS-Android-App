@@ -40,11 +40,12 @@
                     app:tint="@color/primary" />
 
                 <TextView
+                    android:id="@+id/textViewToolbarTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="@string/xlms_library"
+                    android:text="Dashboard"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/primary"

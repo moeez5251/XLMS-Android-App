@@ -113,7 +113,7 @@ public class BookInfoFragment extends Fragment {
         buttonDelete = view.findViewById(R.id.buttonDelete);
         buttonLend = view.findViewById(R.id.buttonLend);
         progressBar = view.findViewById(R.id.progressBar);
-        contentLayout = view.findViewById(R.id.contentLayout);
+        contentLayout = view.findViewById(R.id.mainContent);
         shimmerLayout = view.findViewById(R.id.shimmerLayout);
         buttonBack = view.findViewById(R.id.buttonBack);
     }
@@ -130,7 +130,7 @@ public class BookInfoFragment extends Fragment {
     }
 
     private void showSkeleton(boolean show) {
-        if (shimmerLayout == null) return;
+        if (shimmerLayout == null || contentLayout == null) return;
         if (show) {
             shimmerLayout.setVisibility(View.VISIBLE);
             contentLayout.setVisibility(View.GONE);

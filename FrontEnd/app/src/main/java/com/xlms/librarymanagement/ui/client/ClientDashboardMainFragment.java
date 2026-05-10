@@ -41,6 +41,11 @@ public class ClientDashboardMainFragment extends Fragment {
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
+                // Update Toolbar Title in parent Activity
+                if (getActivity() instanceof ClientDashboardActivity) {
+                    ((ClientDashboardActivity) getActivity()).updateToolbarTitle(position);
+                }
+
                 switch (position) {
                     case 0:
                         bottomNavigation.setSelectedItemId(R.id.bottom_client_dashboard);

@@ -1,6 +1,8 @@
 package com.xlms.librarymanagement.api;
 
 import android.content.Context;
+import android.content.Intent;
+
 import androidx.annotation.Nullable;
 import com.xlms.librarymanagement.utils.SessionManager;
 import okhttp3.Authenticator;
@@ -18,7 +20,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class ApiClient {
-    private static final String BASE_URL = "http://127.0.0.1:5000/api/";
+    private static final String BASE_URL = "https://xlms-android-app.onrender.com/api/";
     private static Retrofit retrofit = null;
     private static Set<String> cookies = new HashSet<>();
 
@@ -77,24 +79,31 @@ public class ApiClient {
                             }
                             
                             // Proceed with the request
-                            Response response = chain.proceed(requestBuilder.build());
+                            try {
+                                Response response = chain.proceed(requestBuilder.build());
 
-                            // Check if backend sent a new token in response headers
-                            String newToken = response.header("X-New-Token");
-                            if (newToken != null && !newToken.isEmpty()) {
-                                // Update session with new token
-                                String email = sessionManager.getUserEmail();
-                                String role = sessionManager.getUserRole();
-                                String userId = sessionManager.getUserId();
-                                sessionManager.saveSession(email, role, null, userId, newToken);
-                            }
+                                // Check if backend sent a new token in response headers
+                                String newToken = response.header("X-New-Token");
+                                if (newToken != null && !newToken.isEmpty()) {
+                                    String email = sessionManager.getUserEmail();
+                                    String role = sessionManager.getUserRole();
+                                    String userId = sessionManager.getUserId();
+                                    sessionManager.saveSession(email, role, null, userId, newToken);
+                                }
 
-                            // Save cookies persistently
-                            if (!response.headers("Set-Cookie").isEmpty()) {
-                                Set<String> newCookies = new HashSet<>(response.headers("Set-Cookie"));
-                                sessionManager.saveCookies(newCookies);
+                                // Save cookies persistently
+                                if (!response.headers("Set-Cookie").isEmpty()) {
+                                    Set<String> newCookies = new HashSet<>(response.headers("Set-Cookie"));
+                                    sessionManager.saveCookies(newCookies);
+                                }
+                                return response;
+                            } catch (IOException e) {
+                                // Launch NoInternetActivity if network error occurs
+                                Intent intent = new Intent(appContext, com.xlms.librarymanagement.ui.error.NoInternetActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                appContext.startActivity(intent);
+                                throw e; // Re-throw to inform the caller
                             }
-                            return response;
                         }
                     })
                     .connectTimeout(15, TimeUnit.SECONDS)

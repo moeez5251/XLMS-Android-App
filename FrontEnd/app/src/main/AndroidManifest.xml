@@ -45,6 +45,12 @@
             android:theme="@style/Theme.XLMSAdmin"
             android:windowSoftInputMode="adjustResize" />
         
+        <!-- No Internet Activity -->
+        <activity
+            android:name=".ui.error.NoInternetActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <!-- Admin Dashboard Activity -->
         <activity
             android:name=".ui.admin.AdminDashboardActivity"

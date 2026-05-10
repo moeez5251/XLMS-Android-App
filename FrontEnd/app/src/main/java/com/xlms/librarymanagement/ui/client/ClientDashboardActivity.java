@@ -41,6 +41,7 @@ import retrofit2.Response;
  */
 public class ClientDashboardActivity extends AppCompatActivity {
 
+    private TextView textViewToolbarTitle;
     private View backdropOverlay;
     private View bottomSheetContent;
     private View buttonOpenDrawer;
@@ -77,6 +78,7 @@ public class ClientDashboardActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        textViewToolbarTitle = findViewById(R.id.textViewToolbarTitle);
         backdropOverlay = findViewById(R.id.backdropOverlay);
         bottomSheetContent = findViewById(R.id.bottomSheetContent);
         buttonOpenDrawer = findViewById(R.id.buttonOpenDrawer);
@@ -190,11 +192,24 @@ public class ClientDashboardActivity extends AppCompatActivity {
         }
     }
 
+    public void updateToolbarTitle(int index) {
+        if (textViewToolbarTitle == null) return;
+        switch (index) {
+            case 0: textViewToolbarTitle.setText("Dashboard"); break;
+            case 1: textViewToolbarTitle.setText("Book Catalog"); break;
+            case 2: textViewToolbarTitle.setText("My Account"); break;
+            case 3: textViewToolbarTitle.setText("Help & Support"); break;
+            case 4: textViewToolbarTitle.setText("Notifications"); break;
+        }
+    }
+
     private void navigateToTab(int index) {
         Fragment mainFrag = getSupportFragmentManager().findFragmentByTag("MAIN_FRAGMENT");
         if (mainFrag instanceof ClientDashboardMainFragment) {
             ((ClientDashboardMainFragment) mainFrag).setCurrentItem(index);
         }
+        
+        updateToolbarTitle(index);
         
         // Sync BottomNavigation
         if (index == 0) bottomNavigation.setSelectedItemId(R.id.bottom_client_dashboard);

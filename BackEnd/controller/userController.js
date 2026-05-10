@@ -250,7 +250,7 @@ exports.resetpassword = async (req, res) => {
     .input('Email', Email)
     .query('SELECT User_id FROM users WHERE Email = @Email');
   if (ID.recordset.length === 0) {
-    return res.status(404).json({ error: 'User not found' });
+    return res.status(404).json({ error: 'No user found with this email address' });
   }
   const link = await generatetoken(ID.recordset[0].User_id);
   await addNotificationHelper(ID.recordset[0].User_id, 'Security Alert: A password reset request was initiated for your account.');

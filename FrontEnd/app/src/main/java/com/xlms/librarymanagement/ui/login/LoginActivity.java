@@ -178,15 +178,21 @@ public class LoginActivity extends AppCompatActivity {
                     AuthUsersResponse authResponse = response.body();
                     saveGoogleSessionAndNavigate(email, authResponse.getUserId(), authResponse.getRole(), name, authResponse.getToken());
                 } else {
-                    String error = "Authentication failed";
+                    String errorMessage = "Authentication failed";
                     try {
                         if (response.errorBody() != null) {
-                            error = response.errorBody().string();
+                            String errorJson = response.errorBody().string();
+                            com.google.gson.JsonObject errorObj = com.google.gson.JsonParser.parseString(errorJson).getAsJsonObject();
+                            if (errorObj.has("message")) {
+                                errorMessage = errorObj.get("message").getAsString();
+                            } else if (errorObj.has("error")) {
+                                errorMessage = errorObj.get("error").getAsString();
+                            }
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 }
             }
 
