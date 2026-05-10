@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>User Profile | XLMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f8f9fa",
+                        "primary-fixed": "#d6e3ff",
+                        "on-surface-variant": "#43474e",
+                        "surface-variant": "#e1e3e4",
+                        "outline-variant": "#c4c6cf",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#1a365d",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed": "#ffddba",
+                        "surface-container": "#edeeef",
+                        "inverse-on-surface": "#f0f1f2",
+                        "secondary-fixed": "#d9e3f8",
+                        "secondary": "#555f70",
+                        "on-tertiary-fixed": "#2b1700",
+                        "on-surface": "#191c1d",
+                        "on-primary-fixed": "#001b3c",
+                        "tertiary-container": "#4f2e00",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#121c2b",
+                        "surface-bright": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "surface-dim": "#d9dadb",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "on-secondary-fixed-variant": "#3e4758",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "inverse-primary": "#adc7f7",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-secondary-container": "#5b6577",
+                        "on-primary-container": "#86a0cd",
+                        "surface-container-high": "#e7e8e9",
+                        "outline": "#74777f",
+                        "surface-tint": "#455f88",
+                        "on-background": "#191c1d",
+                        "primary": "#002045",
+                        "on-tertiary-container": "#c6955e",
+                        "secondary-container": "#d9e3f8",
+                        "tertiary": "#321b00",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#adc7f7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-athenaeum-gradient {
+            background: linear-gradient(135deg, #002045 0%, #1a365d 100%);
+        }
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-[#f8f9fa] dark:bg-[#191c1d] flex justify-between items-center h-16 px-6 max-w-full">
+<div class="flex items-center gap-4">
+<button class="hover:bg-[#e7e8e9] dark:hover:bg-[#3f4042] transition-colors active:scale-95 duration-200 p-2 rounded-full">
+<span class="material-symbols-outlined text-[#1A365D] dark:text-[#d1e4ff]" data-icon="menu">menu</span>
+</button>
+<h1 class="font-['Manrope'] font-black text-[#1A365D] dark:text-[#d1e4ff] tracking-tighter text-lg uppercase">XLMS</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20">
+<img alt="User Profile Avatar" data-alt="close-up portrait of a scholarly man with glasses and a thoughtful expression, warm soft library lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBziAX6A6v-o_opVf_Xn1Am5jqk5xnSL77-ATNSctnqV6VR26All_2NfVqAQ-TORTvvggo21nSwAuJDRfcx7JwIw8mvYTmwMWXeUwUho7AHVauq6qSjnd-PKdPSsvMKzuzSpFVqty8JEGaxTAX4O8tLQgMKXEYQl1NNbuTlkhflAtDcsJlioejjdTzlDlT3QmP88RAQgTnMLio8YMa4-5dUCB2sEGyXa_1AZyAe43arxLOsAm-NuUVwq8MIW2hqRFEjqhmO6UHWhag"/>
+</div>
+</div>
+</header>
+<main class="max-w-4xl mx-auto px-6 pt-8 pb-32">
+<!-- Editorial Header Section -->
+<div class="mb-12">
+<h2 class="font-headline font-extrabold text-4xl text-primary tracking-tight mb-2">Curator Profile</h2>
+<p class="text-on-surface-variant font-medium">Manage your institutional identity and security credentials.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Left Column: Visual Anchor -->
+<div class="md:col-span-4 space-y-6">
+<div class="aspect-square rounded-xl overflow-hidden bg-surface-container-low">
+<img class="w-full h-full object-cover" data-alt="atmospheric shot of vintage books stacked neatly on a dark wood desk with a single lamp providing warm glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA_0jZJPc396sEoX14GapX4EOFQyeNShV0phyTruDDGSDqA8NiHX-7cNE3uhMuJyFEpZGBhRdk5JmKpecHNpe0cUZDt4fa4qnLvtWTbOz6g-5z4WfVdtX-V41jZMYpQ6W5lvCMRrMOwzpjtl3oK0w_Lz31C5yBlkX9MOAfWKMfs3YvGiE-KugSgWU7iAmDx0Y9xBfZydbYWfchGMOUZ_Mi7m5e3OC_grTnUaUG4-4RDEE3ZBcgrjKJ-8u0o9gdg_YVQXXhzORx6ZQ"/>
+</div>
+<div class="p-6 rounded-xl bg-surface-container-low">
+<h3 class="font-headline font-bold text-sm text-primary mb-3">Membership Status</h3>
+<div class="flex items-center gap-2 mb-4">
+<span class="w-2 h-2 rounded-full bg-green-600"></span>
+<span class="text-sm font-semibold text-on-surface uppercase tracking-wider">Active Scholar</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">Account verified for archival research and premium catalog access since 2021.</p>
+</div>
+</div>
+<!-- Right Column: Form Sections -->
+<div class="md:col-span-8 space-y-12">
+<!-- Section 1: Account Information -->
+<section>
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary-container" data-icon="badge">badge</span>
+<h3 class="font-headline font-bold text-xl text-primary">Account Information</h3>
+</div>
+<div class="space-y-6">
+<!-- User ID (Readonly) -->
+<div class="group">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 ml-1">Archive ID</label>
+<div class="bg-surface-container text-on-surface-variant px-4 py-4 rounded-xl font-mono text-sm border-l-4 border-outline-variant">
+                                XLMS-2944-XBD-09
+                            </div>
+</div>
+<!-- User Name -->
+<div class="group">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 ml-1">Full Name</label>
+<div class="relative bg-surface-container-high rounded-t-lg border-b-2 border-primary overflow-hidden">
+<input class="w-full bg-transparent border-none px-4 py-4 text-on-surface font-medium placeholder:text-on-surface-variant/50 focus:ring-0" type="text" value="Dr. Julian Vane"/>
+</div>
+</div>
+<!-- Email -->
+<div class="group">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 ml-1">Institutional Email</label>
+<div class="relative bg-surface-container-high rounded-t-lg border-b-2 border-primary overflow-hidden">
+<input class="w-full bg-transparent border-none px-4 py-4 text-on-surface font-medium focus:ring-0" type="email" value="j.vane@university-archival.edu"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Change Password -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container" data-icon="lock_reset">lock_reset</span>
+<h3 class="font-headline font-bold text-xl text-primary">Change Password</h3>
+</div>
+<button class="text-[11px] font-bold text-primary uppercase tracking-widest hover:underline transition-all">Forget Password?</button>
+</div>
+<div class="space-y-6">
+<!-- Old Password -->
+<div class="group">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 ml-1">Current Password</label>
+<div class="relative bg-surface-container-high rounded-t-lg border-b-2 border-primary/20 focus-within:border-primary overflow-hidden transition-all">
+<input class="w-full bg-transparent border-none px-4 py-4 text-on-surface focus:ring-0" placeholder="••••••••••••" type="password"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- New Password -->
+<div class="group">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 ml-1">New Password</label>
+<div class="relative bg-surface-container-high rounded-t-lg border-b-2 border-primary/20 focus-within:border-primary overflow-hidden transition-all">
+<input class="w-full bg-transparent border-none px-4 py-4 text-on-surface focus:ring-0" placeholder="Min. 12 characters" type="password"/>
+</div>
+</div>
+<!-- Re-enter Password -->
+<div class="group">
+<label class="block text-[11px] font-bold text-on-surface-variant uppercase tracking-widest mb-2 ml-1">Verify Password</label>
+<div class="relative bg-surface-container-high rounded-t-lg border-b-2 border-primary/20 focus-within:border-primary overflow-hidden transition-all">
+<input class="w-full bg-transparent border-none px-4 py-4 text-on-surface focus:ring-0" placeholder="Confirm new password" type="password"/>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="pt-8 flex flex-col sm:flex-row gap-4 justify-end items-center">
+<button class="w-full sm:w-auto px-8 py-4 text-sm font-bold text-primary hover:bg-surface-container transition-colors rounded-xl tracking-wide">
+                        Cancel Changes
+                    </button>
+<button class="w-full sm:w-auto px-10 py-4 text-sm font-bold text-on-primary bg-athenaeum-gradient rounded-xl shadow-lg active:scale-95 duration-200 transition-all tracking-wide">
+                        Update Curator Identity
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-3 pb-safe bg-[#ffffffcc] dark:bg-[#191c1dcc] backdrop-blur-xl border-t border-[#191c1d]/10 dark:border-[#ffffff]/10 shadow-[0_-4px_24px_-4px_rgba(25,28,29,0.06)] z-50">
+<a class="flex flex-col items-center justify-center text-[#444748] dark:text-[#c4c7c8] py-2 px-5 hover:text-[#1A365D] active:opacity-80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-widest mt-1">Catalog</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#444748] dark:text-[#c4c7c8] py-2 px-5 hover:text-[#1A365D] active:opacity-80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="book_2">book_2</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-widest mt-1">My Books</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#444748] dark:text-[#c4c7c8] py-2 px-5 hover:text-[#1A365D] active:opacity-80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-widest mt-1">Research</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#002045] to-[#1A365D] text-white rounded-full py-2 px-5 active:opacity-80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-widest mt-1">Profile</span>
+</a>
+</nav>
+<!-- Desktop Sidebar/Status (Visual only for layout richness) -->
+<div class="hidden md:block fixed right-8 bottom-8">
+<div class="bg-surface-container-lowest/80 backdrop-blur-xl p-4 rounded-2xl shadow-xl flex items-center gap-4 border border-outline-variant/10">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">XLMS Synchronized</span>
+</div>
+</div>
+</body></html>

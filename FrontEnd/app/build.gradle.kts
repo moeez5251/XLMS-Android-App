@@ -14,6 +14,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Inject BASE_URL from gradle.properties
+        buildConfigField("String", "BASE_URL", project.property("BASE_URL").toString())
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

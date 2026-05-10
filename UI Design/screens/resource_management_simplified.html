@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Resource - The Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f3f4f5",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "tertiary-container": "#4f2e00",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "background": "#f8f9fa",
+                        "primary-fixed-dim": "#adc7f7",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-container": "#c6955e",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#2b1700",
+                        "on-secondary-fixed": "#121c2b",
+                        "on-secondary": "#ffffff",
+                        "primary": "#002045",
+                        "on-secondary-container": "#5b6577",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-highest": "#e1e3e4",
+                        "outline": "#74777f",
+                        "on-primary-container": "#86a0cd",
+                        "inverse-primary": "#adc7f7",
+                        "inverse-on-surface": "#f0f1f2",
+                        "primary-fixed": "#d6e3ff",
+                        "secondary": "#555f70",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "on-primary-fixed": "#001b3c",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "secondary-container": "#d9e3f8",
+                        "on-secondary-fixed-variant": "#3e4758",
+                        "on-error": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "outline-variant": "#c4c6cf",
+                        "inverse-surface": "#2e3132",
+                        "tertiary": "#321b00",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#455f88",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#d9e3f8",
+                        "surface-dim": "#d9dadb",
+                        "on-background": "#191c1d",
+                        "primary-container": "#1a365d",
+                        "tertiary-fixed": "#ffddba"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            font-family: 'Manrope', sans-serif;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f8f9fa] dark:bg-[#191c1d]">
+<nav class="flex justify-between items-center px-6 h-16 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#1A365D] dark:text-[#f3f4f5]">account_balance</span>
+<span class="text-xl font-bold text-[#1A365D] dark:text-[#ffffff] tracking-widest uppercase">The Digital Curator</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#444748] dark:text-[#c4c7c8] font-['Manrope'] font-bold text-lg tracking-tight hover:bg-[#e7e8e9] dark:hover:bg-[#444748] transition-colors px-3 py-1 rounded" href="#">Collection</a>
+<a class="text-[#1A365D] font-bold font-['Manrope'] font-bold text-lg tracking-tight px-3 py-1 rounded" href="#">Resources</a>
+<a class="text-[#444748] dark:text-[#c4c7c8] font-['Manrope'] font-bold text-lg tracking-tight hover:bg-[#e7e8e9] dark:hover:bg-[#444748] transition-colors px-3 py-1 rounded" href="#">Curators</a>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#1A365D] dark:text-[#f3f4f5] cursor-pointer active:scale-95 duration-150">add_circle</span>
+</div>
+</nav>
+<div class="h-[1px] bg-[#f3f4f5] dark:bg-[#2e3132]"></div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-screen-xl mx-auto">
+<!-- Hero Header -->
+<header class="mb-16">
+<h1 class="text-5xl font-extrabold text-primary mb-4 tracking-tight">Resource Management</h1>
+<p class="text-on-surface-variant max-w-2xl text-lg leading-relaxed">Refine the metadata and parameters of the XLMS Library ecosystem. Here, curators maintain the structural integrity of the Athenaeum’s digital assets.</p>
+</header>
+<div class="max-w-3xl mx-auto">
+<!-- Section 1: Library Details -->
+<section class="space-y-8">
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(25,28,29,0.06)] relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<h2 class="text-2xl font-bold text-primary">Library Details</h2>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="block text-xs font-semibold uppercase tracking-widest text-on-surface-variant px-1">Library Name</label>
+<div class="bg-surface-container-high p-4 rounded-lg flex items-center gap-3 border-b-2 border-primary">
+<span class="material-symbols-outlined text-primary-container text-sm">temple_buddhist</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface font-medium w-full" readonly="" type="text" value="XLMS Central Athenaeum"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-semibold uppercase tracking-widest text-on-surface-variant px-1">Institutional Email</label>
+<div class="bg-surface-container-high p-4 rounded-lg flex items-center gap-3 border-b-2 border-primary">
+<span class="material-symbols-outlined text-primary-container text-sm">mail</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface font-medium w-full" readonly="" type="email" value="curator@xlms-library.org"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-semibold uppercase tracking-widest text-on-surface-variant px-1">Official Repository URL</label>
+<div class="bg-surface-container-high p-4 rounded-lg flex items-center gap-3 border-b-2 border-primary">
+<span class="material-symbols-outlined text-primary-container text-sm">language</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface font-medium w-full" readonly="" type="text" value="www.xlms-library.org"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Prominent Add Resource Button -->
+<div class="flex justify-center pt-4">
+<button class="w-full max-w-md py-5 rounded-xl font-bold text-white shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 active:scale-95 bg-gradient-to-br from-[#002045] to-[#1a365d] flex items-center justify-center gap-3 text-lg uppercase tracking-wider">
+<span class="material-symbols-outlined text-2xl">add_circle</span>
+                        Add New Resource
+                    </button>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-white/80 dark:bg-[#191c1d]/80 backdrop-blur-xl border-t border-[#191c1d]/5 shadow-[0_-12px_32px_-4px_rgba(25,28,29,0.06)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-[#444748] dark:text-[#c4c7c8] py-2 px-4 transition-all duration-300 ease-in-out hover:text-[#1A365D]" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Collection</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#1A365D] text-white rounded-xl py-2 px-4 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Resources</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#444748] dark:text-[#c4c7c8] py-2 px-4 transition-all duration-300 ease-in-out hover:text-[#1A365D]" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Curators</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#444748] dark:text-[#c4c7c8] py-2 px-4 transition-all duration-300 ease-in-out hover:text-[#1A365D]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide">Settings</span>
+</a>
+</nav>
+<!-- The "Curator's Tray" batch docking area -->
+<div class="hidden lg:flex fixed bottom-8 left-1/2 -translate-x-1/2 bg-white/80 dark:bg-[#191c1d]/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-full px-8 py-4 items-center gap-8 z-40">
+<div class="flex items-center gap-3">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full bg-primary-container border-2 border-white flex items-center justify-center text-[10px] text-white">RM</div>
+<div class="w-8 h-8 rounded-full bg-secondary-container border-2 border-white flex items-center justify-center text-[10px] text-primary">DS</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-white flex items-center justify-center text-[10px] text-on-surface-variant">+2</div>
+</div>
+<span class="text-xs font-bold uppercase tracking-widest text-primary">Curator Queue</span>
+</div>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<div class="flex items-center gap-4">
+<button class="text-primary hover:bg-primary/5 p-2 rounded-full transition-colors"><span class="material-symbols-outlined text-xl">share</span></button>
+<button class="text-primary hover:bg-primary/5 p-2 rounded-full transition-colors"><span class="material-symbols-outlined text-xl">download</span></button>
+<button class="bg-primary text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest hover:shadow-md transition-all">Synchronize All</button>
+</div>
+</div>
+</body></html>

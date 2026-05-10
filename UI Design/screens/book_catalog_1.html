@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Browse Books - The Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8f9fa",
+                        "on-primary-fixed": "#001b3c",
+                        "outline": "#74777f",
+                        "outline-variant": "#c4c6cf",
+                        "on-tertiary-container": "#c6955e",
+                        "primary-fixed": "#d6e3ff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "tertiary-fixed": "#ffddba",
+                        "on-primary-container": "#86a0cd",
+                        "background": "#f8f9fa",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "tertiary-container": "#4f2e00",
+                        "secondary-container": "#d9e3f8",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "primary": "#002045",
+                        "on-surface-variant": "#43474e",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-container": "#1a365d",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#adc7f7",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#555f70",
+                        "inverse-surface": "#2e3132",
+                        "on-secondary-fixed-variant": "#3e4758",
+                        "on-secondary-fixed": "#121c2b",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9fa",
+                        "on-primary": "#ffffff",
+                        "on-background": "#191c1d",
+                        "surface-tint": "#455f88",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#5b6577",
+                        "on-tertiary-fixed": "#2b1700",
+                        "on-surface": "#191c1d",
+                        "inverse-primary": "#adc7f7",
+                        "tertiary": "#321b00",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "surface-container": "#edeeef",
+                        "secondary-fixed": "#d9e3f8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .headline-sm { font-family: 'Manrope'; font-size: 1.5rem; line-height: 2rem; font-weight: 700; }
+        .label-md { font-family: 'Inter'; font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; }
+        .display-lg { font-family: 'Manrope'; font-size: 3.5rem; line-height: 4rem; font-weight: 800; }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-[#f8f9fa] dark:bg-slate-900 backdrop-blur-md bg-opacity-80 docked full-width top-0 sticky z-40">
+<div class="flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#1A365D] dark:text-blue-400" data-icon="menu_book">menu_book</span>
+<h1 class="text-xl font-bold tracking-tighter text-[#002045] dark:text-white font-manrope">The Digital Curator</h1>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-[#191c1d] dark:text-slate-400 opacity-70 hover:bg-[#e7e8e9] dark:hover:bg-slate-700 transition-colors px-3 py-1 rounded-lg" href="#">Dashboard</a>
+<a class="text-[#002045] dark:text-white font-semibold hover:bg-[#e7e8e9] dark:hover:bg-slate-700 transition-colors px-3 py-1 rounded-lg border-b-2 border-primary" href="#">Catalog</a>
+<a class="text-[#191c1d] dark:text-slate-400 opacity-70 hover:bg-[#e7e8e9] dark:hover:bg-slate-700 transition-colors px-3 py-1 rounded-lg" href="#">Account</a>
+</nav>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#1A365D] dark:text-blue-400 cursor-pointer" data-icon="notifications">notifications</span>
+</div>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-[#1A365D]" data-icon="notifications">notifications</span>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-12 space-y-12">
+<!-- Header Section -->
+<div class="space-y-4">
+<h2 class="display-lg text-primary tracking-tighter">Browse Books</h2>
+<p class="text-on-surface-variant max-w-2xl text-lg leading-relaxed">
+                Explore our curated collection of literary masterpieces and modern scholarly research. Use the search and filters below to refine your discovery journey.
+            </p>
+</div>
+<!-- Search & Filter Area -->
+<div class="bg-surface-container-low rounded-xl p-6 space-y-6">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+</div>
+<input class="w-full bg-surface-container-high border-none rounded-lg py-4 pl-12 pr-4 text-on-surface placeholder-on-surface-variant/50 focus:ring-2 focus:ring-primary focus:bg-surface-container-highest transition-all duration-200 outline-none" placeholder="Search by title, genre, or author..." type="text"/>
+<div class="absolute bottom-0 left-0 h-0.5 w-0 bg-primary group-focus-within:w-full transition-all duration-500 rounded-b-lg"></div>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest rounded-full text-sm font-medium text-on-surface-variant shadow-sm cursor-pointer hover:bg-surface-variant transition-colors">
+<span class="label-md">Language: All</span>
+<span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest rounded-full text-sm font-medium text-on-surface-variant shadow-sm cursor-pointer hover:bg-surface-variant transition-colors">
+<span class="label-md">Author: All</span>
+<span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full text-sm font-medium shadow-md cursor-pointer hover:opacity-90 transition-all">
+<span class="label-md">Availability: Available</span>
+<span class="material-symbols-outlined text-sm" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="ml-auto flex items-center gap-2 text-primary font-semibold text-sm cursor-pointer hover:underline">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+<span>Reset All Filters</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Book Display -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Book Card 1 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-[0_12px_32px_-4px_rgba(25,28,29,0.06)] transform hover:-translate-y-1">
+<div class="aspect-[3/4] overflow-hidden relative bg-[#E2E8F0] flex items-center justify-center">
+<div class="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-200 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-400 text-6xl opacity-60" style="font-variation-settings: 'opsz' 48;">auto_stories</span>
+</div>
+<div class="absolute top-3 left-3 z-10">
+<span class="bg-secondary-fixed-dim text-on-secondary-fixed text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-sm">Finance</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow space-y-2">
+<h3 class="font-headline text-lg font-bold text-primary leading-tight">Rich Dad Poor Dad</h3>
+<p class="text-on-surface-variant text-sm font-medium">Robert Kiyosaki</p>
+<div class="mt-auto pt-4 flex justify-between items-center">
+<span class="text-primary font-extrabold text-sm">PKR 1300</span>
+<span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1">
+                             Available
+                        </span>
+</div>
+</div>
+</div>
+<!-- Book Card 2 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-[0_12px_32px_-4px_rgba(25,28,29,0.06)] transform hover:-translate-y-1">
+<div class="aspect-[3/4] overflow-hidden relative bg-[#FEE2E2] flex items-center justify-center">
+<div class="absolute inset-0 bg-gradient-to-br from-rose-100 to-rose-200 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-rose-400 text-6xl opacity-60" style="font-variation-settings: 'opsz' 48;">auto_stories</span>
+</div>
+<div class="absolute top-3 left-3 z-10">
+<span class="bg-secondary-fixed-dim text-on-secondary-fixed text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-sm">Self-Help</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow space-y-2">
+<h3 class="font-headline text-lg font-bold text-primary leading-tight">Atomic Habits</h3>
+<p class="text-on-surface-variant text-sm font-medium">James Clear</p>
+<div class="mt-auto pt-4 flex justify-between items-center">
+<span class="text-primary font-extrabold text-sm">PKR 1850</span>
+<span class="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded-full flex items-center gap-1">
+                             Reserved
+                        </span>
+</div>
+</div>
+</div>
+<!-- Book Card 3 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-[0_12px_32px_-4px_rgba(25,28,29,0.06)] transform hover:-translate-y-1">
+<div class="aspect-[3/4] overflow-hidden relative bg-[#FEF3C7] flex items-center justify-center">
+<div class="absolute inset-0 bg-gradient-to-br from-amber-100 to-amber-200 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-amber-400 text-6xl opacity-60" style="font-variation-settings: 'opsz' 48;">auto_stories</span>
+</div>
+<div class="absolute top-3 left-3 z-10">
+<span class="bg-secondary-fixed-dim text-on-secondary-fixed text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-sm">Fiction</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow space-y-2">
+<h3 class="font-headline text-lg font-bold text-primary leading-tight">The Alchemist</h3>
+<p class="text-on-surface-variant text-sm font-medium">Paulo Coelho</p>
+<div class="mt-auto pt-4 flex justify-between items-center">
+<span class="text-primary font-extrabold text-sm">PKR 950</span>
+<span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1">
+                             Available
+                        </span>
+</div>
+</div>
+</div>
+<!-- Book Card 4 -->
+<div class="group bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-[0_12px_32px_-4px_rgba(25,28,29,0.06)] transform hover:-translate-y-1">
+<div class="aspect-[3/4] overflow-hidden relative bg-[#ECFDF5] flex items-center justify-center">
+<div class="absolute inset-0 bg-gradient-to-br from-emerald-100 to-emerald-200 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-emerald-400 text-6xl opacity-60" style="font-variation-settings: 'opsz' 48;">auto_stories</span>
+</div>
+<div class="absolute top-3 left-3 z-10">
+<span class="bg-secondary-fixed-dim text-on-secondary-fixed text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-sm">History</span>
+</div>
+</div>
+<div class="p-5 flex flex-col flex-grow space-y-2">
+<h3 class="font-headline text-lg font-bold text-primary text-primary leading-tight">Sapiens</h3>
+<p class="text-on-surface-variant text-sm font-medium">Yuval Noah Harari</p>
+<div class="mt-auto pt-4 flex justify-between items-center">
+<span class="text-primary font-extrabold text-sm">PKR 2100</span>
+<span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1">
+                             Available
+                        </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Featured Collections Section (Asymmetry Layout) -->
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe shadow-[0_-12px_32px_-4px_rgba(25,28,29,0.06)]">
+<div class="flex flex-col items-center justify-center text-[#191c1d] dark:text-slate-400 opacity-60 hover:bg-[#f3f4f5] dark:hover:bg-slate-800 rounded-xl px-2 py-1 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-[11px] font-medium">Dashboard</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#1A365D] text-white rounded-xl py-1 px-4 scale-90 duration-200 ease-in-out">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-inter text-[11px] font-medium">Catalog</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#191c1d] dark:text-slate-400 opacity-60 hover:bg-[#f3f4f5] dark:hover:bg-slate-800 rounded-xl px-2 py-1 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-[11px] font-medium">Account</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#191c1d] dark:text-slate-400 opacity-60 hover:bg-[#f3f4f5] dark:hover:bg-slate-800 rounded-xl px-2 py-1 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-inter text-[11px] font-medium">Help</span>
+</div>
+</nav>
+<!-- Curator's Tray (Batch Processing) -->
+<div class="fixed bottom-24 md:bottom-12 left-1/2 -translate-x-1/2 w-[90%] max-w-xl bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl p-4 flex items-center justify-between border-t border-white/20 z-30">
+<div class="flex items-center gap-4">
+<div class="bg-primary/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary" data-icon="shopping_basket">shopping_basket</span>
+</div>
+<div>
+<p class="text-xs font-bold text-primary-container uppercase tracking-tight">Your Selection</p>
+<p class="text-sm font-medium text-on-surface-variant">2 items ready for borrowing</p>
+</div>
+</div>
+<button class="bg-primary text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg hover:bg-primary-container transition-colors">Checkout</button>
+</div>
+</body></html>

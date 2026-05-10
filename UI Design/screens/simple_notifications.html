@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notifications - The Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#121c2b",
+                    "on-background": "#191c1d",
+                    "surface-container-low": "#f3f4f5",
+                    "on-tertiary-fixed-variant": "#633f0f",
+                    "on-secondary-fixed-variant": "#3e4758",
+                    "inverse-primary": "#adc7f7",
+                    "primary": "#002045",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#455f88",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#d6e3ff",
+                    "outline": "#74777f",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#4f2e00",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#555f70",
+                    "on-primary-container": "#86a0cd",
+                    "inverse-on-surface": "#f0f1f2",
+                    "primary-container": "#1a365d",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d9dadb",
+                    "on-tertiary-fixed": "#2b1700",
+                    "on-primary-fixed": "#001b3c",
+                    "inverse-surface": "#2e3132",
+                    "tertiary-fixed": "#ffddba",
+                    "outline-variant": "#c4c6cf",
+                    "surface-variant": "#e1e3e4",
+                    "surface-container": "#edeeef",
+                    "surface-bright": "#f8f9fa",
+                    "on-surface-variant": "#43474e",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed-dim": "#bdc7db",
+                    "on-surface": "#191c1d",
+                    "secondary-fixed": "#d9e3f8",
+                    "on-tertiary-container": "#c6955e",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface": "#f8f9fa",
+                    "on-primary-fixed-variant": "#2d476f",
+                    "tertiary-fixed-dim": "#f2bc82",
+                    "primary-fixed-dim": "#adc7f7",
+                    "on-primary": "#ffffff",
+                    "background": "#f8f9fa",
+                    "surface-container-high": "#e7e8e9",
+                    "error-container": "#ffdad6",
+                    "secondary-container": "#d9e3f8",
+                    "tertiary": "#321b00",
+                    "on-secondary-container": "#5b6577"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .scholarly-gradient {
+            background: linear-gradient(135deg, #002045 0%, #1a365d 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-surface antialiased">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_12px_32px_-4px_rgba(25,28,29,0.06)] h-16 flex items-center px-6">
+<div class="flex items-center w-full max-w-2xl mx-auto justify-between">
+<div class="flex items-center gap-4">
+<button class="active:scale-95 transition-transform duration-200 hover:bg-slate-100/50 p-2 rounded-full">
+<span class="material-symbols-outlined text-[#1A365D]" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Manrope'] font-semibold text-lg tracking-tight text-[#1A365D]">Notifications</h1>
+</div>
+<button class="text-primary font-medium text-sm px-4 py-2 hover:bg-surface-container-high rounded-lg transition-colors">
+                Clear All
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
+<!-- Notifications List -->
+<div class="space-y-5">
+<!-- Notification Item: Overdue -->
+<div class="bg-surface-container-lowest rounded-xl p-5 flex items-start gap-4 transition-all duration-200 hover:bg-surface-container-low group">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-error-container text-on-error-container shrink-0">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-on-surface">Book Overdue</h3>
+<span class="text-xs font-label text-on-surface-variant">2h ago</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body leading-relaxed">
+                        "The Republic of Plato" is now 3 days overdue. Please return it to avoid further fines.
+                    </p>
+</div>
+</div>
+<!-- Notification Item: Available -->
+<div class="bg-surface-container-lowest rounded-xl p-5 flex items-start gap-4 transition-all duration-200 hover:bg-surface-container-low group">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-secondary-container text-on-secondary-container shrink-0">
+<span class="material-symbols-outlined" data-icon="book" data-weight="fill" style="font-variation-settings: 'FILL' 1;">book</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-on-surface">Reservation Ready</h3>
+<span class="text-xs font-label text-on-surface-variant">5h ago</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body leading-relaxed">
+                        Your reserved copy of "Modern Architecture" is ready for pickup at the Central Desk.
+                    </p>
+</div>
+</div>
+<!-- Notification Item: Success -->
+<div class="bg-surface-container-lowest rounded-xl p-5 flex items-start gap-4 transition-all duration-200 hover:bg-surface-container-low group">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-high text-primary shrink-0">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-on-surface">Renewal Successful</h3>
+<span class="text-xs font-label text-on-surface-variant">Yesterday</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body leading-relaxed">
+                        You have successfully extended the loan period for 3 items in your collection.
+                    </p>
+</div>
+</div>
+<!-- Notification Item: System -->
+<div class="bg-surface-container-lowest rounded-xl p-5 flex items-start gap-4 transition-all duration-200 hover:bg-surface-container-low group">
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-tertiary-fixed text-on-tertiary-fixed shrink-0">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-on-surface">Library Hours Update</h3>
+<span class="text-xs font-label text-on-surface-variant">Oct 12</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body leading-relaxed">
+                        The Reading Room will be closing early this Friday at 6:00 PM for maintenance.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Empty State Preview (Commented out in actual logic, but rendered here for visual completion as requested) -->
+<div class="hidden mt-16 flex-col items-center justify-center text-center">
+<div class="w-64 h-64 mb-6 relative">
+<div class="absolute inset-0 bg-surface-container-low rounded-full opacity-50 blur-3xl"></div>
+<div class="relative flex flex-col items-center justify-center h-full">
+<span class="material-symbols-outlined text-outline-variant text-7xl mb-4" data-icon="auto_stories">auto_stories</span>
+<div class="w-12 h-1 bg-primary/10 rounded-full"></div>
+</div>
+</div>
+<h2 class="font-headline text-xl font-bold text-on-surface mb-2">No new notices.</h2>
+<p class="text-on-surface-variant max-w-xs mx-auto">Your academic ledger is currently clear. Any updates to your loans or reservations will appear here.</p>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_-8px_24px_-4px_rgba(25,28,29,0.04)] rounded-t-2xl z-50">
+<!-- Collection -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-2 hover:text-[#1A365D] transition-all duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Collection</span>
+</a>
+<!-- Catalog -->
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-2 hover:text-[#1A365D] transition-all duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Catalog</span>
+</a>
+<!-- Account (Active because Notifications is sub-page of Account/Profile context) -->
+<a class="flex flex-col items-center justify-center bg-[#1A365D] text-white rounded-xl px-5 py-2 transition-all duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Account</span>
+</a>
+</nav>
+<!-- FAB Suppression Rule Active: FAB is not rendered on Notifications/Details screen -->
+</body></html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>XLMS Athenaeum - Notices</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#adc7f7",
+                        "secondary-container": "#d9e3f8",
+                        "on-primary-container": "#86a0cd",
+                        "inverse-surface": "#2e3132",
+                        "on-secondary-fixed": "#121c2b",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#5b6577",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "on-primary-fixed": "#001b3c",
+                        "primary-fixed": "#d6e3ff",
+                        "surface": "#f8f9fa",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f0f1f2",
+                        "tertiary-container": "#4f2e00",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#d9e3f8",
+                        "outline-variant": "#c4c6cf",
+                        "inverse-primary": "#adc7f7",
+                        "background": "#f8f9fa",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5",
+                        "on-surface-variant": "#43474e",
+                        "primary": "#002045",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "outline": "#74777f",
+                        "on-secondary-fixed-variant": "#3e4758",
+                        "surface-dim": "#d9dadb",
+                        "secondary": "#555f70",
+                        "tertiary": "#321b00",
+                        "on-error": "#ffffff",
+                        "on-background": "#191c1d",
+                        "surface-tint": "#455f88",
+                        "error": "#ba1a1a",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-container": "#c6955e",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffddba",
+                        "on-tertiary-fixed": "#2b1700",
+                        "primary-container": "#1a365d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .headline-font {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f8f9fa] dark:bg-[#191c1d] flex items-center justify-between px-8 py-6">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#002045] dark:text-[#d6e3ff] cursor-pointer">menu_open</span>
+<h1 class="font-['Manrope'] font-extrabold text-[#002045] dark:text-[#d6e3ff] tracking-tighter text-xl">XLMS Athenaeum</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8 items-center">
+<span class="text-[#40484c] dark:text-[#bfc8cc] font-medium font-['Manrope'] text-sm hover:bg-[#e7e8e9] px-3 py-1 rounded-lg transition-colors cursor-pointer">Collection</span>
+<span class="text-[#40484c] dark:text-[#bfc8cc] font-medium font-['Manrope'] text-sm hover:bg-[#e7e8e9] px-3 py-1 rounded-lg transition-colors cursor-pointer">Catalog</span>
+<span class="text-[#1A365D] dark:text-[#d6e3ff] font-bold font-['Manrope'] text-sm cursor-pointer">Notices</span>
+<span class="text-[#40484c] dark:text-[#bfc8cc] font-medium font-['Manrope'] text-sm hover:bg-[#e7e8e9] px-3 py-1 rounded-lg transition-colors cursor-pointer">Archive</span>
+</nav>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-secondary-container flex items-center justify-center">
+<img alt="Librarian Profile" data-alt="Close up portrait of a professional librarian in a modern library setting with soft bokeh background of bookshelves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIMCYccn_61UxM6uJnAvxhDy1xezoI38X3Zn2bkJwG8bu0_f_RK6TUstcZNlHpVtCyojjH0O7WPNpu3A5tEZvQtjdSbEyfzYuxCsUgtkmB9ZQGPtOiSRGbPFcBbGBk4bnaxz9R-JFtgu7-JOxcPDAokKlvDerYqM3JWpmw-5JFVPPrJ5CKO1EbXj1DebJyDTtNFcmvT7KR7yRKKrCHyyLQSPsSleeKd_70Ow--QcLY1zQ7K4UYBiDnDLTuLkKL6kwZJMqEhLIBHmU"/>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-32 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+<div class="space-y-2">
+<p class="font-label text-on-tertiary-container uppercase tracking-[0.2em] text-[10px] font-bold">Communications Center</p>
+<h2 class="headline-font text-5xl font-extrabold tracking-tight text-primary">Notices</h2>
+<p class="text-on-surface-variant max-w-md">Manage your curatorial alerts, member requests, and institutional updates from the central repository.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 rounded-xl bg-surface-container-high text-primary font-semibold hover:bg-surface-container-highest transition-all scale-98 active:opacity-80">
+<span class="material-symbols-outlined text-sm">delete_sweep</span>
+<span class="font-label text-sm">Clear All</span>
+</button>
+</div>
+<!-- Notifications Grid/List -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Filter Sidebar (Editorial Asymmetry) -->
+<div class="lg:col-span-3 space-y-8">
+<div class="bg-surface-container-low p-6 rounded-3xl space-y-6">
+<h3 class="headline-font font-bold text-primary">Priority</h3>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="font-body text-sm text-on-surface group-hover:text-primary transition-colors">Urgent Matters</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-2 h-2 rounded-full bg-tertiary-container"></div>
+<span class="font-body text-sm text-on-surface group-hover:text-primary transition-colors">Acquisitions</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+<span class="font-body text-sm text-on-surface group-hover:text-primary transition-colors">System Logs</span>
+</label>
+</div>
+</div>
+<div class="relative rounded-3xl overflow-hidden aspect-[4/5] bg-primary group cursor-pointer">
+<img alt="Library interior" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" data-alt="Wide angle view of a majestic dark wood classical library with tall ladders and thousands of antique books under soft atmospheric lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBamAzlK_sbAkHzIZ_3DLgwI-19cSV4_vjBsFKCGd2VH0mgcGQERP_zMnvv-KHjDoEgx8IuYhTqoTXvi3WZaqgEzgNMS7Uiz0VR7ZewsXBWsDbasjcA4U_liY2Hn85Jg59cj0SeaqRrZ3pGs-Yhu7_BSnfM8UQw0LgqHW4fzQxPXfRCCicQVIqlfxNRugoPRxPfEcDmQYTvvUK-628vJFVB0rFDQPDAYpyWtK1vAJUfLUCkB2nFbAK-1lGsC3co_7zsmPDjamk07ZY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent p-6 flex flex-col justify-end">
+<p class="text-white/70 text-xs font-bold uppercase tracking-widest mb-2">Curator's Tip</p>
+<h4 class="text-white font-headline text-lg font-bold leading-tight">Maintain a clean archive for optimal system performance.</h4>
+</div>
+</div>
+</div>
+<!-- Main Notifications Feed -->
+<div class="lg:col-span-9 space-y-6">
+<!-- Notification Item 1: New Book -->
+<div class="group relative bg-surface-container-lowest p-8 rounded-[32px] transition-all hover:translate-y-[-4px] hover:shadow-[0_20px_40px_-12px_rgba(0,32,69,0.08)]">
+<div class="flex items-start gap-6">
+<div class="w-14 h-14 shrink-0 rounded-2xl bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+</div>
+<div class="flex-grow space-y-2">
+<div class="flex items-center justify-between">
+<h3 class="font-headline font-bold text-xl text-primary">New Book Available</h3>
+<span class="font-label text-xs text-on-surface-variant/60 font-semibold tracking-wider">14 MIN AGO</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">The rare first edition of <span class="italic font-medium">"Vellum and Varnish: A History of Binding"</span> has been processed and is now available in the North Wing vault.</p>
+<div class="flex gap-3 pt-4">
+<button class="px-5 py-2 rounded-full bg-primary text-white text-xs font-bold tracking-tight hover:opacity-90 transition-opacity">Reserve Item</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-secondary-container text-xs font-bold tracking-tight hover:bg-surface-container-highest transition-colors">Dismiss</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Item 2: Overdue Reminder (Priority) -->
+<div class="group relative bg-surface-container-lowest p-8 rounded-[32px] transition-all hover:translate-y-[-4px] hover:shadow-[0_20px_40px_-12px_rgba(0,32,69,0.08)]">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-16 bg-error rounded-r-full"></div>
+<div class="flex items-start gap-6">
+<div class="w-14 h-14 shrink-0 rounded-2xl bg-error-container flex items-center justify-center text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">emergency_home</span>
+</div>
+<div class="flex-grow space-y-2">
+<div class="flex items-center justify-between">
+<h3 class="font-headline font-bold text-xl text-primary">Overdue Reminder</h3>
+<span class="font-label text-xs text-error font-bold tracking-wider">URGENT • 2 HOURS AGO</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">Member <span class="font-bold">Julian Sterling</span> has 3 items exceeding the 14-day archival limit. Fine accrual has commenced as per Section 4.2 of the bylaws.</p>
+<div class="flex gap-3 pt-4">
+<button class="px-5 py-2 rounded-full bg-error text-white text-xs font-bold tracking-tight hover:opacity-90 transition-opacity">Issue Notice</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-high text-on-secondary-container text-xs font-bold tracking-tight hover:bg-surface-container-highest transition-colors">Details</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Item 3: Member Request -->
+<div class="group relative bg-surface-container-lowest p-8 rounded-[32px] transition-all hover:translate-y-[-4px] hover:shadow-[0_20px_40px_-12px_rgba(0,32,69,0.08)]">
+<div class="flex items-start gap-6">
+<div class="w-14 h-14 shrink-0 rounded-2xl bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed" style="font-variation-settings: 'FILL' 1;">person_add</span>
+</div>
+<div class="flex-grow space-y-2">
+<div class="flex items-center justify-between">
+<h3 class="font-headline font-bold text-xl text-primary">Member Request Approved</h3>
+<span class="font-label text-xs text-on-surface-variant/60 font-semibold tracking-wider">YESTERDAY</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">Access credentials for the <span class="font-medium text-tertiary">Rare Manuscript Room</span> have been granted to Dr. Elena Vance following board review.</p>
+<div class="flex gap-3 pt-4">
+<button class="px-5 py-2 rounded-full bg-primary text-white text-xs font-bold tracking-tight hover:opacity-90 transition-opacity">Send Welcome Kit</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Notification Item 4: System Notice -->
+<div class="group relative bg-surface-container-lowest p-8 rounded-[32px] transition-all hover:translate-y-[-4px] hover:shadow-[0_20px_40px_-12px_rgba(0,32,69,0.08)]">
+<div class="flex items-start gap-6">
+<div class="w-14 h-14 shrink-0 rounded-2xl bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 1;">settings_suggest</span>
+</div>
+<div class="flex-grow space-y-2">
+<div class="flex items-center justify-between">
+<h3 class="font-headline font-bold text-xl text-primary">System Maintenance</h3>
+<span class="font-label text-xs text-on-surface-variant/60 font-semibold tracking-wider">MAR 24</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">The Athenaeum digital catalog will undergo routine indexing this Sunday between 02:00 and 04:00 GMT. Database queries may experience slight latency.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-evenly items-center px-4 pb-8 pt-4 bg-white/80 backdrop-blur-lg shadow-[0_-12px_32px_-4px_rgba(25,28,29,0.06)] rounded-t-[32px]">
+<div class="flex flex-col items-center justify-center text-[#40484c] px-4 py-2 cursor-pointer transition-all hover:text-[#002045]">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-widest mt-1">Collection</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40484c] px-4 py-2 cursor-pointer transition-all hover:text-[#002045]">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-widest mt-1">Catalog</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-gradient-to-br from-[#002045] to-[#1A365D] text-white rounded-[20px] px-6 py-2 shadow-lg shadow-blue-900/20 active:scale-105 duration-300 ease-out">
+<span class="material-symbols-outlined" data-icon="notifications" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-widest mt-1">Notices</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#40484c] px-4 py-2 cursor-pointer transition-all hover:text-[#002045]">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-widest mt-1">Archive</span>
+</div>
+</nav>
+<!-- Floating Curator's Tray (Contextual Bottom Dock) -->
+<div class="fixed bottom-12 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-6 px-8 py-4 bg-white/80 dark:bg-[#191c1d]/80 backdrop-blur-xl rounded-full border border-white/20 shadow-2xl z-40">
+<p class="font-label text-xs font-bold text-primary tracking-widest border-r border-outline-variant/30 pr-6 mr-2">QUICK ACTIONS</p>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-primary hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">mark_email_read</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-primary hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">print</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-primary hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">archive</span>
+</button>
+</div>
+</div>
+</body></html>

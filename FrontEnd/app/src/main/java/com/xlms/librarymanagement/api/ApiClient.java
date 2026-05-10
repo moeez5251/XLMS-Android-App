@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
+import com.xlms.librarymanagement.BuildConfig;
 import com.xlms.librarymanagement.utils.SessionManager;
 import okhttp3.Authenticator;
 import okhttp3.Interceptor;
@@ -20,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class ApiClient {
-    private static final String BASE_URL = "https://xlms-android-app.onrender.com/api/";
+    private static final String BASE_URL = BuildConfig.BASE_URL;
     private static Retrofit retrofit = null;
     private static Set<String> cookies = new HashSet<>();
 

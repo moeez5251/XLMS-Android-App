@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Account | The Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#f8f9fa",
+                    "surface-dim": "#d9dadb",
+                    "secondary-container": "#d9e3f8",
+                    "on-background": "#191c1d",
+                    "on-secondary-fixed": "#121c2b",
+                    "surface": "#f8f9fa",
+                    "on-surface": "#191c1d",
+                    "on-primary-fixed-variant": "#2d476f",
+                    "tertiary-fixed": "#ffddba",
+                    "primary-fixed": "#d6e3ff",
+                    "on-tertiary-container": "#c6955e",
+                    "on-primary-fixed": "#001b3c",
+                    "surface-variant": "#e1e3e4",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#2e3132",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#86a0cd",
+                    "tertiary": "#321b00",
+                    "on-tertiary-fixed-variant": "#633f0f",
+                    "on-secondary-container": "#5b6577",
+                    "primary-container": "#1a365d",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f0f1f2",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#d9e3f8",
+                    "tertiary-container": "#4f2e00",
+                    "secondary": "#555f70",
+                    "primary": "#002045",
+                    "on-surface-variant": "#43474e",
+                    "on-secondary-fixed-variant": "#3e4758",
+                    "surface-tint": "#455f88",
+                    "primary-fixed-dim": "#adc7f7",
+                    "outline": "#74777f",
+                    "on-tertiary-fixed": "#2b1700",
+                    "tertiary-fixed-dim": "#f2bc82",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#edeeef",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#adc7f7",
+                    "secondary-fixed-dim": "#bdc7db",
+                    "background": "#f8f9fa",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-container-low": "#f3f4f5",
+                    "surface-container-high": "#e7e8e9",
+                    "outline-variant": "#c4c6cf"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        h1, h2, h3 {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f8f9fa]/80 dark:bg-slate-900/80 backdrop-blur-xl">
+<div class="flex items-center justify-between px-6 py-4 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#1A365D] dark:text-blue-400 text-2xl" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-['Manrope'] font-black text-[#1A365D] dark:text-blue-400 tracking-tighter text-xl uppercase">The Digital Curator</span>
+</div>
+<nav class="hidden md:flex gap-8">
+<a class="text-slate-500 hover:bg-slate-100/50 transition-all font-medium" href="#">Catalog</a>
+<a class="text-slate-500 hover:bg-slate-100/50 transition-all font-medium" href="#">Lending</a>
+<a class="text-slate-500 hover:bg-slate-100/50 transition-all font-medium" href="#">Reserved</a>
+<a class="text-[#1A365D] font-bold" href="#">Account</a>
+</nav>
+</div>
+</header>
+<main class="mt-24 px-6 max-w-screen-xl mx-auto">
+<!-- Title Section -->
+<section class="mb-12">
+<h1 class="text-4xl font-extrabold text-primary tracking-tight mb-2">My Account</h1>
+<p class="text-on-surface-variant font-medium">Manage your academic profile and library activities.</p>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: User & Lendings -->
+<div class="lg:col-span-7 flex flex-col gap-8">
+<!-- Section 1: My Lendings -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(25,28,29,0.04)]">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+<h2 class="text-xl font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined">auto_stories</span>
+                            My Lendings
+                        </h2>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold tracking-wider uppercase">All</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant text-xs font-semibold tracking-wider uppercase hover:bg-surface-container-high transition-colors">Not Returned</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant text-xs font-semibold tracking-wider uppercase hover:bg-surface-container-high transition-colors">Returned</button>
+</div>
+</div>
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg group hover:bg-secondary-container/30 transition-all duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 bg-surface-dim rounded-md flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Classic book cover design with minimalist elegant typography and deep navy background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNIP_EiJPzjztDSyIZqs-tV85LoOqwxrQVc1GWVek5FCI0pH-rbfgA5oRUIVbv3rtyiNIKRF_VBUsdxENA-w3xgaYp6X_AivGUSRnkfKpwKuQyG6EELq1BpRFxnNaDsNQV3cu158RZq4M9igsvrQNb8GPqSwbI-1P8we6XRpEH10WDx50KnX4JyYBZ6zw-UnXQsyzDVJm42YfMZYoFJNTbwaHvYuE4GtpsfyR8QJastqvMECYXTXuFTwZ9jDcw4b3shOwqvKmxjh0"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">To Kill a Mockingbird</h3>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-widest">Harper Lee</p>
+</div>
+</div>
+<div class="text-right">
+<span class="block text-xl font-black text-primary">7</span>
+<span class="text-[10px] font-bold uppercase text-on-surface-variant">Days Left</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg group hover:bg-secondary-container/30 transition-all duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 bg-surface-dim rounded-md flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Modern business book with data visualizations on a crisp white cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXDFSupxrcqYIqrh_znn4UCMaR4o2FHQ7DT8bIj_QeDet03ftdaJArWJjy8rK4jaKYDvHFKcYy0po-AsswK8aqTM88BEpvZu1n7GIX_VUEAGUEl6HJwIQeViTurmDl78AJGl9h29HV9OZGubZ1MDkt_oU3QL34uofVblMUMQs5UKCqQKn-K26ViisXvoaNwA3Aktncek59oArPhtAw8iY9l3MC1V5Cp9jIrgUHq4xXZBSPoKSmvj_MPmbwCO1C0vWftpBZrmiS0hg"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Excel Phenomeon</h3>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-widest">Tech Series</p>
+</div>
+</div>
+<div class="text-right">
+<span class="block text-xl font-black text-primary">1</span>
+<span class="text-[10px] font-bold uppercase text-on-surface-variant">Day Left</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg group hover:bg-secondary-container/30 transition-all duration-300">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 bg-surface-dim rounded-md flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Minimalist design book cover titled Rework with abstract geometric patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVk6OW2Ozo9NgqjbnwLKzOl1uUyk48maNlPlE7ArVd0NzffosDnXm0SDNsk-4DtrzNvO0rADq_-Yp0mQ0_WhDJhwTkpA-WkAT9DYHnFoy8zz_hJ1gjdyu3KC-LBWy2oiO_fvho7HHtwW3xg1giH3D_isxBg2Nr0LLS9V_cIhRFKUnz_-TaObodqLoZ4tDZsdm_dIT6y0wibTLg7rPMy0eQxdjXa64xYg1_90o33opKvjVCNuPQDvYDfzb5VzfQZp-giEcTvaZD_Lg"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Rework</h3>
+<p class="text-xs text-on-surface-variant font-medium uppercase tracking-widest">Jason Fried</p>
+</div>
+</div>
+<div class="text-right">
+<span class="block text-xl font-black text-primary">1</span>
+<span class="text-[10px] font-bold uppercase text-on-surface-variant">Day Left</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: My Reservations -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-dashed border-outline-variant/30 flex flex-col items-center justify-center text-center py-16">
+<span class="material-symbols-outlined text-4xl text-outline-variant mb-4">bookmark</span>
+<h2 class="text-lg font-bold text-on-surface-variant mb-1">My Reservations</h2>
+<p class="text-sm text-outline font-medium italic">No Active Reservation Found</p>
+</div>
+</div>
+<!-- Right Column: Info & Security -->
+<div class="lg:col-span-5 flex flex-col gap-8">
+<!-- Section 3: Account Information -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(25,28,29,0.04)]">
+<h2 class="text-xl font-bold text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">person</span>
+                        Account Information
+                    </h2>
+<div class="space-y-6">
+<div>
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1.5 ml-1">Name</label>
+<div class="bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-primary">
+<p class="text-on-surface font-semibold">Julian Vane</p>
+</div>
+</div>
+<div>
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1.5 ml-1">Email</label>
+<div class="bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-primary">
+<p class="text-on-surface font-semibold">j.vane@curator.edu</p>
+</div>
+</div>
+<div>
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1.5 ml-1">Membership Type</label>
+<div class="bg-surface-container-high px-4 py-3 rounded-lg border-b-2 border-primary">
+<p class="text-on-surface font-semibold">Premium Research Fellow</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 4: Privacy and Security -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_12px_32px_-4px_rgba(25,28,29,0.04)]">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined">shield</span>
+                            Privacy and Security
+                        </h2>
+<a class="text-xs font-bold text-primary hover:underline transition-all" href="#">Forget Password?</a>
+</div>
+<div class="space-y-5">
+<div class="space-y-1.5">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant ml-1">Old Password</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-none focus:ring-2 focus:ring-primary-container text-on-surface transition-all" placeholder="••••••••" type="password"/>
+</div>
+<div class="space-y-1.5">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant ml-1">New Password</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-none focus:ring-2 focus:ring-primary-container text-on-surface transition-all" placeholder="••••••••" type="password"/>
+</div>
+<div class="space-y-1.5">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant ml-1">Re-Enter New Password</label>
+<input class="w-full bg-surface-container-high px-4 py-3 rounded-lg border-none focus:ring-2 focus:ring-primary-container text-on-surface transition-all" placeholder="••••••••" type="password"/>
+</div>
+<button class="w-full mt-4 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg font-bold uppercase tracking-widest text-xs shadow-md active:scale-[0.98] transition-all">Update Credentials</button>
+</div>
+</div>
+<!-- Section 5: Danger Zone -->
+<div class="bg-error-container/20 rounded-xl p-8 border border-error/10">
+<h2 class="text-xl font-bold text-error mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined">warning</span>
+                        Danger Zone
+                    </h2>
+<p class="text-sm text-on-error-container font-medium mb-6">Once you delete your account, there is no going back. Please be certain.</p>
+<button class="w-full py-3 bg-error text-white rounded-lg font-bold uppercase tracking-widest text-xs shadow-md hover:bg-red-700 active:scale-[0.98] transition-all">Delete Account</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 w-full z-50 rounded-t-3xl bg-[#ffffff]/80 dark:bg-slate-900/80 backdrop-blur-2xl shadow-2xl md:hidden">
+<div class="w-full flex justify-around items-center px-4 py-3 pb-6">
+<div class="flex flex-col items-center justify-center text-slate-400 hover:text-[#1A365D] transition-colors group">
+<span class="material-symbols-outlined text-2xl group-active:scale-90 transition-transform">auto_stories</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-wider mt-1">Catalog</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 hover:text-[#1A365D] transition-colors group">
+<span class="material-symbols-outlined text-2xl group-active:scale-90 transition-transform">history_edu</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-wider mt-1">Lending</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 hover:text-[#1A365D] transition-colors group">
+<span class="material-symbols-outlined text-2xl group-active:scale-90 transition-transform">bookmark</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-wider mt-1">Reserved</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#1A365D] text-white rounded-full px-5 py-2 transition-all duration-500 ease-out">
+<span class="material-symbols-outlined text-2xl active-icon">account_circle</span>
+<span class="font-['Inter'] text-[11px] font-semibold uppercase tracking-wider mt-1">Account</span>
+</div>
+</div>
+</nav>
+<!-- Curator's Tray (Batch Processor) -->
+<div class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-lg hidden md:flex items-center justify-between px-6 py-4 bg-surface-container-lowest/80 backdrop-blur-2xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20 z-40 overflow-hidden">
+<div class="absolute inset-0 bg-surface-tint opacity-10 pointer-events-none"></div>
+<div class="flex items-center gap-4 relative z-10">
+<div class="flex -space-x-3">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-300"></div>
+</div>
+<p class="text-xs font-bold text-primary uppercase tracking-tight">2 Items in Tray</p>
+</div>
+<button class="relative z-10 px-6 py-2 bg-primary text-white rounded-full text-xs font-bold uppercase tracking-widest hover:scale-105 transition-transform">Renew All</button>
+</div>
+</body></html>

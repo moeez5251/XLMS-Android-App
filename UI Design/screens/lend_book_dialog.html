@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lend Book - The Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#3e4758",
+                        "surface-tint": "#455f88",
+                        "on-primary-container": "#86a0cd",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-fixed": "#2b1700",
+                        "on-tertiary-container": "#c6955e",
+                        "surface-dim": "#d9dadb",
+                        "surface-container": "#edeeef",
+                        "secondary-container": "#d9e3f8",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "secondary": "#555f70",
+                        "on-surface": "#191c1d",
+                        "primary-container": "#1a365d",
+                        "on-secondary-container": "#5b6577",
+                        "primary-fixed": "#d6e3ff",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c4c6cf",
+                        "inverse-surface": "#2e3132",
+                        "error": "#ba1a1a",
+                        "tertiary": "#321b00",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "on-primary": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "primary": "#002045",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "background": "#f8f9fa",
+                        "primary-fixed-dim": "#adc7f7",
+                        "surface-variant": "#e1e3e4",
+                        "on-surface-variant": "#43474e",
+                        "tertiary-container": "#4f2e00",
+                        "on-background": "#191c1d",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "outline": "#74777f",
+                        "inverse-primary": "#adc7f7",
+                        "secondary-fixed": "#d9e3f8",
+                        "on-secondary-fixed": "#121c2b",
+                        "inverse-on-surface": "#f0f1f2",
+                        "tertiary-fixed": "#ffddba",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#001b3c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 py-4 bg-[#f8f9fa]/80 dark:bg-[#191c1d]/80 backdrop-blur-xl shadow-[0_12px_32px_-4px_rgba(25,28,29,0.06)]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-[#e7e8e9]">menu_book</span>
+<h1 class="font-headline font-extrabold text-xl text-[#002045] dark:text-[#f8f9fa]">The Digital Curator</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-headline font-semibold text-[#002045] dark:text-[#ffffff] transition-colors" href="#">Catalog</a>
+<a class="font-headline text-[#5c6062] dark:text-[#a0a5a7] hover:bg-[#e7e8e9]/50 dark:hover:bg-[#323739]/50 px-3 py-1 rounded-lg transition-all" href="#">My Loans</a>
+<a class="font-headline text-[#5c6062] dark:text-[#a0a5a7] hover:bg-[#e7e8e9]/50 dark:hover:bg-[#323739]/50 px-3 py-1 rounded-lg transition-all" href="#">Research</a>
+</nav>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden active:scale-95 duration-200">
+<img alt="Librarian Profile" class="w-full h-full object-cover" data-alt="Professional headshot of a middle-aged male librarian with glasses in a scholarly setting with soft library lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkx8nd5KF7lOXPi9D7myseSDPf0msHa2_oDq-Q7HK8bun5n1m7dNNStlecZHye_JtjqR91_ajFYWMDQUclM951W9mtjBda2ph9zRS85bvIF56TXRasjhw7TA1ambzybMHXRu4aJQPHfWvRMTHJ0aQUaHSuO1v-S7x4WI6oI_22seIzezf-1dkA5SynTk8Gq6DOP6ZKIsKl3cXCOPp1krpckt3fguRUIRfSVxuEyhSfhPNlJtmnuI7iM-iSVxq8U5ryhVWEB75J4ss"/>
+</div>
+</div>
+</header>
+<!-- Main Content (Background Catalog) -->
+<main class="pt-24 pb-32 px-6 max-w-7xl mx-auto">
+<section class="mb-12">
+<h2 class="font-headline text-4xl font-extrabold tracking-tight mb-2 text-primary">Library Catalog</h2>
+<p class="text-on-surface-variant font-medium">Explore our curated collection of intellectual works.</p>
+</section>
+<!-- Bento Grid Catalog Mockup -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="md:col-span-2 aspect-video bg-surface-container-lowest rounded-xl p-8 flex flex-col justify-end relative overflow-hidden group">
+<img class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale group-hover:grayscale-0 transition-all duration-700" data-alt="Modern library interior with tall wooden shelves filled with antique books and soft morning sunlight streaming through windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6TZ1SIORZyBtNe4NYjGfAn82dea1CxOWrU4bCWUj0O4mGHATfj6KpCtNuh2YAeY6HfCgJbNddnE-ILXZs9CxDVdWeatdV19dAyjfXgBScKBX2Gnk9pavxXFJTs9LfmdRNFsWZX6muRPFpf-nh1JjAfAhL5rszXCc-KZlkoSUnG9KJ4OmvPRIloy3EcPzBAjnvcwIR7eHg7OdWtXa5jsaBLCI-ISWXkDd8GPTCU3ovQ5Gi7PRV3mCbcey4F0xDteWYU0H4y8QVkVo"/>
+<div class="relative z-10">
+<span class="text-xs font-bold uppercase tracking-widest text-primary mb-2 block">Featured Collection</span>
+<h3 class="font-headline text-2xl font-bold mb-4">The Wealth Perspectives</h3>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6">
+<div class="w-12 h-12 bg-secondary-container rounded-lg mb-4 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">history_edu</span>
+</div>
+<h4 class="font-headline font-bold text-lg mb-2 text-primary">Archives</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">Access digitized historical manuscripts and rare scrolls from the 18th century.</p>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6">
+<div class="w-12 h-12 bg-tertiary-fixed-dim rounded-lg mb-4 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant">psychology</span>
+</div>
+<h4 class="font-headline font-bold text-lg mb-2 text-primary">Research</h4>
+<p class="text-sm text-on-surface-variant leading-relaxed">Peer-reviewed journals and white papers on modern economic theories.</p>
+</div>
+</div>
+</main>
+<!-- Dialog Overlay (The "Lend Book" Dialog) -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-primary/20 backdrop-blur-md"></div>
+<!-- Dialog Container -->
+<div class="relative w-full max-w-2xl bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-4px_rgba(25,28,29,0.12)] overflow-hidden flex flex-col md:flex-row">
+<!-- Book Visual Sidebar -->
+<div class="md:w-1/3 bg-surface-container-low p-8 flex flex-col items-center justify-center border-r-[0.5px] border-outline-variant/15">
+<div class="w-full aspect-[2/3] bg-surface-container-highest rounded-lg shadow-xl overflow-hidden relative group">
+<img alt="Rich Dad Poor Dad Book Cover" class="w-full h-full object-cover" data-alt="Minimalist book cover featuring text Rich Dad Poor Dad with gold and blue academic tones on a textured paper background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm9PesJq3Oyk1GJy5d-Nr3snPeCQyOVgHgNGDd0y1SLM84h00Fi3gBKhC--UMFSYb40eiYfFNZ_H9MyqctEeEJ8AW7EQViRfNvVFC69vIaGk7O2uUC_aeGH_I5YKn9DWpD8DgHRq4yZUkvZ0_gZpSXBydLIrpxKT9LOWwyFojn7a9NrJ0VCgJCCUgbVHTQNT5Vb9yZiDYqIPkSKmbX5O96brRcjkSzNoCVaHtVfKGEsreoUdcEXC-Cs__9SLcVheE8ey4OafqkEYY"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+</div>
+<div class="mt-6 flex flex-col items-center">
+<span class="px-3 py-1 bg-secondary-fixed-dim text-on-secondary-fixed-variant text-[10px] font-bold uppercase tracking-widest rounded-full mb-2">Available</span>
+<span class="font-headline font-bold text-2xl text-primary">9</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-tighter">Copies Left</span>
+</div>
+</div>
+<!-- Dialog Content Area -->
+<div class="md:w-2/3 p-10">
+<div class="mb-8">
+<h2 class="font-headline text-3xl font-extrabold text-primary tracking-tight mb-1">Lend Book</h2>
+<p class="text-on-surface-variant text-sm font-medium">Book Details are as follows.</p>
+</div>
+<div class="space-y-6">
+<!-- Metadata Rows (No Dividers - Using Spacing) -->
+<div class="grid grid-cols-2 gap-y-6">
+<div>
+<span class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60 mb-1">Name</span>
+<span class="font-semibold text-primary">Rich Dad Poor Dad</span>
+</div>
+<div>
+<span class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60 mb-1">Author</span>
+<span class="font-semibold text-primary">Robert Kiyosaki</span>
+</div>
+<div>
+<span class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60 mb-1">Price Per Copy</span>
+<span class="font-semibold text-primary">1300</span>
+</div>
+<div>
+<span class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60 mb-1">Language</span>
+<span class="font-semibold text-primary">English</span>
+</div>
+</div>
+<!-- Input Section -->
+<div class="pt-6">
+<label class="block text-xs font-bold text-primary mb-3" for="copies">Choose number of copies to lend</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-high border-0 border-b-2 border-primary/20 focus:border-primary focus:ring-0 rounded-t-lg transition-all px-4 py-3 text-primary font-bold" id="copies" max="9" min="0" type="number" value="0"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40">
+<span class="material-symbols-outlined">library_add</span>
+</div>
+</div>
+</div>
+<!-- Price Display -->
+<div class="bg-surface-container-low p-4 rounded-lg flex items-center justify-between">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Final Price</span>
+<div class="flex items-center gap-2">
+<span class="text-[10px] text-on-surface-variant">INR</span>
+<span class="font-headline font-extrabold text-2xl text-primary">0</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-4 pt-4">
+<button class="flex-1 bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold py-4 rounded-lg shadow-lg active:scale-95 transition-all">
+                            Confirm Loan
+                        </button>
+<button class="px-6 py-4 text-primary font-headline font-bold hover:bg-surface-variant transition-colors rounded-lg">
+                            Cancel
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-[#ffffff]/80 dark:bg-[#191c1d]/80 backdrop-blur-2xl border-t-[0.5px] border-[#002045]/5 rounded-t-xl shadow-[0_-8px_24px_rgba(0,0,0,0.04)]">
+<div class="flex flex-col items-center justify-center text-[#002045] dark:text-[#ffffff] bg-[#1a365d]/10 dark:bg-[#e7e8e9]/10 rounded-full px-5 py-1.5">
+<span class="material-symbols-outlined">library_books</span>
+<span class="font-['Inter'] text-[8px] font-medium uppercase tracking-widest mt-1">Catalog</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5c6062] dark:text-[#a0a5a7] opacity-70">
+<span class="material-symbols-outlined">bookmarks</span>
+<span class="font-['Inter'] text-[8px] font-medium uppercase tracking-widest mt-1">My Loans</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5c6062] dark:text-[#a0a5a7] opacity-70">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-['Inter'] text-[8px] font-medium uppercase tracking-widest mt-1">Research</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#5c6062] dark:text-[#a0a5a7] opacity-70">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-['Inter'] text-[8px] font-medium uppercase tracking-widest mt-1">Archive</span>
+</div>
+</nav>
+<!-- Curator's Tray (Contextual batch area) -->
+<div class="hidden md:flex fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#ffffff]/80 border-[0.5px] border-outline-variant/20 rounded-full px-8 py-3 items-center gap-8 shadow-2xl glass-panel">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span class="text-xs font-bold text-primary tracking-widest uppercase">Curator's Tray</span>
+</div>
+<div class="h-6 w-[1px] bg-outline-variant/30"></div>
+<div class="flex gap-4">
+<button class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined text-sm">print</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-all">
+<span class="material-symbols-outlined text-sm">share</span>
+</button>
+</div>
+</div>
+</body></html>

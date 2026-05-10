@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Digital Curator | Scholarly Atelier</title>
+<!-- Google Fonts: Manrope & Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "on-tertiary-fixed": "#2b1700",
+                        "surface-container-low": "#f3f4f5",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#86a0cd",
+                        "on-surface": "#191c1d",
+                        "primary-container": "#1a365d",
+                        "surface-dim": "#d9dadb",
+                        "surface-tint": "#455f88",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "primary-fixed-dim": "#adc7f7",
+                        "on-secondary-container": "#5b6577",
+                        "outline": "#74777f",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d9e3f8",
+                        "on-surface-variant": "#43474e",
+                        "surface": "#f8f9fa",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed": "#ffddba",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#adc7f7",
+                        "on-secondary-fixed": "#121c2b",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary": "#321b00",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#c6955e",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "outline-variant": "#c4c6cf",
+                        "secondary": "#555f70",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#4f2e00",
+                        "primary-fixed": "#d6e3ff",
+                        "primary": "#002045",
+                        "inverse-on-surface": "#f0f1f2",
+                        "background": "#f8f9fa",
+                        "secondary-fixed": "#d9e3f8",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed-variant": "#3e4758",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001b3c",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+    </style>
+<style>
+    body {
+      min-height: 100dvh;
+    }
+  </style>
+</head>
+<body class="bg-surface-dim font-body text-on-surface min-h-screen flex flex-col items-center justify-end overflow-hidden">
+<!-- Backdrop Overlay -->
+<div class="fixed inset-0 bg-slate-950/20 backdrop-blur-[2px] z-0"></div>
+<!-- NavigationDrawer Component (Bottom Sheet Layout as Primary Focus) -->
+<nav class="relative w-full rounded-t-[2.5rem] z-50 overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-[0_-20px_50px_-12px_rgba(0,0,0,0.15)] translate-y-0 transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1)">
+<!-- Grabber for Bottom Sheet Feel -->
+<div class="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mt-5 mb-2"></div>
+<div class="max-w-xl mx-auto p-8 space-y-2 pb-16">
+<!-- Header Section -->
+<div class="flex items-center gap-5 mb-10 px-2">
+<img alt="Curator Profile" class="w-16 h-16 rounded-2xl object-cover shadow-md border-2 border-white dark:border-slate-800" data-alt="Professional profile photo of a library administrator in academic attire, sharp focus, neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiOQsnvr7c_-x0qYBgHFu2hFbpmhUKHt59facDPn7ZIXVKzreaJnV1vhoelTlrvBO7CuESAmHxHqhPcQTBVV2X51WYcCxHqgVAbUEAXNFAyGbsnlaYQZ4LCCuceb79AFQ2wteAfUr9Mpj2e5WcwLJh2RRvs1aejWiFGuXYKkDgEleyD9Vp4VGSIONP4QWxPwXKCw72sxo6oPHg6CcrzX_9eeIPxO-I2ihOhQrU1Vl-1Pe-1KrolW5pZkOeS5a0GOdRxjcamizIuvk"/>
+<div>
+<h2 class="font-headline text-xl font-extrabold text-blue-950 dark:text-white leading-tight">The Scholarly Atelier</h2>
+<p class="font-inter text-xs font-semibold tracking-wider text-slate-500 dark:text-slate-400 uppercase">Institutional Access</p>
+<div class="mt-2">
+<span class="px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/40 text-[10px] font-bold text-blue-800 dark:text-blue-300 uppercase tracking-widest border border-blue-100 dark:border-blue-800">Premium Member</span>
+</div>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="space-y-2">
+<!-- Dashboard (Active) -->
+<a class="flex items-center gap-5 bg-blue-50/80 dark:bg-blue-900/40 text-blue-900 dark:text-blue-200 rounded-2xl px-5 py-4 font-bold transition-all shadow-sm border border-blue-100/50 dark:border-blue-800/50" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-inter text-base tracking-tight">Dashboard</span>
+</a>
+<!-- Resources -->
+<a class="flex items-center gap-5 text-slate-600 dark:text-slate-400 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="auto_stories">auto_stories</span>
+<span class="font-inter text-base tracking-tight font-medium">Resources</span>
+</a>
+<!-- Manage Books -->
+<a class="flex items-center gap-5 text-slate-600 dark:text-slate-400 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="library_books">library_books</span>
+<span class="font-inter text-base tracking-tight font-medium">Manage Books</span>
+</a>
+<!-- Lended Books -->
+<a class="flex items-center gap-5 text-slate-600 dark:text-slate-400 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="import_contacts">import_contacts</span>
+<span class="font-inter text-base tracking-tight font-medium">Lended Books</span>
+</a>
+<!-- Members -->
+<a class="flex items-center gap-5 text-slate-600 dark:text-slate-400 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="group">group</span>
+<span class="font-inter text-base tracking-tight font-medium">Members</span>
+</a>
+<!-- Notifications -->
+<a class="flex items-center gap-5 text-slate-600 dark:text-slate-400 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="notifications">notifications</span>
+<span class="font-inter text-base tracking-tight font-medium">Notifications</span>
+</a>
+<!-- Profile -->
+<a class="flex items-center gap-5 text-slate-600 dark:text-slate-400 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="account_circle">account_circle</span>
+<span class="font-inter text-base tracking-tight font-medium">Profile</span>
+</a>
+</div>
+</div>
+</nav>
+</body></html>

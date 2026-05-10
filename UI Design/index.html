@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>XLMS - Screen Index</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Work+Sans:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container": "#e7eeff",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-error-container": "#93000a",
+                        "surface": "#f9f9ff",
+                        "secondary": "#545f72",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#adc7f7",
+                        "error": "#ba1a1a",
+                        "on-surface": "#121c2c",
+                        "secondary-fixed-dim": "#bcc7dd",
+                        "secondary-fixed": "#d8e3fa",
+                        "inverse-surface": "#273141",
+                        "on-secondary-container": "#586377",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "inverse-primary": "#adc7f7",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "on-tertiary-container": "#c6955e",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#321b00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#43474e",
+                        "outline": "#74777f",
+                        "surface-container-low": "#f0f3ff",
+                        "primary-container": "#1a365d",
+                        "outline-variant": "#c4c6cf",
+                        "background": "#f9f9ff",
+                        "on-primary-container": "#86a0cd",
+                        "surface-container-high": "#dee8ff",
+                        "on-tertiary-fixed": "#2b1700",
+                        "tertiary-fixed": "#ffddba",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#d6e3ff",
+                        "on-background": "#121c2c",
+                        "surface-tint": "#455f88",
+                        "surface-variant": "#d9e3f9",
+                        "surface-dim": "#d0daf0",
+                        "tertiary-container": "#4f2e00",
+                        "on-primary-fixed": "#001b3c",
+                        "primary": "#002045",
+                        "on-secondary-fixed": "#111c2c",
+                        "secondary-container": "#d5e0f7",
+                        "surface-container-highest": "#d9e3f9"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Work Sans"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .signature-gradient {
+            background: linear-gradient(135deg, #002045 0%, #1a365d 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen">
+    <header class="signature-gradient text-white py-12 px-6 shadow-lg">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="font-headline text-4xl font-extrabold mb-2">XLMS - Library Management System</h1>
+            <p class="text-primary-fixed-dim text-lg">Project Screen Index & Navigation Portal</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-12 px-6">
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Auth & Onboarding -->
+            <div class="bg-surface-container rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-primary">
+                    <span class="material-symbols-outlined text-3xl">login</span>
+                    <h2 class="font-headline text-2xl font-bold">Authentication</h2>
+                </div>
+                <ul class="space-y-3 text-on-surface">
+                    <li><a href="screens/login.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Login Screen</a></li>
+                    <li><a href="screens/login_with_email.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Login with Email</a></li>
+                    <li><a href="screens/sign_up.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Sign Up</a></li>
+                    <li><a href="screens/sign_up_with_email.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Sign Up with Email</a></li>
+                    <li><a href="screens/sign_up_successful.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Sign Up Success</a></li>
+                    <li><a href="screens/forgot_password_1.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Forgot Password (Step 1)</a></li>
+                    <li><a href="screens/forgot_password_2.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Forgot Password (Step 2)</a></li>
+                    <li><a href="screens/otp_verification.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> OTP Verification</a></li>
+                    <li><a href="screens/otp_verification_no_nav.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> OTP Verification (No Nav)</a></li>
+                </ul>
+            </div>
+
+            <!-- Dashboards -->
+            <div class="bg-surface-container rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-primary">
+                    <span class="material-symbols-outlined text-3xl">dashboard</span>
+                    <h2 class="font-headline text-2xl font-bold">Dashboards</h2>
+                </div>
+                <ul class="space-y-3 text-on-surface">
+                    <li><a href="screens/admin_dashboard.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Admin Dashboard</a></li>
+                    <li><a href="screens/admin_dashboard_no_reports.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Admin Dashboard (No Reports)</a></li>
+                    <li><a href="screens/client_dashboard.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Client Dashboard</a></li>
+                    <li><a href="screens/client_home_dashboard.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Client Home Dashboard</a></li>
+                </ul>
+            </div>
+
+            <!-- Book Management -->
+            <div class="bg-surface-container rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-primary">
+                    <span class="material-symbols-outlined text-3xl">library_books</span>
+                    <h2 class="font-headline text-2xl font-bold">Book Management</h2>
+                </div>
+                <ul class="space-y-3 text-on-surface">
+                    <li><a href="screens/manage_books.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Manage Books</a></li>
+                    <li><a href="screens/manage_books_full_view.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Manage Books (Full View)</a></li>
+                    <li><a href="screens/add_new_book.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Add New Book</a></li>
+                    <li><a href="screens/book_catalog_1.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Book Catalog 1</a></li>
+                    <li><a href="screens/book_catalog_2.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Book Catalog 2</a></li>
+                    <li><a href="screens/book_catalog_3.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Book Catalog 3</a></li>
+                </ul>
+            </div>
+
+            <!-- User Management -->
+            <div class="bg-surface-container rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-primary">
+                    <span class="material-symbols-outlined text-3xl">group</span>
+                    <h2 class="font-headline text-2xl font-bold">User Management</h2>
+                </div>
+                <ul class="space-y-3 text-on-surface">
+                    <li><a href="screens/manage_users.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Manage Users</a></li>
+                    <li><a href="screens/manage_users_full_view.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Manage Users (Full View)</a></li>
+                    <li><a href="screens/manage_users_full_width.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Manage Users (Full Width)</a></li>
+                    <li><a href="screens/add_user.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Add New User</a></li>
+                    <li><a href="screens/manage_lenders.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Manage Lenders</a></li>
+                    <li><a href="screens/user_profile_1.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> User Profile 1</a></li>
+                    <li><a href="screens/user_profile_2.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> User Profile 2</a></li>
+                    <li><a href="screens/my_account.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> My Account</a></li>
+                    <li><a href="screens/my_account_grouped_lendings.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> My Account (Grouped)</a></li>
+                </ul>
+            </div>
+
+            <!-- Transactions & Resources -->
+            <div class="bg-surface-container rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-primary">
+                    <span class="material-symbols-outlined text-3xl">currency_exchange</span>
+                    <h2 class="font-headline text-2xl font-bold">Lending & Resources</h2>
+                </div>
+                <ul class="space-y-3 text-on-surface">
+                    <li><a href="screens/lend_a_book.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Lend a Book</a></li>
+                    <li><a href="screens/lend_a_book_simplified.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Lend a Book (Simplified)</a></li>
+                    <li><a href="screens/lend_book_dialog.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Lend Book Dialog</a></li>
+                    <li><a href="screens/checkout_screen.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Checkout Screen</a></li>
+                    <li><a href="screens/resource_management_simplified.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Resource Management</a></li>
+                    <li><a href="screens/resource_page.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Resource Page</a></li>
+                </ul>
+            </div>
+
+            <!-- System & Utilities -->
+            <div class="bg-surface-container rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-primary">
+                    <span class="material-symbols-outlined text-3xl">settings</span>
+                    <h2 class="font-headline text-2xl font-bold">System & Utilities</h2>
+                </div>
+                <ul class="space-y-3 text-on-surface">
+                    <li><a href="screens/splash_screen.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Splash Screen</a></li>
+                    <li><a href="screens/no_internet_connection.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> No Internet Connection</a></li>
+                    <li><a href="screens/notifications.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Notifications</a></li>
+                    <li><a href="screens/no_notifications.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> No Notifications</a></li>
+                    <li><a href="screens/no_notifications_simple.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> No Notifications (Simple)</a></li>
+                    <li><a href="screens/simple_notifications.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Simple Notifications</a></li>
+                    <li><a href="screens/navigation_drawer_sheet.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Navigation Drawer Sheet</a></li>
+                    <li><a href="screens/navigation_drawer_standalone.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Navigation Drawer Standalone</a></li>
+                </ul>
+            </div>
+            
+            <!-- Flow & Misc -->
+             <div class="bg-surface-container rounded-xl p-6 shadow-sm">
+                <div class="flex items-center gap-3 mb-6 text-primary">
+                    <span class="material-symbols-outlined text-3xl">account_tree</span>
+                    <h2 class="font-headline text-2xl font-bold">Flows & Misc</h2>
+                </div>
+                <ul class="space-y-3 text-on-surface">
+                    <li><a href="screens/xlms_library_login_sign_up_flow.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> Login/Sign Up Flow</a></li>
+                    <li><a href="screens/xlms_library_management_system_1.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> XLMS System 1</a></li>
+                    <li><a href="screens/xlms_library_management_system_2.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> XLMS System 2</a></li>
+                    <li><a href="screens/xlms_library_management_system_3.html" class="flex items-center gap-2 hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">arrow_forward</span> XLMS System 3</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-surface-container-high py-8 px-6 mt-12 border-t border-outline-variant text-center">
+        <p class="text-secondary text-sm">XLMS Library Management System - Design Portal</p>
+    </footer>
+</body>
+</html>

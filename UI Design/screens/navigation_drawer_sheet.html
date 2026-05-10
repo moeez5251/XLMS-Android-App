@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Digital Curator | Scholarly Atelier</title>
+<!-- Google Fonts: Manrope & Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "on-tertiary-fixed": "#2b1700",
+                        "surface-container-low": "#f3f4f5",
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#86a0cd",
+                        "on-surface": "#191c1d",
+                        "primary-container": "#1a365d",
+                        "surface-dim": "#d9dadb",
+                        "surface-tint": "#455f88",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "primary-fixed-dim": "#adc7f7",
+                        "on-secondary-container": "#5b6577",
+                        "outline": "#74777f",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d9e3f8",
+                        "on-surface-variant": "#43474e",
+                        "surface": "#f8f9fa",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed": "#ffddba",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#adc7f7",
+                        "on-secondary-fixed": "#121c2b",
+                        "surface-variant": "#e1e3e4",
+                        "tertiary": "#321b00",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#c6955e",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "outline-variant": "#c4c6cf",
+                        "secondary": "#555f70",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#4f2e00",
+                        "primary-fixed": "#d6e3ff",
+                        "primary": "#002045",
+                        "inverse-on-surface": "#f0f1f2",
+                        "background": "#f8f9fa",
+                        "secondary-fixed": "#d9e3f8",
+                        "surface-container-high": "#e7e8e9",
+                        "on-secondary-fixed-variant": "#3e4758",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001b3c",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .headline-sm { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 1.25rem; }
+        .tonal-shift { background-color: rgba(243, 244, 245, 0.8); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar Component -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm dark:shadow-none flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-blue-900 dark:text-blue-200 cursor-pointer p-2 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-300 ease-in-out rounded-full" data-icon="menu">menu</span>
+<h1 class="text-xl font-bold text-blue-900 dark:text-blue-100 font-headline tracking-tight">The Digital Curator</h1>
+</div>
+<div class="relative">
+<img alt="Curator Profile" class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" data-alt="Close-up portrait of a professional academic curator with a warm smile in a brightly lit library setting, soft focus books in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRO1NFvBfG8_JE2B4eZ1yqvEGBfZpoIwA8ulLeIsKv43_c8eG95KysJfdrGbH-4iqhO25Qr8X5r7lj0sNxKF_YI4lQyLPJz33wLDxFKIA5Qa1qAmHrlMmJ1f8dQZW1VhVT6u54yuzdAQ-5VvkMobym5mI_ZvtYJzSg02WncEJsruMSYbpiA_-PUw97hXDNPp8bRQRLmxvjUUc-sQgQ7JyvcKeahAU4A3B9LzjeeyYD7puYZ8bL_-_uEMXLLdB9e633nhKxXYP2CSs"/>
+</div>
+</header>
+<!-- Main Canvas Content (Bento Grid Layout) -->
+<main class="flex-1 mt-20 px-6 pb-40">
+<div class="mb-10 mt-6">
+<h2 class="font-headline text-3xl font-extrabold text-primary tracking-tight">Institutional Dashboard</h2>
+<p class="text-on-surface-variant font-medium mt-1">Curated oversight for the scholarly atelier.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Bento Item 1: Catalog Statistics -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-8 transition-all hover:bg-surface-container-low">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="text-xs font-bold tracking-widest uppercase text-on-surface-variant opacity-60">Inventory</span>
+<h3 class="font-headline text-2xl font-bold text-primary mt-1">Active Catalog</h3>
+</div>
+<span class="material-symbols-outlined text-primary-container bg-secondary-container p-3 rounded-xl" data-icon="auto_stories">auto_stories</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-5xl font-extrabold font-headline text-primary">12,482</span>
+<span class="text-on-tertiary-container font-semibold mb-1">+2.4% from last month</span>
+</div>
+<div class="mt-8 h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[72%]"></div>
+</div>
+</div>
+<!-- Bento Item 2: Lending Snapshot -->
+<div class="bg-primary-container text-on-primary p-8 rounded-xl flex flex-col justify-between">
+<div class="flex justify-between">
+<span class="material-symbols-outlined text-primary-fixed-dim" data-icon="import_contacts">import_contacts</span>
+<span class="text-xs font-bold tracking-widest uppercase opacity-60">Lending Status</span>
+</div>
+<div>
+<h3 class="font-headline text-4xl font-bold">482</h3>
+<p class="text-on-primary-container font-medium">Currently Lended Books</p>
+</div>
+</div>
+<!-- Bento Item 3: Quick Action / Featured -->
+<div class="bg-surface-container-low rounded-xl p-6 flex items-center gap-6">
+<div class="w-24 h-24 rounded-lg overflow-hidden bg-surface-dim">
+<img alt="Book Cover" class="w-full h-full object-cover" data-alt="Antique leather-bound book lying on a dark wooden table with soft candle light and dust motes in the air" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW9kuysXTPiB5eQn3BcKygthJ8re8DzUrLI_I4UICx_ftoIc4jYmYA-Y5aCRBUocq3gp8499gz4kV1gc9TiZnjJ5QlkNUg5JIsdQLG46OjZBsItAm8bTMnReauRu6MJvjh_NnDw2zmicwnFcNj_NrFJUCzshuhwMdDZE1aKxwwPOhtFMqOUOTEhEvv5NyHs3gXmsu2BBEwcPX9B6m2ZVvbDM8CDyMLGRWAy4tpieMd-xuaSDKxUewTPt57n3k9rTShBbnlv6Q7TWM"/>
+</div>
+<div class="flex-1">
+<h4 class="font-headline font-bold text-primary">Curator's Choice</h4>
+<p class="text-sm text-on-surface-variant leading-snug mt-1">"The Architecture of Silence" - Processing...</p>
+</div>
+</div>
+<!-- Bento Item 4: Members -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline font-bold text-primary">Recent Accessions</h3>
+<button class="text-primary text-sm font-semibold">View All</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">JD</div>
+<div>
+<p class="text-sm font-bold">Julianne Deaton</p>
+<p class="text-xs text-on-surface-variant">Accessioning 3 manuscripts</p>
+</div>
+</div>
+<span class="text-xs text-on-surface-variant font-medium">2m ago</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed-dim flex items-center justify-center text-on-secondary-fixed font-bold">MR</div>
+<div>
+<p class="text-sm font-bold">Marcus Ross</p>
+<p class="text-xs text-on-surface-variant">Lended "Theory of Forms"</p>
+</div>
+</div>
+<span class="text-xs text-on-surface-variant font-medium">15m ago</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- NavigationDrawer Component (Bottom Sheet Layout) -->
+<nav class="fixed bottom-0 w-full rounded-t-[2rem] z-50 overflow-hidden bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-[0_-12px_32px_-4px_rgba(25,28,29,0.06)] translate-y-0 transition-transform duration-500 cubic-bezier(0.4, 0, 0.2, 1)">
+<!-- Grabber for Bottom Sheet Feel -->
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full mx-auto mt-4 mb-2"></div>
+<div class="max-w-2xl mx-auto p-6 space-y-2 pb-10">
+<!-- Header Section (header_type: profile) -->
+<div class="flex items-center gap-4 mb-8 px-2">
+<img alt="Curator Profile" class="w-14 h-14 rounded-2xl object-cover shadow-sm" data-alt="Professional profile photo of a library administrator in academic attire, sharp focus, neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiOQsnvr7c_-x0qYBgHFu2hFbpmhUKHt59facDPn7ZIXVKzreaJnV1vhoelTlrvBO7CuESAmHxHqhPcQTBVV2X51WYcCxHqgVAbUEAXNFAyGbsnlaYQZ4LCCuceb79AFQ2wteAfUr9Mpj2e5WcwLJh2RRvs1aejWiFGuXYKkDgEleyD9Vp4VGSIONP4QWxPwXKCw72sxo6oPHg6CcrzX_9eeIPxO-I2ihOhQrU1Vl-1Pe-1KrolW5pZkOeS5a0GOdRxjcamizIuvk"/>
+<div>
+<h2 class="font-headline text-lg font-bold text-blue-950 dark:text-white leading-tight">The Scholarly Atelier</h2>
+<p class="font-inter text-xs font-medium tracking-wide text-slate-600 dark:text-slate-400">Institutional Access</p>
+<span class="inline-block mt-1 px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-[10px] font-bold text-blue-900 dark:text-blue-200 uppercase tracking-widest">Premium Member</span>
+</div>
+</div>
+<!-- Navigation Links (Determining "Dashboard" as active) -->
+<div class="space-y-1">
+<!-- Dashboard (Active) -->
+<a class="flex items-center gap-4 bg-blue-50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-200 rounded-xl px-4 py-3 font-semibold transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-inter text-sm font-medium tracking-wide">Dashboard</span>
+</a>
+<!-- Resources -->
+<a class="flex items-center gap-4 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-inter text-sm font-medium tracking-wide">Resources</span>
+</a>
+<!-- Manage Books -->
+<a class="flex items-center gap-4 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="font-inter text-sm font-medium tracking-wide">Manage Books</span>
+</a>
+<!-- Lended Books -->
+<a class="flex items-center gap-4 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="import_contacts">import_contacts</span>
+<span class="font-inter text-sm font-medium tracking-wide">Lended Books</span>
+</a>
+<!-- Members -->
+<a class="flex items-center gap-4 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-inter text-sm font-medium tracking-wide">Members</span>
+</a>
+<!-- Notifications -->
+<a class="flex items-center gap-4 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-inter text-sm font-medium tracking-wide">Notifications</span>
+</a>
+<!-- Profile -->
+<a class="flex items-center gap-4 text-slate-600 dark:text-slate-400 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-inter text-sm font-medium tracking-wide">Profile</span>
+</a>
+</div>
+</div>
+</nav>
+</body></html>

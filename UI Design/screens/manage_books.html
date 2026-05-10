@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manage Books - XLMS Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#1a365d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "inverse-primary": "#adc7f7",
+                        "tertiary-fixed-dim": "#f2bc82",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#455f88",
+                        "tertiary": "#321b00",
+                        "on-surface": "#191c1d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#121c2b",
+                        "surface-container-low": "#f3f4f5",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed": "#001b3c",
+                        "secondary-fixed-dim": "#bdc7db",
+                        "secondary-container": "#d9e3f8",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-primary-container": "#86a0cd",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-fixed-dim": "#adc7f7",
+                        "tertiary-fixed": "#ffddba",
+                        "on-tertiary-fixed-variant": "#633f0f",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#e1e3e4",
+                        "background": "#f8f9fa",
+                        "surface-dim": "#d9dadb",
+                        "on-secondary-container": "#5b6577",
+                        "outline-variant": "#c4c6cf",
+                        "on-surface-variant": "#43474e",
+                        "surface": "#f8f9fa",
+                        "inverse-surface": "#2e3132",
+                        "primary-fixed": "#d6e3ff",
+                        "on-tertiary-fixed": "#2b1700",
+                        "tertiary-container": "#4f2e00",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f8f9fa",
+                        "secondary-fixed": "#d9e3f8",
+                        "surface-container": "#edeeef",
+                        "on-secondary-fixed-variant": "#3e4758",
+                        "primary": "#002045",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "on-tertiary-container": "#c6955e",
+                        "secondary": "#555f70",
+                        "outline": "#74777f",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .btn-primary-gradient {
+            background: linear-gradient(135deg, #002045 0%, #1a365d 100%);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col max-w-7xl mx-auto w-full px-6 py-8">
+<!-- Header Section (Selective Shared Component Replacement) -->
+<header class="flex flex-col gap-6 mb-12">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-high p-2 rounded-xl transition-colors">
+<span class="material-symbols-outlined text-on-surface" style="font-size: 24px;">arrow_back</span>
+</button>
+<h1 class="font-headline text-3xl font-bold tracking-tight text-primary">Manage Books</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="btn-primary-gradient text-white px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Add Book</span>
+</button>
+<div class="relative group">
+<button class="bg-surface-container-low text-on-surface px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span>Actions</span>
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</button>
+<!-- Dropdown Mock -->
+<div class="absolute right-0 mt-2 w-48 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant/15 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+<ul class="py-2">
+<li><a class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low" href="#">Add Book</a></li>
+<li><a class="block px-4 py-2 text-sm text-error hover:bg-surface-container-low" href="#">Delete Book</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<!-- Search Section -->
+<div class="relative w-full max-w-2xl">
+<div class="flex items-center bg-surface-container-high rounded-xl px-4 py-3 focus-within:ring-2 ring-primary/10 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant mr-3">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-base placeholder:text-on-surface-variant" placeholder="Search for books by title, author, or ISBN..." type="text"/>
+</div>
+</div>
+</header>
+<!-- Table Container -->
+<section class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto no-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant/10">
+<th class="px-6 py-4">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container">Book ID</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container">Book Title</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container">Author</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container">Category</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container">Language</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container text-right">Price</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container text-center">Total</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container text-center">Avail.</th>
+<th class="px-4 py-4 font-headline text-xs font-extrabold uppercase tracking-widest text-on-secondary-container">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Example Row -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-5 text-sm font-medium text-on-surface-variant">14-88219-X</td>
+<td class="px-4 py-5 font-bold text-primary">Rework</td>
+<td class="px-4 py-5 text-sm text-on-surface">Jason Fried</td>
+<td class="px-4 py-5">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">Business</span>
+</td>
+<td class="px-4 py-5 text-sm text-on-surface">English</td>
+<td class="px-4 py-5 text-sm font-bold text-right">$15.00</td>
+<td class="px-4 py-5 text-sm text-center">8</td>
+<td class="px-4 py-5 text-sm text-center">8</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-bold text-on-surface">Available</span>
+</div>
+</td>
+</tr>
+<!-- More Mock Rows -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-5 text-sm font-medium text-on-surface-variant">12-00341-Y</td>
+<td class="px-4 py-5 font-bold text-primary">The Design of Everyday Things</td>
+<td class="px-4 py-5 text-sm text-on-surface">Don Norman</td>
+<td class="px-4 py-5">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">Design</span>
+</td>
+<td class="px-4 py-5 text-sm text-on-surface">English</td>
+<td class="px-4 py-5 text-sm font-bold text-right">$24.00</td>
+<td class="px-4 py-5 text-sm text-center">12</td>
+<td class="px-4 py-5 text-sm text-center">4</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-bold text-on-surface">Available</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-5 text-sm font-medium text-on-surface-variant">09-12245-A</td>
+<td class="px-4 py-5 font-bold text-primary">Invisible Women</td>
+<td class="px-4 py-5 text-sm text-on-surface">Caroline Criado-Perez</td>
+<td class="px-4 py-5">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">Sociology</span>
+</td>
+<td class="px-4 py-5 text-sm text-on-surface">English</td>
+<td class="px-4 py-5 text-sm font-bold text-right">$18.50</td>
+<td class="px-4 py-5 text-sm text-center">5</td>
+<td class="px-4 py-5 text-sm text-center">0</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="text-xs font-bold text-on-surface">Out of Stock</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-5 text-sm font-medium text-on-surface-variant">21-44321-B</td>
+<td class="px-4 py-5 font-bold text-primary">Atomic Habits</td>
+<td class="px-4 py-5 text-sm text-on-surface">James Clear</td>
+<td class="px-4 py-5">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">Self-Help</span>
+</td>
+<td class="px-4 py-5 text-sm text-on-surface">English</td>
+<td class="px-4 py-5 text-sm font-bold text-right">$20.00</td>
+<td class="px-4 py-5 text-sm text-center">25</td>
+<td class="px-4 py-5 text-sm text-center">18</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-bold text-on-surface">Available</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-6 py-5">
+<input class="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</td>
+<td class="px-4 py-5 text-sm font-medium text-on-surface-variant">11-99801-Z</td>
+<td class="px-4 py-5 font-bold text-primary">Sapiens</td>
+<td class="px-4 py-5 text-sm text-on-surface">Yuval Noah Harari</td>
+<td class="px-4 py-5">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold">History</span>
+</td>
+<td class="px-4 py-5 text-sm text-on-surface">Spanish</td>
+<td class="px-4 py-5 text-sm font-bold text-right">$22.00</td>
+<td class="px-4 py-5 text-sm text-center">10</td>
+<td class="px-4 py-5 text-sm text-center">2</td>
+<td class="px-4 py-5">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-bold text-on-surface">Available</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Section -->
+<div class="flex flex-col gap-6 px-6 py-8">
+<div class="flex justify-center items-center gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-bold text-sm">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-on-surface font-semibold text-sm">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-on-surface font-semibold text-sm">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-on-surface font-semibold text-sm">4</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-on-surface font-semibold text-sm">5</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-on-surface font-semibold text-sm">6</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+<!-- Footer Controls -->
+<div class="flex items-center justify-between pt-6 border-t border-outline-variant/10">
+<div class="text-sm font-medium text-on-surface-variant">
+                            Total Books: <span class="text-on-surface font-bold">29</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-sm font-medium text-on-surface-variant">Rows per page:</span>
+<div class="relative">
+<select class="appearance-none bg-surface-container-low border-none rounded-xl px-4 py-1.5 text-sm font-bold text-on-surface focus:ring-2 ring-primary/10 pr-10">
+<option>5</option>
+<option selected="">10</option>
+<option>20</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[18px]">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- The "Curator's Tray" (Shared Component Extension) -->
+<div class="sticky bottom-0 w-full p-4 pointer-events-none flex justify-center">
+<div class="pointer-events-auto bg-surface-container-lowest/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl flex items-center gap-6 px-6 py-4 max-w-2xl w-full translate-y-[-20px]">
+<div class="flex items-center gap-3 pr-6 border-r border-outline-variant/20">
+<div class="w-10 h-10 rounded-xl bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">book</span>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-wider font-extrabold text-on-surface-variant">Selections</p>
+<p class="text-sm font-bold text-primary">0 items active</p>
+</div>
+</div>
+<div class="flex-1 flex gap-3">
+<button class="text-xs font-bold text-on-surface px-4 py-2 hover:bg-surface-container-low rounded-lg transition-colors">Export Metadata</button>
+<button class="text-xs font-bold text-on-surface px-4 py-2 hover:bg-surface-container-low rounded-lg transition-colors">Print Labels</button>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Background Decoration -->
+<div class="fixed top-0 right-0 -z-10 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full"></div>
+<div class="fixed bottom-0 left-0 -z-10 w-[400px] h-[400px] bg-secondary/5 blur-[100px] rounded-full"></div>
+</body></html>

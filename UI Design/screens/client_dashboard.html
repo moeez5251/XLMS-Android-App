@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Client Dashboard | XLMS Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#f8f9fa",
+              "tertiary-fixed": "#ffddba",
+              "secondary-container": "#d9e3f8",
+              "surface-bright": "#f8f9fa",
+              "on-secondary": "#ffffff",
+              "error-container": "#ffdad6",
+              "inverse-on-surface": "#f0f1f2",
+              "on-error-container": "#93000a",
+              "primary-fixed": "#d6e3ff",
+              "tertiary-container": "#4f2e00",
+              "surface-container-low": "#f3f4f5",
+              "surface-container-highest": "#e1e3e4",
+              "on-secondary-fixed-variant": "#3e4758",
+              "inverse-surface": "#2e3132",
+              "surface-tint": "#455f88",
+              "surface-container-high": "#e7e8e9",
+              "error": "#ba1a1a",
+              "tertiary-fixed-dim": "#f2bc82",
+              "on-surface": "#191c1d",
+              "on-surface-variant": "#43474e",
+              "primary": "#002045",
+              "surface-container": "#edeeef",
+              "secondary-fixed-dim": "#bdc7db",
+              "secondary": "#555f70",
+              "inverse-primary": "#adc7f7",
+              "on-error": "#ffffff",
+              "outline-variant": "#c4c6cf",
+              "outline": "#74777f",
+              "on-primary-container": "#86a0cd",
+              "on-tertiary-fixed-variant": "#633f0f",
+              "on-secondary-fixed": "#121c2b",
+              "on-primary": "#ffffff",
+              "primary-container": "#1a365d",
+              "on-tertiary-fixed": "#2b1700",
+              "tertiary": "#321b00",
+              "on-background": "#191c1d",
+              "on-tertiary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-fixed": "#001b3c",
+              "secondary-fixed": "#d9e3f8",
+              "primary-fixed-dim": "#adc7f7",
+              "on-tertiary-container": "#c6955e",
+              "surface-variant": "#e1e3e4",
+              "on-secondary-container": "#5b6577",
+              "surface-dim": "#d9dadb",
+              "surface": "#f8f9fa",
+              "on-primary-fixed-variant": "#2d476f"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+      }
+      .headline-sm { font-size: 1.5rem; line-height: 2rem; font-weight: 700; }
+      .label-md { font-size: 0.875rem; line-height: 1.25rem; font-weight: 500; }
+      body { font-family: 'Inter', sans-serif; }
+      .font-headline { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-[#f8f9fa] dark:bg-slate-900 flex justify-between items-center w-full px-6 py-4 sticky top-0 z-40">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#1A365D] dark:text-blue-400" data-icon="account_balance">account_balance</span>
+<h1 class="text-xl font-bold text-[#1A365D] dark:text-white font-['Manrope']">XLMS Library</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-[#e7e8e9] dark:hover:bg-slate-700 transition-colors p-2 rounded-full relative">
+<span class="material-symbols-outlined text-slate-500" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="hidden md:flex items-center gap-2 pl-4 border-l border-outline-variant/15">
+<span class="label-md font-bold text-[#1A365D]">Logout</span>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-8">
+<!-- Editorial Header Section -->
+<section class="mb-12">
+<h2 class="font-headline headline-sm tracking-tight text-primary mb-1">Hello User</h2>
+<p class="text-on-surface-variant label-md">Welcome back to your scholarly workspace.</p>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Notice Card (Hero-style Bento) -->
+<div class="lg:col-span-8 bg-surface-container-low p-8 rounded-xl flex flex-col justify-center relative overflow-hidden group">
+<div class="relative z-10">
+<div class="flex items-center gap-2 text-primary mb-4">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-headline font-bold uppercase tracking-widest text-xs">Curator's Bulletin</span>
+</div>
+<h3 class="font-headline text-2xl font-extrabold text-primary max-w-md leading-tight mb-4">
+                        Library Operating Hours: Monday to Saturday: 9:00 AM to 7:00 PM, Sunday: Closed
+                    </h3>
+<div class="flex gap-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-xl font-semibold label-md shadow-lg shadow-primary/10">View Schedule</button>
+</div>
+</div>
+<!-- Abstract Decorative Element -->
+<div class="absolute -right-16 -bottom-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
+</div>
+<!-- Profile Overview (Side Bento) -->
+<div class="lg:col-span-4 bg-surface-container-lowest p-6 rounded-xl shadow-[0_12px_32px_-4px_rgba(25,28,29,0.06)] flex flex-col items-center text-center justify-center border border-outline-variant/10">
+<div class="w-24 h-24 rounded-full bg-surface-container-high mb-4 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a young male library member in a clean well-lit office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhplJ3uJNaKeYeaLyj-ucwmFA1xua3Tn9JDdOu4CgGcyGvEigZFBmBofOJKxvTdMauXIbDhw083EiN7fUfweOEmJ5Mclaj3KRf3MOvd1Ss6Gic0bf-jBVHpiq0JAdh9LGVMta6l-OqdNc2EzvABTxFZMSfjyftZX06r8SQ437sRP9NfCpPTE3FMkI-_agehj5iV490WT86XuFsMdbWBtH3fob198zQzWnMi1F0mto7T3KK07pITYnOnCPxd5utMbRBRZJQYc7qKHk"/>
+</div>
+<h4 class="font-headline font-bold text-lg text-primary">Academic Member</h4>
+<p class="text-on-surface-variant text-sm mb-6">Member ID: #XLMS-9920</p>
+<div class="w-full flex justify-around py-4 bg-surface-container-low rounded-xl">
+<div>
+<p class="text-xs font-bold text-on-surface-variant uppercase">Tier</p>
+<p class="text-primary font-bold">Gold</p>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface-variant uppercase">Status</p>
+<p class="text-primary font-bold">Active</p>
+</div>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+<!-- Lended Books -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:bg-surface-container-low transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary-container rounded-xl text-primary">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+</div>
+<span class="text-4xl font-headline font-extrabold text-primary">0</span>
+</div>
+<h5 class="font-headline font-bold text-primary">Lended Books</h5>
+<p class="text-on-surface-variant text-sm mt-1">Total Books currently borrowed.</p>
+</div>
+<!-- Overdue -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:bg-surface-container-low transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-error-container rounded-xl text-error">
+<span class="material-symbols-outlined" data-icon="event_busy">event_busy</span>
+</div>
+<span class="text-4xl font-headline font-extrabold text-error">0</span>
+</div>
+<h5 class="font-headline font-bold text-primary">Overdue</h5>
+<p class="text-on-surface-variant text-sm mt-1">Total Books currently overdue.</p>
+</div>
+<!-- Reserved Books -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10 hover:bg-surface-container-low transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-tertiary-fixed rounded-xl text-tertiary">
+<span class="material-symbols-outlined" data-icon="bookmark_added">bookmark_added</span>
+</div>
+<span class="text-4xl font-headline font-extrabold text-primary">0</span>
+</div>
+<h5 class="font-headline font-bold text-primary">Reserved Books</h5>
+<p class="text-on-surface-variant text-sm mt-1">Books reserved but not yet issued.</p>
+</div>
+</div>
+<!-- Charts Section -->
+<div class="lg:col-span-6 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10">
+<div class="flex justify-between items-center mb-8">
+<h5 class="font-headline font-bold text-primary">Borrowed Books</h5>
+<span class="material-symbols-outlined text-on-surface-variant text-sm" data-icon="more_vert">more_vert</span>
+</div>
+<!-- Visual Placeholder for Bar Chart -->
+<div class="flex items-end justify-between h-48 px-4">
+<div class="w-8 bg-surface-container-high rounded-t-sm h-[10%]"></div>
+<div class="w-8 bg-surface-container-high rounded-t-sm h-[20%]"></div>
+<div class="w-8 bg-primary rounded-t-sm h-[60%]"></div>
+<div class="w-8 bg-surface-container-high rounded-t-sm h-[30%]"></div>
+<div class="w-8 bg-surface-container-high rounded-t-sm h-[15%]"></div>
+<div class="w-8 bg-secondary-container rounded-t-sm h-[45%]"></div>
+<div class="w-8 bg-surface-container-high rounded-t-sm h-[10%]"></div>
+</div>
+<div class="flex justify-between mt-4 px-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+<div class="lg:col-span-6 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/10">
+<div class="flex justify-between items-center mb-8">
+<h5 class="font-headline font-bold text-primary">Lending Activity</h5>
+<select class="bg-surface-container-low border-none rounded-lg text-xs font-bold text-primary focus:ring-0">
+<option>This Month</option>
+<option>Last Month</option>
+</select>
+</div>
+<!-- Visual Placeholder for Line Chart -->
+<div class="relative h-48 w-full overflow-hidden flex items-center">
+<svg class="w-full h-full" viewbox="0 0 400 150">
+<path d="M0,130 Q50,120 100,100 T200,80 T300,40 T400,10" fill="none" stroke="url(#gradient)" stroke-width="3"></path>
+<defs>
+<lineargradient id="gradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:#002045;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#1a365d;stop-opacity:0.5"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="#e7e8e9" stroke-width="1" x1="0" x2="400" y1="140" y2="140"></line>
+<line stroke="#e7e8e9" stroke-dasharray="4" stroke-width="1" x1="0" x2="400" y1="100" y2="100"></line>
+<line stroke="#e7e8e9" stroke-dasharray="4" stroke-width="1" x1="0" x2="400" y1="60" y2="60"></line>
+<line stroke="#e7e8e9" stroke-dasharray="4" stroke-width="1" x1="0" x2="400" y1="20" y2="20"></line>
+</svg>
+</div>
+<div class="flex justify-between mt-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">
+<span>Week 1</span><span>Week 2</span><span>Week 3</span><span>Week 4</span>
+</div>
+</div>
+</div>
+<!-- The "Curator's Tray" (Recent Items Batch) -->
+<section class="mt-12 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-outline-variant/10 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-16 bg-surface-container-high rounded-md flex items-center justify-center">
+<span class="material-symbols-outlined text-outline" data-icon="book">book</span>
+</div>
+<div>
+<h6 class="font-headline font-bold text-primary">Pending Return</h6>
+<p class="text-xs text-on-surface-variant">The Art of War - Due in 2 days</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="text-primary font-bold text-sm px-4 py-2 hover:bg-surface-container transition-colors rounded-lg">Renew Loan</button>
+<button class="bg-primary text-white font-bold text-sm px-6 py-2 rounded-lg">Return Now</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-[0_-4px_20px_-2px_rgba(0,0,0,0.05)] md:hidden border-t border-slate-100 dark:border-slate-800/50 rounded-t-lg">
+<a class="flex flex-col items-center justify-center bg-[#1A365D] text-white rounded-xl px-4 py-1.5 Active: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-wider font-semibold">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-[#1A365D] dark:hover:text-white" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="menu_book">menu_book</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-wider font-semibold">Catalog</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-[#1A365D] dark:hover:text-white" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-wider font-semibold">Account</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-[#1A365D] dark:hover:text-white" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="help_outline">help_outline</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-wider font-semibold">Help</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-[#1A365D] dark:hover:text-white" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="notifications">notifications</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-wider font-semibold">Alerts</span>
+</a>
+</nav>
+<!-- Side Navigation for Web (Hidden on Mobile) -->
+<aside class="hidden md:flex fixed left-0 top-20 bottom-0 w-64 flex-col bg-surface-container-low p-6">
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-[#1A365D] text-white rounded-xl shadow-lg shadow-primary/10" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-bold">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="menu_book">menu_book</span>
+<span class="font-medium">Book Catalog</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="person">person</span>
+<span class="font-medium">My Account</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="notifications">notifications</span>
+<span class="font-medium">Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container transition-colors rounded-xl group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="help_outline">help_outline</span>
+<span class="font-medium">Help Center</span>
+</a>
+</nav>
+<div class="mt-auto p-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/10">
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-2">Support hours</p>
+<p class="text-xs text-primary font-bold">Mon-Sat: 9AM - 7PM</p>
+</div>
+</aside>
+<style>
+        /* Responsive adjustments for the sidebar layout */
+        @media (min-width: 768px) {
+            main {
+                margin-left: 16rem;
+            }
+        }
+    </style>
+</body></html>

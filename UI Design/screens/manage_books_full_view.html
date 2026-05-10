@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manage Books | The Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#e1e3e4",
+                    "on-secondary": "#ffffff",
+                    "surface": "#f8f9fa",
+                    "primary-fixed": "#d6e3ff",
+                    "on-surface-variant": "#43474e",
+                    "on-primary-fixed": "#001b3c",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#455f88",
+                    "surface-container-high": "#e7e8e9",
+                    "secondary-fixed-dim": "#bdc7db",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#adc7f7",
+                    "surface-dim": "#d9dadb",
+                    "secondary-container": "#d9e3f8",
+                    "outline-variant": "#c4c6cf",
+                    "on-secondary-fixed-variant": "#3e4758",
+                    "inverse-surface": "#2e3132",
+                    "background": "#f8f9fa",
+                    "tertiary": "#321b00",
+                    "tertiary-fixed": "#ffddba",
+                    "primary-container": "#1a365d",
+                    "surface-variant": "#e1e3e4",
+                    "surface-container-low": "#f3f4f5",
+                    "outline": "#74777f",
+                    "on-tertiary-container": "#c6955e",
+                    "on-secondary-fixed": "#121c2b",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#d9e3f8",
+                    "on-tertiary-fixed": "#2b1700",
+                    "tertiary-container": "#4f2e00",
+                    "tertiary-fixed-dim": "#f2bc82",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-secondary-container": "#5b6577",
+                    "surface-container": "#edeeef",
+                    "on-primary-container": "#86a0cd",
+                    "on-tertiary-fixed-variant": "#633f0f",
+                    "surface-bright": "#f8f9fa",
+                    "secondary": "#555f70",
+                    "primary": "#002045",
+                    "on-surface": "#191c1d",
+                    "on-error": "#ffffff",
+                    "inverse-primary": "#adc7f7",
+                    "on-error-container": "#93000a",
+                    "on-background": "#191c1d",
+                    "on-primary-fixed-variant": "#2d476f",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center px-6 py-4 max-w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-indigo-900 dark:text-indigo-100" data-icon="menu_book">menu_book</span>
+<span class="text-xl font-bold tracking-tight text-indigo-950 dark:text-white">The Digital Curator</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-indigo-700 dark:text-indigo-300 font-semibold transition-colors Inter UI labels" href="#">Catalog</a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors Inter UI labels px-2 py-1 rounded" href="#">Members</a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors Inter UI labels px-2 py-1 rounded" href="#">Loans</a>
+<a class="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors Inter UI labels px-2 py-1 rounded" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded-full text-indigo-900 dark:text-indigo-100">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-slate-600 hover:bg-error-container hover:text-error transition-all scale-95 active:opacity-80">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+<span class="text-sm font-medium">Logout</span>
+</button>
+</div>
+</div>
+<div class="bg-slate-200/50 dark:bg-slate-800/50 h-px w-full"></div>
+</header>
+<main class="mt-24 px-6 md:px-12 lg:px-24 flex-grow pb-32">
+<!-- Editorial Header Section -->
+<div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<span class="text-on-surface-variant font-medium tracking-widest text-xs uppercase mb-2 block">Scholarly Inventory</span>
+<h1 class="text-5xl font-extrabold tracking-tight text-primary leading-none">Manage Books</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative group">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-secondary-container text-on-secondary-container rounded-xl font-semibold transition-all hover:opacity-90 active:scale-95">
+<span>Actions</span>
+<span class="material-symbols-outlined text-sm" data-icon="expand_more">expand_more</span>
+</button>
+<div class="absolute right-0 mt-2 w-48 bg-surface-container-lowest border-none shadow-xl rounded-xl hidden group-hover:block z-10 overflow-hidden">
+<a class="block px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low transition-colors" href="#">Add Book</a>
+<a class="block px-4 py-3 text-sm text-error hover:bg-error-container transition-colors" href="#">Delete Book</a>
+</div>
+</div>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl font-bold shadow-lg shadow-primary/10 transition-all hover:opacity-95 active:scale-95">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span>Add Book</span>
+</button>
+</div>
+</div>
+<!-- Search & Filter Bar -->
+<div class="mb-8 p-4 bg-surface-container-high rounded-xl flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant ml-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-on-surface placeholder:text-on-surface-variant/60 font-body" placeholder="Search books by title, author, or ISBN..." type="text"/>
+<button class="px-4 py-1.5 bg-surface-container-highest text-on-surface-variant rounded-lg text-sm font-medium hover:bg-surface-variant transition-colors">Filters</button>
+</div>
+<!-- Books Table: No-Line Design -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low text-on-surface-variant">
+<tr>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Book ID</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Book Title</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Author</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Category</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Language</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Price</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Total</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-center">Available</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<!-- Example Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 text-sm font-mono text-on-surface-variant">14-88219-X</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">Rework</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Jason Fried</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold rounded-full uppercase tracking-tighter">Business</span>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">English</td>
+<td class="px-6 py-5 text-sm font-medium">$15.00</td>
+<td class="px-6 py-5 text-sm text-center">8</td>
+<td class="px-6 py-5 text-sm text-center">8</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">
+<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                    Available
+                                </span>
+</td>
+</tr>
+<!-- Example Row 2 -->
+<tr class="bg-surface-container-lowest hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 text-sm font-mono text-on-surface-variant">07-43203-1</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">The Great Gatsby</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">F. Scott Fitzgerald</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold rounded-full uppercase tracking-tighter">Classic</span>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">English</td>
+<td class="px-6 py-5 text-sm font-medium">$12.50</td>
+<td class="px-6 py-5 text-sm text-center">12</td>
+<td class="px-6 py-5 text-sm text-center">4</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-full">
+<span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                                    Limited
+                                </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 text-sm font-mono text-on-surface-variant">99-10293-A</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">Thinking, Fast and Slow</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Daniel Kahneman</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold rounded-full uppercase tracking-tighter">Science</span>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">English</td>
+<td class="px-6 py-5 text-sm font-medium">$22.00</td>
+<td class="px-6 py-5 text-sm text-center">5</td>
+<td class="px-6 py-5 text-sm text-center">0</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-50 text-rose-700 text-xs font-bold rounded-full">
+<span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span>
+                                    Out of Stock
+                                </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 text-sm font-mono text-on-surface-variant">42-11882-X</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">Sapiens</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Yuval Noah Harari</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold rounded-full uppercase tracking-tighter">History</span>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Hebrew</td>
+<td class="px-6 py-5 text-sm font-medium">$18.99</td>
+<td class="px-6 py-5 text-sm text-center">15</td>
+<td class="px-6 py-5 text-sm text-center">11</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">
+<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                    Available
+                                </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 text-sm font-mono text-on-surface-variant">21-33490-C</td>
+<td class="px-6 py-5 text-sm font-bold text-primary">The Alchemist</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Paulo Coelho</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold rounded-full uppercase tracking-tighter">Fiction</span>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Portuguese</td>
+<td class="px-6 py-5 text-sm font-medium">$10.00</td>
+<td class="px-6 py-5 text-sm text-center">20</td>
+<td class="px-6 py-5 text-sm text-center">20</td>
+<td class="px-6 py-5 text-right">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-full">
+<span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                    Available
+                                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer Control -->
+<div class="px-6 py-4 bg-surface-container-low flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-sm font-medium text-on-surface-variant">
+                    Total Books: <span class="text-primary font-bold">29</span>
+</div>
+<div class="flex items-center gap-2">
+<nav class="flex items-center gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-primary bg-primary-fixed font-bold text-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors text-sm">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors text-sm">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors text-sm">4</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors text-sm">5</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors text-sm">6</button>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-sm text-on-surface-variant">Rows per page</span>
+<select class="bg-surface-container-highest border-none rounded-lg text-xs font-bold px-3 py-1.5 focus:ring-0 text-on-surface">
+<option>5</option>
+<option selected="">10</option>
+<option>20</option>
+</select>
+</div>
+</div>
+</div>
+</main>
+<!-- Curator's Tray (Batch Actions Dock) -->
+<div class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl px-6 py-3 rounded-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex items-center gap-8 z-40 border border-white/20">
+<div class="flex flex-col items-center justify-center bg-indigo-100 dark:bg-indigo-900/40 text-indigo-900 dark:text-indigo-100 rounded-xl px-5 py-1.5 transition-all scale-98 active:scale-90">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="Inter font-medium text-[11px]">Catalog</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all active:scale-90">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="Inter font-medium text-[11px]">Members</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all active:scale-90">
+<span class="material-symbols-outlined" data-icon="swap_horiz">swap_horiz</span>
+<span class="Inter font-medium text-[11px]">Loans</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-5 py-1.5 hover:text-indigo-600 dark:hover:text-indigo-300 transition-all active:scale-90">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="Inter font-medium text-[11px]">Settings</span>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full py-8 mt-auto bg-slate-50 dark:bg-slate-900">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 w-full gap-4">
+<div class="text-indigo-900/50 dark:text-indigo-100/50 font-bold tracking-tight">The Digital Curator</div>
+<div class="text-slate-500 dark:text-slate-400 Inter text-xs tracking-wide">
+                © 2024 The Digital Curator • Library Management System
+            </div>
+<div class="flex gap-6">
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors Inter text-xs tracking-wide" href="#">Help Center</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors Inter text-xs tracking-wide" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors Inter text-xs tracking-wide" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>
