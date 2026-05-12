@@ -12,13 +12,14 @@ exports.getbookdata = async (req, res) => {
         const Totalborrowers = totalborrower.recordset[0].Total_Borrowers;
         const Totalbooks = result.recordset.length;
         const availablebooks = result.recordset.filter(book => book.Status == 'Available').length;
-        const overduebooks = result.recordset.filter(book => book.Status == 'Overdue').length;
+        const overduebooks = await pool.request()
+            .query("SELECT COUNT(*) AS Overdue_Books FROM borrower WHERE DueDate < CAST(GETDATE() AS DATE) AND Status = 'not returned'");
         res.json({
             Totalbooks: Totalbooks,
             Totalusers: Totalusers,
             Totalborrowers: Totalborrowers,
             availablebooks: availablebooks,
-            overduebooks: overduebooks,
+            overduebooks: overduebooks.recordsets[0][0].Overdue_Books,
         })
     }
     catch {

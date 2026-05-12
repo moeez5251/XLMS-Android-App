@@ -31,6 +31,7 @@ const unprotectedRoutes = [
   '/api/mail/otp',
   '/api/mail/verify',
   '/api/mail/resend',
+  '/api/other/getbookdata',
 ]; 
 app.use((req, res, next) => {
   if (unprotectedRoutes.includes(req.path)) return next();
