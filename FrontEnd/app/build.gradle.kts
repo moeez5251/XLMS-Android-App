@@ -15,8 +15,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
-        // Inject BASE_URL from gradle.properties
-        buildConfigField("String", "BASE_URL", project.property("BASE_URL").toString())
+        // Inject BASE_URL from gradle.properties, ensuring it's properly quoted for Java
+        val baseUrl = project.findProperty("BASE_URL")?.toString() ?: "http://localhost:3000"
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 
     buildFeatures {
