@@ -32,6 +32,8 @@ jobs:
       - name: Create gradle.properties
         run: |
           echo "BASE_URL=${{ secrets.BASE_URL || 'http://localhost:3000' }}" > FrontEnd/gradle.properties
+          echo "android.useAndroidX=true" >> FrontEnd/gradle.properties
+          echo "android.enableJetifier=true" >> FrontEnd/gradle.properties
 
       - name: Set Version Name
         id: version
