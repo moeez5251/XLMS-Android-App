@@ -17,7 +17,13 @@ android {
         
         // Inject BASE_URL from gradle.properties, ensuring it's properly quoted for Java
         val rawBaseUrl = project.findProperty("BASE_URL")?.toString() ?: "http://localhost:3000"
-        val baseUrl = rawBaseUrl.replace("\"", "") // Remove any existing quotes to avoid duplicates
+        var baseUrl = rawBaseUrl.replace("\"", "") // Remove any existing quotes
+        
+        // IMPORTANT: Retrofit requires the BASE_URL to end with a slash if it contains a path like /api/
+        if (!baseUrl.endsWith("/")) {
+            baseUrl += "/"
+        }
+        
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 

@@ -29,9 +29,12 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x FrontEnd/gradlew
 
-      - name: Create gradle.properties
+      - name: Configure gradle.properties
         run: |
-          echo "BASE_URL=${{ secrets.BASE_URL || 'http://localhost:3000' }}" > FrontEnd/gradle.properties
+          # Use the secret if provided, otherwise keep the local value if it exists
+          if [ ! -z "${{ secrets.BASE_URL }}" ]; then
+            echo "BASE_URL=${{ secrets.BASE_URL }}" >> FrontEnd/gradle.properties
+          fi
           echo "android.useAndroidX=true" >> FrontEnd/gradle.properties
           echo "android.enableJetifier=true" >> FrontEnd/gradle.properties
 
