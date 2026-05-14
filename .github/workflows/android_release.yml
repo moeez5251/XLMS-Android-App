@@ -28,31 +28,22 @@ jobs:
 
       - name: Grant Execute Permission for Gradlew
         run: chmod +x FrontEnd/gradlew
+- name: Set Version Name
+  id: version
+  run: |
+    VERSION_NAME="1.0.${{ github.run_number }}"
+    echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+    echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
 
-      - name: Configure gradle.properties
-        run: |
-          # Use the secret if provided, otherwise keep the local value if it exists
-          if [ ! -z "${{ secrets.BASE_URL }}" ]; then
-            echo "BASE_URL=${{ secrets.BASE_URL }}" >> FrontEnd/gradle.properties
-          fi
-          echo "android.useAndroidX=true" >> FrontEnd/gradle.properties
-          echo "android.enableJetifier=true" >> FrontEnd/gradle.properties
+- name: Build APK
+  run: |
+    cd FrontEnd
+    ./gradlew assembleDebug \
+      -PVERSION_CODE=${{ github.run_number }} \
+      -PVERSION_NAME=${{ env.VERSION_NAME }} \
+      -PBASE_URL="${{ secrets.BASE_URL || 'https://xlms-android-app.onrender.com/api/' }}"
 
-      - name: Set Version Name
-        id: version
-        run: |
-          VERSION_NAME="1.0.${{ github.run_number }}"
-          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
-          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
-
-      - name: Build APK
-        run: |
-          cd FrontEnd
-          ./gradlew assembleDebug \
-            -PVERSION_CODE=${{ github.run_number }} \
-            -PVERSION_NAME=${{ env.VERSION_NAME }}
-
-      - name: Rename APK
+- name: Rename APK
         run: |
           mv FrontEnd/app/build/outputs/apk/debug/app-debug.apk FrontEnd/app/build/outputs/apk/debug/XLMS-Admin-${{ env.VERSION_NAME }}.apk
 

@@ -15,11 +15,16 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
-        // Inject BASE_URL from gradle.properties, ensuring it's properly quoted for Java
+        // Inject BASE_URL from gradle.properties or command line (-PBASE_URL)
         val rawBaseUrl = project.findProperty("BASE_URL")?.toString() ?: "http://localhost:3000"
-        var baseUrl = rawBaseUrl.replace("\"", "") // Remove any existing quotes
         
-        // IMPORTANT: Retrofit requires the BASE_URL to end with a slash if it contains a path like /api/
+        // Clean the URL: Remove quotes and handle cases where the property name itself might have leaked into the value
+        var baseUrl = rawBaseUrl.replace("\"", "")
+        if (baseUrl.startsWith("BASE_URL=")) {
+            baseUrl = baseUrl.substring("BASE_URL=".length)
+        }
+        
+        // Ensure trailing slash for Retrofit
         if (!baseUrl.endsWith("/")) {
             baseUrl += "/"
         }
