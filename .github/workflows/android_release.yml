@@ -51,7 +51,7 @@ jobs:
 
       - name: Rename APK
         run: |
-          mv FrontEnd/app/build/outputs/apk/release/app-release-unsigned.apk FrontEnd/app/build/outputs/apk/release/xlms-admin-${{ env.VERSION_NAME }}.apk
+          mv FrontEnd/app/build/outputs/apk/release/app-release-unsigned.apk FrontEnd/app/build/outputs/apk/release/XLMS-${{ env.VERSION_NAME }}.apk
         continue-on-error: true
 
       - name: Upload Artifact
@@ -65,7 +65,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION_NAME }}
-          name: Release v${{ env.VERSION_NAME }}
+          name: v${{ env.VERSION_NAME }}
           draft: false
           prerelease: false
           files: FrontEnd/app/build/outputs/apk/release/*.apk

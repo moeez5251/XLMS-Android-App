@@ -97,7 +97,7 @@ public class ClientCatalogFragment extends Fragment {
         int spanCount;
         if (screenWidth >= 1200) {
             spanCount = 4;
-        } else if (screenWidth >= 800) {
+        } else if (screenWidth >= 950) {
             spanCount = 3;
         } else {
             spanCount = 2;
