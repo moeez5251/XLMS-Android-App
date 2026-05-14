@@ -42,23 +42,22 @@ jobs:
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
           echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
 
-      - name: Build Release APK
+      - name: Build APK
         run: |
           cd FrontEnd
-          ./gradlew assembleRelease \
+          ./gradlew assembleDebug \
             -PVERSION_CODE=${{ github.run_number }} \
             -PVERSION_NAME=${{ env.VERSION_NAME }}
 
       - name: Rename APK
         run: |
-          mv FrontEnd/app/build/outputs/apk/release/app-release-unsigned.apk FrontEnd/app/build/outputs/apk/release/XLMS-${{ env.VERSION_NAME }}.apk
-        continue-on-error: true
+          mv FrontEnd/app/build/outputs/apk/debug/app-debug.apk FrontEnd/app/build/outputs/apk/debug/XLMS-Admin-${{ env.VERSION_NAME }}.apk
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-${{ env.VERSION_NAME }}
-          path: FrontEnd/app/build/outputs/apk/release/*.apk
+          name: XLMS-Admin-${{ env.VERSION_NAME }}
+          path: FrontEnd/app/build/outputs/apk/debug/*.apk
 
       - name: Create GitHub Release
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
@@ -68,6 +67,6 @@ jobs:
           name: v${{ env.VERSION_NAME }}
           draft: false
           prerelease: false
-          files: FrontEnd/app/build/outputs/apk/release/*.apk
+          files: FrontEnd/app/build/outputs/apk/debug/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
