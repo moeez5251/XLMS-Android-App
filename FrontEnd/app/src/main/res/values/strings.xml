@@ -1,7 +1,7 @@
 <resources>
     <!-- App Info -->
     <string name="app_name">XLMS</string>
-    <string name="default_web_client_id">175287443340-k3oam1om28gb4gl732i14ujbta2jemni.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">175287443340-ibm7o7c85np3fhf3jfj5v1jthn4drk0k.apps.googleusercontent.com</string>
     <string name="splash_subtitle">Digital Library Management</string>
     <string name="system_initializing">System Initializing</string>
     <string name="collection_version">Collection v1.0</string>
