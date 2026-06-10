@@ -45,7 +45,6 @@ android {
         buildConfig = true
     }
 
-    // ✅ FIXED SIGNING CONFIG (NO DUPLICATE DEBUG)
     signingConfigs {
         getByName("debug") {
             storeFile = file("${rootDir}/debug.keystore")
