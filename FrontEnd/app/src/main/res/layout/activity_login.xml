@@ -12,6 +12,23 @@
         android:layout_height="match_parent"
         android:background="@drawable/background_gradient_overlay" />
 
+    <!-- Decorative Background Elements (Restored) -->
+    <View
+        android:layout_width="256dp"
+        android:layout_height="256dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="-128dp"
+        android:layout_marginBottom="-128dp"
+        android:background="@drawable/decorative_circle_primary" />
+
+    <View
+        android:layout_width="256dp"
+        android:layout_height="256dp"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="-128dp"
+        android:layout_marginTop="-128dp"
+        android:background="@drawable/decorative_circle_tertiary" />
+
     <ScrollView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,7 +42,7 @@
         <!-- Hero Section with Background Image -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="265dp">
+            android:layout_height="240dp">
 
             <!-- Background Image -->
             <ImageView
@@ -106,7 +123,7 @@
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="24dp"
-                android:layout_marginBottom="32dp">
+                android:layout_marginBottom="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -132,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -179,14 +196,13 @@
                             android:fontFamily="@font/work_sans_regular" />
                     </LinearLayout>
 
-                    <!-- Bottom accent line -->
                     <View
+                        android:id="@+id/emailAccentLine"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_gravity="bottom"
                         android:background="@color/primary"
-                        android:alpha="0"
-                        android:id="@+id/emailAccentLine" />
+                        android:alpha="0" />
                 </FrameLayout>
             </LinearLayout>
 
@@ -195,7 +211,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -253,14 +269,13 @@
                             android:padding="8dp" />
                     </LinearLayout>
 
-                    <!-- Bottom accent line -->
                     <View
+                        android:id="@+id/passwordAccentLine"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:layout_gravity="bottom"
                         android:background="@color/primary"
-                        android:alpha="0"
-                        android:id="@+id/passwordAccentLine" />
+                        android:alpha="0" />
                 </FrameLayout>
             </LinearLayout>
 
@@ -270,7 +285,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="32dp">
+                android:layout_marginBottom="24dp">
 
                 <View
                     android:layout_width="0dp"
@@ -304,69 +319,87 @@
                 android:fontFamily="@font/manrope_bold"
                 android:elevation="4dp" />
 
-            <!-- Google Login -->
-            <Button
-                android:id="@+id/buttonGoogleLogin"
+            <!-- OR Divider -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp">
+                
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/outline_variant" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OR"
+                    android:textSize="12sp"
+                    android:textColor="@color/on_surface_variant"
+                    android:fontFamily="@font/inter"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" />
+                
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/outline_variant" />
+            </LinearLayout>
+
+            <!-- Google Login -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonGoogleLogin"
+                android:layout_width="55dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/button_secondary_background"
-                android:text="Continue with Google"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:fontFamily="@font/manrope_bold"
-                android:elevation="2dp" />
+                android:elevation="2dp"
+                android:padding="0dp"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="28dp"
+                app:icon="@drawable/ic_google_logo"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="24dp"
+                app:iconTint="@null"
+                app:strokeColor="@color/outline_variant"
+                app:strokeWidth="1dp" />
 
             <!-- Sign Up Link -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_marginTop="24dp"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="48dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/work_sans_regular"
                     android:text="@string/new_member"
-                    android:textSize="14sp"
                     android:textColor="@color/on_surface_variant"
-                    android:fontFamily="@font/work_sans_regular" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/textViewRegister"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="@string/button_register"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary"
-                    android:fontFamily="@font/work_sans_medium"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:text="@string/button_register"
+                    android:textColor="@color/primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>
-
-        <!-- Decorative Background Elements -->
-        <View
-            android:layout_width="256dp"
-            android:layout_height="256dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="-128dp"
-            android:layout_marginBottom="-128dp"
-            android:background="@drawable/decorative_circle_primary" />
-
-        <View
-            android:layout_width="256dp"
-            android:layout_height="256dp"
-            android:layout_gravity="top|start"
-            android:layout_marginStart="-128dp"
-            android:layout_marginTop="-128dp"
-            android:background="@drawable/decorative_circle_tertiary" />
 
     </LinearLayout>
     </ScrollView>
