@@ -5,23 +5,23 @@
     <string name="splash_subtitle">Digital Library Management</string>
     <string name="system_initializing">System Initializing</string>
     <string name="collection_version">Collection v1.0</string>
-    
+
     <!-- Splash Screen -->
     <string name="logo_desc">XLMS Logo</string>
     <string name="splash_background_desc">Splash screen background</string>
     <string name="hero_background_desc">Login hero background</string>
-    
+
     <!-- Login Screen -->
     <string name="welcome_back">Welcome Back</string>
     <string name="access_your_collection">Access your books collection</string>
-    
+
     <!-- Labels -->
     <string name="label_email_address">Email Address</string>
     <string name="label_password">Password</string>
     <string name="hint_email">user@abc.com</string>
     <string name="hint_password">••••••</string>
     <string name="toggle_password">Toggle password visibility</string>
-    
+
     <!-- Actions -->
     <string name="remember_me">Remember Me</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -29,12 +29,12 @@
     <string name="button_register">Create Account</string>
     <string name="new_member">New Member?</string>
     <string name="dont_have_account">Don\'t have an account?</string>
-    
+
     <!-- Demo Credentials -->
     <string name="demo_credentials_title">📚 Demo Credentials</string>
     <string name="demo_admin_credentials">Admin: admin@xlms.com | Password: admin123</string>
     <string name="demo_client_credentials">Client: user@xlms.com | Password: user123</string>
-    
+
     <!-- Sign Up Screen -->
     <string name="new_members">New Member</string>
     <string name="signup_title_line1">Begin Your</string>
@@ -47,7 +47,7 @@
     <string name="terms_agreement">I acknowledge and agree to the Terms of Service and institutional guidelines.</string>
     <string name="button_create_account">Create Account</string>
     <string name="already_have_account">Already have an account?</string>
-    
+
     <!-- Email Verification Screen -->
     <string name="go_back">Go back</string>
     <string name="step_2_of_3">Step 2 of 3</string>
@@ -59,7 +59,7 @@
     <string name="button_resend_code">RESEND CODE</string>
     <string name="secure_access">SECURE ACCESS</string>
     <string name="academic_privacy">ACADEMIC PRIVACY</string>
-    
+
     <!-- Sign Up Success Screen -->
     <string name="step_3_of_3">Step 3 of 3</string>
     <string name="signup_success_title">Sign Up Successful</string>
@@ -68,7 +68,7 @@
     <string name="button_continue_to_dashboard">Continue to Dashboard</string>
     <string name="welcome_to_library">Welcome to library management.</string>
     <string name="xlms_system_version">XLMS SYSTEM v1.0</string>
-    
+
     <!-- Forgot Password Screen -->
     <string name="account_recovery">Account Recovery</string>
     <string name="xlms_library">XLMS Library</string>
@@ -79,7 +79,7 @@
     <string name="button_send_reset">Send Reset Instructions</string>
     <string name="back_to_login">Back to Login</string>
     <string name="curators_note">XLMS Library Management System</string>
-    
+
     <!-- Admin Dashboard -->
     <string name="menu">Menu</string>
     <string name="notifications">Notifications</string>
@@ -102,7 +102,7 @@
     <string name="available_28">Available (28%)</string>
     <string name="recent_activity">Recent Activity</string>
     <string name="total_items">Total Items</string>
-    
+
     <!-- Menu Items -->
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_resources">Resources</string>
