@@ -45,8 +45,9 @@ android {
         buildConfig = true
     }
 
+    // ✅ FIXED SIGNING CONFIG (NO DUPLICATE DEBUG)
     signingConfigs {
-        create("debug") {
+        getByName("debug") {
             storeFile = file("${rootDir}/debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
@@ -56,17 +57,15 @@ android {
 
     buildTypes {
 
-        getByName("debug") {
+        debug {
             signingConfig = signingConfigs.getByName("debug")
         }
 
-        getByName("release") {
+        release {
             isMinifyEnabled = false
 
             proguardFiles(
-                getDefaultProguardFile(
-                    "proguard-android-optimize.txt"
-                ),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
 
@@ -108,11 +107,7 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
 
-    androidTestImplementation(
-        "androidx.test.ext:junit:1.1.5"
-    )
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
 
-    androidTestImplementation(
-        "androidx.test.espresso:espresso-core:3.5.1"
-    )
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
