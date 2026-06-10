@@ -135,11 +135,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signInWithGoogle() {
-        // Force sign out first to ensure account selection dialog is shown
-        googleSignInClient.signOut().addOnCompleteListener(this, task -> {
-            Intent signInIntent = googleSignInClient.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
-        });
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
