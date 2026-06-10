@@ -12,9 +12,10 @@ jobs:
   build:
     name: Build and Release
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -24,7 +25,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
+          cache: gradle
+
+      - name: Restore Debug Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > FrontEnd/debug.keystore
 
       - name: Grant Execute Permission for Gradlew
         run: chmod +x FrontEnd/gradlew
@@ -42,11 +47,12 @@ jobs:
           ./gradlew assembleDebug \
             -PVERSION_CODE=${{ github.run_number }} \
             -PVERSION_NAME=${{ env.VERSION_NAME }} \
-            -PBASE_URL="${{ secrets.BASE_URL || 'https://xlms-android-app.onrender.com/api/' }}"
+            -PBASE_URL="${{ secrets.BASE_URL }}"
 
       - name: Rename APK
         run: |
-          mv FrontEnd/app/build/outputs/apk/debug/app-debug.apk FrontEnd/app/build/outputs/apk/debug/XLMS-Admin-${{ env.VERSION_NAME }}.apk
+          mv FrontEnd/app/build/outputs/apk/debug/app-debug.apk \
+          FrontEnd/app/build/outputs/apk/debug/XLMS-Admin-${{ env.VERSION_NAME }}.apk
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
