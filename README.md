@@ -132,7 +132,6 @@ npm install
 Create `.env` file:
 
 ```env
-XLMS_API=your_api_key
 user=YOUR_DB_USER
 DB_PASS=YOUR_DB_PASSWORD
 server=YOUR_DB_SERVER
