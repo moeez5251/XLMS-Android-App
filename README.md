@@ -1,4 +1,4 @@
-﻿# 🚀 XLMS
+# 🚀 XLMS
 
 <div align="center">
   <img src="assets/images/logo.png" alt="XLMS Logo" width="140" style="border-radius: 28px; box-shadow: 0 12px 24px rgba(0, 70, 67, 0.15); margin-bottom: 20px;" />
@@ -70,20 +70,42 @@ XLMS helps streamline library operations with:
 ## 📁 Repository Structure
 
 ```
-
 XLMS/
-├── BackEnd/                 # Node.js backend (REST API)
-│   ├── controller/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   └── server.js
-├── FrontEnd/               # Android application
-│   ├── app/
+├── BackEnd/                    # Node.js REST API
+│   ├── controller/             # Business logic (auth, books, users, lenders, mail, etc.)
+│   ├── middleware/             # JWT auth + auto-refresh middleware (app.js)
+│   ├── models/                 # SQL Server connection pool (db.js)
+│   ├── routes/                 # Express route definitions
+│   └── server.js               # Entry point, CORS, route mounts
+├── FrontEnd/                   # Android application (Java)
+│   ├── app/src/main/java/com/xlms/librarymanagement/
+│   │   ├── SplashActivity.java
+│   │   ├── api/                # Retrofit client, request/response models
+│   │   ├── model/              # POJOs (Book, Member, Notification, etc.)
+│   │   ├── adapter/            # RecyclerView adapters
+│   │   ├── utils/              # SessionManager, repositories
+│   │   └── ui/                 # Screen fragments
+│   │       ├── admin/          # Admin dashboard tabs & detail screens
+│   │       ├── client/         # Client dashboard tabs & detail screens
+│   │       ├── auth/
+│   │       ├── components/     # Custom charts (PieChartView, StackedAreaChartView)
+│   │       ├── login/
+│   │       ├── signup/
+│   │       └── error/
 │   └── build.gradle.kts
-├── UI Design/              # UI mockups and prototypes
-└── context/                # Documentation and feature specs
-
+├── UI Design/                  # UI mockups and HTML prototypes
+│   └── screens/                # 46 screen design files
+├── .github/workflows/          # CI/CD pipeline
+│   └── android_release.yml     # Automated APK build & GitHub Release
+├── overview.md                 # System overview
+├── features.md                 # Feature breakdown (backend + frontend)
+├── api.md                      # Full API reference with endpoints
+├── architecture.md             # Backend & frontend architecture details
+├── app-flows.md                # Application flow diagrams (Mermaid)
+├── ui.md                       # UI screen hierarchy & design language
+├── PRD.md                      # Product Requirements Document
+├── TRD.md                      # Technical Requirements Document
+└── README.md
 ```
 
 ---
@@ -110,18 +132,17 @@ npm install
 Create `.env` file:
 
 ```env
-PORT=5000
-URL=http://localhost:5000
+XLMS_API=your_api_key
 user=YOUR_DB_USER
 DB_PASS=YOUR_DB_PASSWORD
 server=YOUR_DB_SERVER
 database=YOUR_DB_NAME
+URL=http://localhost:3000
 JWT=your_jwt_secret
-JWT_REFRESH=your_jwt_refresh_secret
-GOOGLE_CLIENT_ID=...
-GOOGLE_CLIENT_SECRET=...
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_REDIRECT_URI=https://developers.google.com/oauthplayground
-GOOGLE_REFRESH_TOKEN=...
+GOOGLE_REFRESH_TOKEN=your_google_refresh_token
 GOOGLE_USER_EMAIL=your-email@example.com
 ```
 
@@ -143,32 +164,41 @@ cd FrontEnd
 
 * Open in Android Studio
 * Sync Gradle
-* Set backend URL in `gradle.properties`
 
 Run:
 
 ```bash
-./gradlew assembleDebug -PBASE_URL="http://localhost:5000/"
+./gradlew assembleDebug -PBASE_URL="http://localhost:3000/"
 ```
+
+> **Note:** Omit the `-PBASE_URL` flag to use the default hosted API endpoint.
 
 ---
 
 ## 🚀 Example Usage
 
-* API Base: `http://localhost:5000/api`
-* Android login & registration
-* Admin book/user management
-* Email OTP verification system
-* Real-time borrowing workflow
+* API Base: `http://localhost:3000/api`
+* Android login & registration with OTP email verification
+* Admin dashboard with book/user/lender management
+* Client dashboard with catalog browsing, checkout & reservations
+* Real-time borrowing & return workflow with reservation queue
 
 ---
 
 ## 📚 Documentation
 
-* `context/overview.md` → System overview
-* `context/features.md` → Feature breakdown
-* `UI Design/` → UI screens
-* `BackEnd/server.js` → Entry point
+| Document | Description |
+|----------|-------------|
+| `overview.md` | System overview & integration status |
+| `features.md` | Full feature breakdown (backend + frontend) |
+| `api.md` | Complete API reference with request/response examples |
+| `architecture.md` | Backend & frontend architecture details |
+| `app-flows.md` | Sequence diagrams for all major workflows |
+| `ui.md` | Screen hierarchy, design language & layout inventory |
+| `PRD.md` | Product Requirements Document |
+| `TRD.md` | Technical Requirements Document |
+| `UI Design/` | HTML mockups for all 46 app screens |
+| `BackEnd/server.js` | Backend entry point |
 
 ---
 
