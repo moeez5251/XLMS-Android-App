@@ -45,14 +45,59 @@ XLMS helps streamline library operations with:
 
 ## ✨ Key Features
 
-- 📚 Admin dashboard for books, users, reservations, and inventory
-- 🔐 JWT authentication with refresh token support
-- 📩 Email OTP verification via Gmail API
-- 🔄 Book lending lifecycle tracking system
-- 👥 Role-based access control (Admin / User)
-- 📱 Android app with Retrofit + OkHttp integration
-- 🎨 Smooth UI with Shimmer loading effects
-- 📊 Modular backend architecture (MVC pattern)
+- 📚 **Dual-Role Dashboards**: Tabbed panels for Admin actions and Client checkouts/reservations.
+- 🔒 **Secure Authorization**: Multi-tiered JWT authentication with automatic access token renewal.
+- 🌐 **OkHttp Interceptor Pipeline**: Transparent header authorization, persistent cookie sessions, and silent token updates.
+- 📩 **OTP Email Verification**: Multi-step user self-registration and password resets verified via SMTP.
+- 🔄 **Lending Lifecycle**: Automated copy inventory decrementing/incrementing and FIFO reservation queues.
+- 📶 **Offline Resilience**: Instant redirection to a network recovery screen on connection timeout/errors.
+- 🎨 **Rich Aesthetics**: Programmatically drawn bar charts, native availability pie charts, and skeleton loading shimmers.
+- 📊 **Modular MVC Design**: Clean, structured backend controllers with Microsoft SQL Server integration.
+
+---
+
+## 🔒 Session Management & Network Interceptor
+
+The Android client relies on a high-performance **OkHttp Interceptor pipeline** configured inside [ApiClient.java](file:///C:/Android%20App%20Project/XLMS/FrontEnd/app/src/main/java/com/xlms/librarymanagement/api/ApiClient.java) to handle session management, JWT authorization, and network failure handling transparently.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Retrofit / OkHttp
+    participant Int as OkHttp Interceptor
+    participant Svr as Express Server (Backend)
+    
+    App->>Int: Send API Request
+    Note over Int: Read token & cookies from SessionManager
+    Int->>Int: Injects "Authorization: Bearer <JWT>"
+    Int->>Int: Injects "Cookie: <Refresh_Token>"
+    Int->>Svr: Forward Request
+    Svr-->>Int: Respond with data (+ Optional X-New-Token header)
+    alt New Token Received
+        Note over Int: Extract X-New-Token from response header
+        Note over Int: Update local SharedPreferences
+    end
+    Int-->>App: Return API Response
+```
+
+### 1. Transparent Header Injection
+The interceptor queries the [SessionManager](file:///C:/Android%20App%20Project/XLMS/FrontEnd/app/src/main/java/com/xlms/librarymanagement/utils/SessionManager.java) on every outgoing request:
+* If a short-lived **Access Token (JWT)** is present, it is dynamically appended to the request header as:
+  ```http
+  Authorization: Bearer <Access_Token>
+  ```
+* Any stored session cookies containing the long-lived **Refresh Token** are automatically formatted and attached to the request:
+  ```http
+  Cookie: refreshToken=<Refresh_Token>
+  ```
+
+### 2. Silent JWT Auto-Refresh (`X-New-Token`)
+To prevent interrupting the user experience when a JWT expires:
+* If the server detects that the access token is expired (or near expiration within 5 minutes) but the refresh cookie is valid, it generates a new JWT and includes it in the `X-New-Token` response header.
+* The interceptor reads this header from the incoming response, saves the new access token to the local `SharedPreferences` session, and applies it to all future network calls.
+
+### 3. Graceful Offline Handling
+If a network error or connection timeout throws an `IOException` during a request, the interceptor intercepts the failure, builds a new Intent, and instantly boots the [NoInternetActivity](file:///C:/Android%20App%20Project/XLMS/FrontEnd/app/src/main/java/com/xlms/librarymanagement/ui/error/NoInternetActivity.java) screen to inform the user, ensuring the app remains crash-free.
 
 ---
 
@@ -62,8 +107,8 @@ XLMS helps streamline library operations with:
 |------|--------|
 | ![Backend](https://img.shields.io/badge/Backend-339933?style=for-the-badge&logo=node.js&logoColor=FFFFFF) | Node.js • Express.js • mssql • JWT • Bcrypt • Gmail API |
 | ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=000000) | Android Studio • AndroidX • Retrofit • OkHttp • Gson • Shimmer |
-| ![Database](https://img.shields.io/badge/Database-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=FFFFFF) | Microsoft SQL Server |
-| ![CI/CD](https://img.shields.io/badge/CI%2FCD-2088FF?style=for-the-badge&logo=githubactions&logoColor=FFFFFF) | GitHub Actions (`android_release.yml`) |                      |                   |
+| ![Database](https://img.shields.io/badge/Database-CC2927?style=for-the-badge&logo=microsoftsqlserver&logoColor=FFFFFF) | Microsoft SQL Server (Hosted on Somee.com) |
+| ![CI/CD](https://img.shields.io/badge/CI%2FCD-2088FF?style=for-the-badge&logo=githubactions&logoColor=FFFFFF) | GitHub Actions (`android_release.yml`) |
 
 ---
 
